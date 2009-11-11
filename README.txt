@@ -18,7 +18,7 @@ PyLibNIDAQmx - a Python wrapper to libnidaqmx library
 History
 =======
 
- * Project published on ???, 2009.
+ * Project published on November 5, 2009.
 
 Download
 ========
@@ -37,18 +37,19 @@ Installation
 To use pylibnidaqmx, the following is required:
 
   * Python 2.5 or newer
+  * numpy package
   * libnidaqmx library
 
 To install pylibnidaqmx, unpack the archive file, change to the
-pylibnidaqmx source directory ``pylibnidaqmx-?.?*`` (that contains
-setup.py file and libnidaqmx module), and run::
+pylibnidaqmx source directory ``PyLibNIDAQmx-?.?*`` (that contains
+setup.py file and nidaqmx package), and run::
 
   python setup.py install
 
 Basic usage
 ===========
 
-The libnidaqmx Python module provides the following classes:
+The nidaqmx Python package provides the following classes:
 AnalogInputTask, AnalogOutputTask, DigitalInputTask, DigitalOutputTask,
 CounterInputTask, CounterOutputTask that can be used to create
 NI-DAQ tasks and they have methods to create channels, setting
@@ -56,7 +57,7 @@ timing and triggering properties and reading and writing data.
 
 Here follows an example how to generate voltage:
 
->>> from libnidaqmx import AnalogOutputTask
+>>> from nidaqmx import AnalogOutputTask
 >>> import numpy as np
 >>> data = 9.95*np.sin(np.arange(1000, dtype=np.float64)*2*np.pi/1000)
 >>> task = AnalogOutputTask()
@@ -70,7 +71,7 @@ Here follows an example how to generate voltage:
 
 and example how to measure and plot the voltage:
 
->>> from libnidaqmx import AnalogInputTask
+>>> from nidaqmx import AnalogInputTask
 >>> import numpy as np
 >>> task = AnalogInputTask()
 >>> task.create_voltage_channel('Dev1/ai16', terminal = 'rse', min_val=-10.0, max_val=10.0)

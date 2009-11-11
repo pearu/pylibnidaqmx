@@ -1,0 +1,602 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>API docs for &ldquo;nidaqmx.libnidaqmx.AnalogOutputTask&rdquo;</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">Class n.l.AnalogOutputTask(<a href="nidaqmx.libnidaqmx.Task.html">Task</a>):</h1>
+    <p>
+      <span id="part">Part of <a href="nidaqmx.html">nidaqmx</a>.<a href="nidaqmx.libnidaqmx.html">libnidaqmx</a></span>
+      <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1724">View Source</a>
+      <a href="classIndex.html#nidaqmx.libnidaqmx.AnalogOutputTask">View In Hierarchy</a>
+    </p>
+    <div>
+      
+    </div>
+    <div class="undocumented">No class docstring</div>
+    
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id7">
+  
+  
+  
+  
+  <tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.AnalogOutputTask.html#create_voltage_channel">create_voltage_channel</a></td>
+    <td><span>Creates channel(s) to generate voltage and adds the channel(s)
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.AnalogOutputTask.html#write">write</a></td>
+    <td><span>Writes multiple floating-point samples or a scalar to a task
+</span></td>
+  </tr>
+  
+</table>
+      
+        <p>
+          Inherited from <a href="nidaqmx.libnidaqmx.Task.html">Task</a>:
+        </p>
+        <table class="children sortable" id="id8">
+  
+  
+  
+  
+  <tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_major_version">get_major_version</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_minor_version">get_minor_version</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_version">get_version</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_system_devices">get_system_devices</a></td>
+    <td><span>Indicates the names of all devices installed in the system.
+</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_system_tasks">get_system_tasks</a></td>
+    <td><span>Indicates an array that contains the names of all tasks saved
+</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_system_global_channels">get_system_global_channels</a></td>
+    <td><span>Indicates an array that contains the names of all global
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#__init__">__init__</a></td>
+    <td><span>Creates a task.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_channel_type">set_channel_type</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#channel_io_type">channel_io_type</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#__del__">__del__</a></td>
+    <td><span>Clears the task.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#__repr__">__repr__</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#is_done">is_done</a></td>
+    <td><span>Queries the status of the task and indicates if it completed
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#start">start</a></td>
+    <td><span>Transitions the task from the committed state to the running
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#stop">stop</a></td>
+    <td><span>Stops the task and returns it to the state it was in before you called 
+StartTask
+</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#_get_map_value">_get_map_value</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_number_of_channels">get_number_of_channels</a></td>
+    <td><span>Indicates the number of virtual channels in the task.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_names_of_channels">get_names_of_channels</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_devices">get_devices</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#alter_state">alter_state</a></td>
+    <td><span>Alters the state of a task according to the action you
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#register_every_n_samples_event">register_every_n_samples_event</a></td>
+    <td><span>Registers a callback function to receive an event when the
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#register_done_event">register_done_event</a></td>
+    <td><span>Registers a callback function to receive an event when a task
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#register_signal_event">register_signal_event</a></td>
+    <td><span>Registers a callback function to receive an event when the
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_change_detection">configure_timing_change_detection</a></td>
+    <td><span>Configures the task to acquire samples on the rising and/or
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_handshaking">configure_timing_handshaking</a></td>
+    <td><span>Determines the number of digital samples to acquire or
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_implicit">configure_timing_implicit</a></td>
+    <td><span>Sets only the number of samples to acquire or generate without
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_sample_clock">configure_timing_sample_clock</a></td>
+    <td><span>Sets the source of the Sample Clock, the rate of the Sample
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_burst_handshaking_export_clock">configure_timing_burst_handshaking_export_clock</a></td>
+    <td><span>Configures when the DAQ device transfers data to a peripheral
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_burst_handshaking_import_clock">configure_timing_burst_handshaking_import_clock</a></td>
+    <td><span>Configures when the DAQ device transfers data to a peripheral
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_analog_edge_start">configure_trigger_analog_edge_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_analog_window_start">configure_trigger_analog_window_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_digital_edge_start">configure_trigger_digital_edge_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_digital_pattern_start">configure_trigger_digital_pattern_start</a></td>
+    <td><span>Configures a task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_disable_start">configure_trigger_disable_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_buffer">set_buffer</a></td>
+    <td><span>Overrides the automatic I/O buffer allocation that NI-DAQmx 
+performs.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_physical_channel_name">get_physical_channel_name</a></td>
+    <td><span>Indicates the name of the physical channel upon which this
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_channel_type">get_channel_type</a></td>
+    <td><span>Indicates the type of the virtual channel.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#is_channel_global">is_channel_global</a></td>
+    <td><span>Indicates whether the channel is a global channel.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_buffer_size">get_buffer_size</a></td>
+    <td><span>Specifies the number of samples the I/O buffer can hold for
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_buffer_size">set_buffer_size</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_buffer_size">reset_buffer_size</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_max">get_max</a></td>
+    <td><span>Specifies the maximum value you expect to measure or generate.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_max">set_max</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_max">reset_max</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_min">get_min</a></td>
+    <td><span>Specifies the minimum value you expect to measure or generate.
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_min">set_min</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_min">reset_min</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_high">get_high</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_low">get_low</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_gain">get_gain</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_measurment_type">get_measurment_type</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_units">get_units</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_auto_zero_mode">get_auto_zero_mode</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_data_transfer_mechanism">get_data_transfer_mechanism</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_regeneration">get_regeneration</a></td>
+    <td><span>Return True if regeneration (generating the same data more
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_regeneration">set_regeneration</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_regeneration">reset_regeneration</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_arm_start_trigger">set_arm_start_trigger</a></td>
+    <td><span>Specifies the type of trigger to use to arm the task for a
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_arm_start_trigger">get_arm_start_trigger</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_arm_start_trigger">reset_arm_start_trigger</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_arm_start_trigger_source">set_arm_start_trigger_source</a></td>
+    <td><span>Specifies the name of a terminal where there is a digital
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_arm_start_trigger_edge">set_arm_start_trigger_edge</a></td>
+    <td><span>Specifies on which edge of a digital signal to arm the task
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_pause_trigger">set_pause_trigger</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_pause_trigger_source">set_pause_trigger_source</a></td>
+    <td><span>Specifies the name of a virtual channel or terminal where
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_pause_trigger_when">set_pause_trigger_when</a></td>
+    <td><span>Specifies whether the task pauses above or below the threshold
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_info_str">get_info_str</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_read_current_position">get_read_current_position</a></td>
+    <td><span>Indicates in samples per channel the current position in the
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_samples_per_channel_available">get_samples_per_channel_available</a></td>
+    <td><span>Indicates the number of samples available to read per
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_samples_per_channel_acquired">get_samples_per_channel_acquired</a></td>
+    <td><span>Indicates the total number of samples acquired by each
+</span></td>
+  </tr><tr class="basemethod">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#wait_until_done">wait_until_done</a></td>
+    <td><span>Waits for the measurement or generation to complete. Use this
+</span></td>
+  </tr>
+  
+</table>
+      
+      
+    </div>
+    
+    
+    
+    <div class="function">
+        <a name="nidaqmx.libnidaqmx.AnalogOutputTask.create_voltage_channel"></a>
+        <a name="create_voltage_channel"></a>
+        <div class="functionHeader">
+        
+        def create_voltage_channel(self, phys_channel, channel_name='', min_val=-1, max_val=1, units='volts', custom_scale_name=None):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1728" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Creates channel(s) to generate voltage and adds the channel(s) to the 
+task you specify with taskHandle.</p>
+See also AnalogInputTask.create_voltage_channel method.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.AnalogOutputTask.write"></a>
+        <a name="write"></a>
+        <div class="functionHeader">
+        
+        def write(self, data, auto_start=True, timeout=10.0, layout='group_by_scan_number'):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1752" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Writes multiple floating-point samples or a scalar to a task
+that contains one or more analog output channels.
+
+Note: If you configured timing for your task, your write is
+considered a buffered write. Buffered writes require a minimum
+buffer size of 2 samples. If you do not configure the buffer
+size using DAQmxCfgOutputBuffer, NI-DAQmx automatically
+configures the buffer when you configure sample timing. If you
+attempt to write one sample for a buffered write without
+configuring the buffer, you will receive an error.
+
+data - The array of 64-bit samples to write to the task
+  or a scalar.
+
+auto_start - Specifies whether or not this function
+  automatically starts the task if you do not start it.
+
+timeout - The amount of time, in seconds, to wait for this
+  function to write all the samples. The default value is 10.0
+  seconds. To specify an infinite wait, pass -1
+  (DAQmx_Val_WaitInfinitely). This function returns an error
+  if the timeout elapses.
+
+  A value of 0 indicates to try once to write the submitted
+  samples. If this function successfully writes all submitted
+  samples, it does not return an error. Otherwise, the
+  function returns a timeout error and returns the number of
+  samples actually written.
+
+layout - Specifies how the samples are arranged, either
+  interleaved or noninterleaved:
+
+  'group_by_channel' - Group by channel (non-interleaved).
+  'group_by_scan_number' - Group by scan number (interleaved).
+
+  [applies iff data is array]
+
+Output:
+
+samples_written - The actual number of samples per channel
+  successfully written to the buffer. [applies iff data is array].</pre>
+        </div>
+      </div>
+    
+    <address>
+      <a href="index.html">API Documentation</a> for <a href="http://code.google.com/p/pylibnidaqmx/">PyLibNIDAQmx</a>, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2009-11-11 13:03:58.
+    </address>
+  </body>
+</html>

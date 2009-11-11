@@ -1,0 +1,1902 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>API docs for &ldquo;nidaqmx.libnidaqmx.Task&rdquo;</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <link href="apidocs.css" type="text/css" rel="stylesheet" />
+    
+    
+  </head>
+  <body>
+    <h1 class="class">Class n.l.Task(<span title="uInt32">uInt32</span>):</h1>
+    <p>
+      <span id="part">Part of <a href="nidaqmx.html">nidaqmx</a>.<a href="nidaqmx.libnidaqmx.html">libnidaqmx</a></span>
+      <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L449">View Source</a>
+      <a href="classIndex.html#nidaqmx.libnidaqmx.Task">View In Hierarchy</a>
+    </p>
+    <div>
+      <p>Known subclasses: <a href="nidaqmx.libnidaqmx.AnalogInputTask.html">nidaqmx.libnidaqmx.AnalogInputTask</a>, <a href="nidaqmx.libnidaqmx.AnalogOutputTask.html">nidaqmx.libnidaqmx.AnalogOutputTask</a>, <a href="nidaqmx.libnidaqmx.CounterInputTask.html">nidaqmx.libnidaqmx.CounterInputTask</a>, <a href="nidaqmx.libnidaqmx.CounterOutputTask.html">nidaqmx.libnidaqmx.CounterOutputTask</a>, <a href="nidaqmx.libnidaqmx.DigitalInputTask.html">nidaqmx.libnidaqmx.DigitalInputTask</a>, <a href="nidaqmx.libnidaqmx.DigitalOutputTask.html">nidaqmx.libnidaqmx.DigitalOutputTask</a></p>
+    </div>
+    <div class="undocumented">No class docstring</div>
+    
+    
+    <div id="splitTables">
+      <table class="children sortable" id="id4">
+  
+  
+  
+  
+  <tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_major_version">get_major_version</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_minor_version">get_minor_version</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_version">get_version</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_system_devices">get_system_devices</a></td>
+    <td><span>Indicates the names of all devices installed in the system.
+</span></td>
+  </tr><tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_system_tasks">get_system_tasks</a></td>
+    <td><span>Indicates an array that contains the names of all tasks saved
+</span></td>
+  </tr><tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_system_global_channels">get_system_global_channels</a></td>
+    <td><span>Indicates an array that contains the names of all global
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#__init__">__init__</a></td>
+    <td><span>Creates a task.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_channel_type">set_channel_type</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#channel_io_type">channel_io_type</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#__del__">__del__</a></td>
+    <td><span>Clears the task.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#__repr__">__repr__</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#is_done">is_done</a></td>
+    <td><span>Queries the status of the task and indicates if it completed
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#start">start</a></td>
+    <td><span>Transitions the task from the committed state to the running
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#stop">stop</a></td>
+    <td><span>Stops the task and returns it to the state it was in before you called 
+StartTask
+</span></td>
+  </tr><tr class="classmethod">
+    
+    
+    <td>Class Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#_get_map_value">_get_map_value</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_number_of_channels">get_number_of_channels</a></td>
+    <td><span>Indicates the number of virtual channels in the task.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_names_of_channels">get_names_of_channels</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_devices">get_devices</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#alter_state">alter_state</a></td>
+    <td><span>Alters the state of a task according to the action you
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#register_every_n_samples_event">register_every_n_samples_event</a></td>
+    <td><span>Registers a callback function to receive an event when the
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#register_done_event">register_done_event</a></td>
+    <td><span>Registers a callback function to receive an event when a task
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#register_signal_event">register_signal_event</a></td>
+    <td><span>Registers a callback function to receive an event when the
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_change_detection">configure_timing_change_detection</a></td>
+    <td><span>Configures the task to acquire samples on the rising and/or
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_handshaking">configure_timing_handshaking</a></td>
+    <td><span>Determines the number of digital samples to acquire or
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_implicit">configure_timing_implicit</a></td>
+    <td><span>Sets only the number of samples to acquire or generate without
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_sample_clock">configure_timing_sample_clock</a></td>
+    <td><span>Sets the source of the Sample Clock, the rate of the Sample
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_burst_handshaking_export_clock">configure_timing_burst_handshaking_export_clock</a></td>
+    <td><span>Configures when the DAQ device transfers data to a peripheral
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_timing_burst_handshaking_import_clock">configure_timing_burst_handshaking_import_clock</a></td>
+    <td><span>Configures when the DAQ device transfers data to a peripheral
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_analog_edge_start">configure_trigger_analog_edge_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_analog_window_start">configure_trigger_analog_window_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_digital_edge_start">configure_trigger_digital_edge_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_digital_pattern_start">configure_trigger_digital_pattern_start</a></td>
+    <td><span>Configures a task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#configure_trigger_disable_start">configure_trigger_disable_start</a></td>
+    <td><span>Configures the task to start acquiring or generating samples
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_buffer">set_buffer</a></td>
+    <td><span>Overrides the automatic I/O buffer allocation that NI-DAQmx 
+performs.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_physical_channel_name">get_physical_channel_name</a></td>
+    <td><span>Indicates the name of the physical channel upon which this
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_channel_type">get_channel_type</a></td>
+    <td><span>Indicates the type of the virtual channel.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#is_channel_global">is_channel_global</a></td>
+    <td><span>Indicates whether the channel is a global channel.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_buffer_size">get_buffer_size</a></td>
+    <td><span>Specifies the number of samples the I/O buffer can hold for
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_buffer_size">set_buffer_size</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_buffer_size">reset_buffer_size</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_max">get_max</a></td>
+    <td><span>Specifies the maximum value you expect to measure or generate.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_max">set_max</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_max">reset_max</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_min">get_min</a></td>
+    <td><span>Specifies the minimum value you expect to measure or generate.
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_min">set_min</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_min">reset_min</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_high">get_high</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_low">get_low</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_gain">get_gain</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_measurment_type">get_measurment_type</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_units">get_units</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_auto_zero_mode">get_auto_zero_mode</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_data_transfer_mechanism">get_data_transfer_mechanism</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_regeneration">get_regeneration</a></td>
+    <td><span>Return True if regeneration (generating the same data more
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_regeneration">set_regeneration</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_regeneration">reset_regeneration</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_arm_start_trigger">set_arm_start_trigger</a></td>
+    <td><span>Specifies the type of trigger to use to arm the task for a
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_arm_start_trigger">get_arm_start_trigger</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#reset_arm_start_trigger">reset_arm_start_trigger</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_arm_start_trigger_source">set_arm_start_trigger_source</a></td>
+    <td><span>Specifies the name of a terminal where there is a digital
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_arm_start_trigger_edge">set_arm_start_trigger_edge</a></td>
+    <td><span>Specifies on which edge of a digital signal to arm the task
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_pause_trigger">set_pause_trigger</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_pause_trigger_source">set_pause_trigger_source</a></td>
+    <td><span>Specifies the name of a virtual channel or terminal where
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#set_pause_trigger_when">set_pause_trigger_when</a></td>
+    <td><span>Specifies whether the task pauses above or below the threshold
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_info_str">get_info_str</a></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_read_current_position">get_read_current_position</a></td>
+    <td><span>Indicates in samples per channel the current position in the
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_samples_per_channel_available">get_samples_per_channel_available</a></td>
+    <td><span>Indicates the number of samples available to read per
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#get_samples_per_channel_acquired">get_samples_per_channel_acquired</a></td>
+    <td><span>Indicates the total number of samples acquired by each
+</span></td>
+  </tr><tr class="method">
+    
+    
+    <td>Method</td>
+    <td><a href="nidaqmx.libnidaqmx.Task.html#wait_until_done">wait_until_done</a></td>
+    <td><span>Waits for the measurement or generation to complete. Use this
+</span></td>
+  </tr>
+  
+</table>
+      
+      
+    </div>
+    
+    
+    
+    <div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_major_version"></a>
+        <a name="get_major_version"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def get_major_version(cls):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L452" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_minor_version"></a>
+        <a name="get_minor_version"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def get_minor_version(cls):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L458" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_version"></a>
+        <a name="get_version"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def get_version(cls):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L464" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_system_devices"></a>
+        <a name="get_system_devices"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def get_system_devices(cls):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L468" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates the names of all devices installed in the system.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_system_tasks"></a>
+        <a name="get_system_tasks"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def get_system_tasks(cls):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L479" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates an array that contains the names of all tasks saved on the 
+system.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_system_global_channels"></a>
+        <a name="get_system_global_channels"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def get_system_global_channels(cls):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L491" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates an array that contains the names of all global channels saved 
+on the system.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.__init__"></a>
+        <a name="__init__"></a>
+        <div class="functionHeader">
+        
+        def __init__(self, name=''):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L504" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Creates a task.</p>
+If you create a task within a loop, NI-DAQmx creates a new task in each 
+iteration of the loop. Use `del task` within the loop after you finish with
+the task to avoid allocating unnecessary memory.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_channel_type"></a>
+        <a name="set_channel_type"></a>
+        <div class="functionHeader">
+        
+        def set_channel_type(self, t):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L521" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.channel_io_type"></a>
+        <a name="channel_io_type"></a>
+        <div class="functionHeader">
+        @property<br />
+        def channel_io_type(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L529" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.__del__"></a>
+        <a name="__del__"></a>
+        <div class="functionHeader">
+        
+        def __del__(self, libnidaqmx=libnidaqmx):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L535" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Clears the task.</p>
+<p>Before clearing, this function stops the task, if necessary, and 
+releases any resources reserved by the task. You cannot use a task once you
+clear the task without recreating or reloading the task.</p>
+If you use the DAQmxCreateTask function or any of the NI-DAQmx Create 
+Channel functions within a loop, use this function within the loop after 
+you finish with the task to avoid allocating unnecessary memory.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.__repr__"></a>
+        <a name="__repr__"></a>
+        <div class="functionHeader">
+        
+        def __repr__(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L555" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.is_done"></a>
+        <a name="is_done"></a>
+        <div class="functionHeader">
+        
+        def is_done(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L558" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Queries the status of the task and indicates if it completed execution. 
+Use this function to ensure that the specified operation is complete before
+you stop the task.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.start"></a>
+        <a name="start"></a>
+        <div class="functionHeader">
+        
+        def start(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L570" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Transitions the task from the committed state to the running state, 
+which begins measurement or generation. Using this function is required for
+some applications and optional for others.</p>
+<p>If you do not use this function, a measurement task starts automatically
+when a read operation begins. The autoStart parameter of the NI-DAQmx Write
+functions determines if a generation task starts automatically when you use
+an NI-DAQmx Write function.</p>
+<p>If you do not call StartTask and StopTask when you call NI-DAQmx Read 
+functions or NI-DAQmx Write functions multiple times, such as in a loop, 
+the task starts and stops repeatedly. Starting and stopping a task 
+repeatedly reduces the performance of the application.</p>
+Returns True on success.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.stop"></a>
+        <a name="stop"></a>
+        <div class="functionHeader">
+        
+        def stop(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L593" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Stops the task and returns it to the state it was in before you called 
+StartTask or called an NI-DAQmx Write function with autoStart set to 
+TRUE.</p>
+<p>If you do not call StartTask and StopTask when you call NI-DAQmx Read 
+functions or NI-DAQmx Write functions multiple times, such as in a loop, 
+the task starts and stops repeatedly. Starting and stopping a task 
+repeatedly reduces the performance of the application.</p>
+Returns True on success.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task._get_map_value"></a>
+        <a name="_get_map_value"></a>
+        <div class="functionHeader">
+        @classmethod<br />
+        def _get_map_value(cls, label, map, key):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L609" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_number_of_channels"></a>
+        <a name="get_number_of_channels"></a>
+        <div class="functionHeader">
+        
+        def get_number_of_channels(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L615" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates the number of virtual channels in the task.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_names_of_channels"></a>
+        <a name="get_names_of_channels"></a>
+        <div class="functionHeader">
+        
+        def get_names_of_channels(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L623" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_devices"></a>
+        <a name="get_devices"></a>
+        <div class="functionHeader">
+        
+        def get_devices(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L632" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.alter_state"></a>
+        <a name="alter_state"></a>
+        <div class="functionHeader">
+        
+        def alter_state(self, state):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L639" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Alters the state of a task according to the action you
+specify. To minimize the time required to start a task, for
+example, DAQmxTaskControl can commit the task prior to
+starting.
+
+Actions:
+
+'start' - Starts execution of the task.
+
+'stop' - Stops execution of the task.
+
+'verify' - Verifies that all task parameters are valid for the
+  hardware.
+
+'commit' - Programs the hardware as much as possible according
+  to the task configuration.
+
+'reserve' - Reserves the hardware resources needed for the
+  task. No other tasks can reserve these same resources.
+
+'unreserve' - Releases all previously reserved resources.
+
+'abort' - Abort is used to stop an operation, such as Read or
+  Write, that is currently active. Abort puts the task into an
+  unstable but recoverable state. To recover the task, call
+  Start to restart the task or call Stop to reset the task
+  without starting it.
+
+Returns True on success.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.register_every_n_samples_event"></a>
+        <a name="register_every_n_samples_event"></a>
+        <div class="functionHeader">
+        
+        def register_every_n_samples_event(self, func, samples=1, options=0, cb_data=None):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L686" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Registers a callback function to receive an event when the
+specified number of samples is written from the device to the
+buffer or from the buffer to the device. This function only
+works with devices that support buffered tasks.
+
+When you stop a task explicitly any pending events are
+discarded. For example, if you call DAQmxStopTask then you do
+not receive any pending events.
+
+Parameters:
+
+func - The function that you want DAQmx to call when the event
+  occurs. The function you pass in this parameter must have
+  the following prototype:
+
+  def func(task, event_type, samples, cb_data):
+      return 0
+
+  Upon entry to the callback, the task parameter contains the
+  handle to the task on which the event occurred. The
+  event_type parameter contains the value you passed in the
+  event_type parameter of this function. The samples parameter
+  contains the value you passed in the samples parameter of
+  this function. The cb_data parameter contains the value you
+  passed in the cb_data parameter of this function.
+
+samples - The number of samples after which each event should
+  occur.
+
+options, cb_data - see register_done_event documentation.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.register_done_event"></a>
+        <a name="register_done_event"></a>
+        <div class="functionHeader">
+        
+        def register_done_event(self, func, options=0, cb_data=None):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L746" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Registers a callback function to receive an event when a task
+stops due to an error or when a finite acquisition task or
+finite generation task completes execution. A Done event does
+not occur when a task is stopped explicitly, such as by
+calling DAQmxStopTask.
+
+Parameters:
+
+func - The function that you want DAQmx to call when the event
+  occurs.  The function you pass in this parameter must have
+  the following prototype:
+
+  def func(task, status, cb_data = None):
+      return 0
+
+  Upon entry to the callback, the taskHandle parameter
+  contains the handle to the task on which the event
+  occurred. The status parameter contains the status of the
+  task when the event occurred. If the status value is
+  negative, it indicates an error. If the status value is
+  zero, it indicates no error. If the status value is
+  positive, it indicates a warning. The callbackData parameter
+  contains the value you passed in the callbackData parameter
+  of this function.
+
+options - Use this parameter to set certain options. You can
+  combine flags with the bitwise-OR operator ('|') to set
+  multiple options. Pass a value of zero if no options need to
+  be set.
+  
+  'sync' - The callback function is called in the thread which
+    registered the event. In order for the callback to occur,
+    you must be processing messages. If you do not set this
+    flag, the callback function is called in a DAQmx thread by
+    default.
+    
+  Note: If you are receiving synchronous events faster than
+  you are processing them, then the user interface of your
+  application might become unresponsive.
+
+cb_data - A value that you want DAQmx to pass to the callback
+  function as the function data parameter. Do not pass the
+  address of a local variable or any other variable that might
+  not be valid when the function is executed.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.register_signal_event"></a>
+        <a name="register_signal_event"></a>
+        <div class="functionHeader">
+        
+        def register_signal_event(self, func, signal, options=0, cb_data=None):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L809" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Registers a callback function to receive an event when the
+specified hardware event occurs.
+
+When you stop a task explicitly any pending events are
+discarded. For example, if you call DAQmxStopTask then you do
+not receive any pending events.
+
+Parameters:
+
+func - The function that you want DAQmx to call when the event
+  occurs. The function you pass in this parameter must have the
+  following prototype:
+
+  def func(task, signalID, cb_data):
+    return 0
+
+  Upon entry to the callback, the task parameter contains the
+  handle to the task on which the event occurred. The signalID
+  parameter contains the value you passed in the signal
+  parameter of this function. The cb_data parameter contains
+  the value you passed in the cb_data parameter of this
+  function.
+
+signal - The signal for which you want to receive results:
+
+  'sample_clock' - Sample clock
+  'sample_complete' - Sample complete event
+  'change_detection' - Change detection event
+  'counter_output' - Counter output event
+
+options, cb_data - see register_done_event documentation.        </pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_timing_change_detection"></a>
+        <a name="configure_timing_change_detection"></a>
+        <div class="functionHeader">
+        
+        def configure_timing_change_detection(self, rising_edge_channel='', falling_edge_channel='', sample_mode='continuous', samples_per_channel=1000):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L879" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Configures the task to acquire samples on the rising and/or falling 
+edges of the lines or ports you specify.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_timing_handshaking"></a>
+        <a name="configure_timing_handshaking"></a>
+        <div class="functionHeader">
+        
+        def configure_timing_handshaking(self, sample_mode='continuous', samples_per_channel=1000):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L899" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Determines the number of digital samples to acquire or generate using 
+digital handshaking between the device and a peripheral device.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_timing_implicit"></a>
+        <a name="configure_timing_implicit"></a>
+        <div class="functionHeader">
+        
+        def configure_timing_implicit(self, sample_mode='continuous', samples_per_channel=1000):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L916" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Sets only the number of samples to acquire or generate without 
+specifying timing. Typically, you should use this function when the task 
+does not require sample timing, such as tasks that use counters for 
+buffered frequency measurement, buffered period measurement, or pulse train
+generation.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_timing_sample_clock"></a>
+        <a name="configure_timing_sample_clock"></a>
+        <div class="functionHeader">
+        
+        def configure_timing_sample_clock(self, source='OnboardClock', rate=1, active_edge='rising', sample_mode='continuous', samples_per_channel=1000):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L935" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Sets the source of the Sample Clock, the rate of the Sample
+Clock, and the number of samples to acquire or generate.
+
+Parameters:
+
+  source - The source terminal of the Sample Clock. To use the
+    internal clock of the device, use None or use 'OnboardClock'.
+
+  rate - The sampling rate in samples per second. If you use
+    an external source for the Sample Clock, set this value to
+    the maximum expected rate of that clock.
+
+  active_edge - Specifies on which edge of the clock to
+    acquire or generate samples:
+
+    'rising' - Acquire or generate samples on the rising edges
+      of the Sample Clock.
+
+    'falling' - Acquire or generate samples on the falling
+      edges of the Sample Clock.
+
+  sample_mode - Specifies whether the task acquires or
+    generates samples continuously or if it acquires or
+    generates a finite number of samples:
+    
+    'finite' - Acquire or generate a finite number of samples.
+    
+    'continuous' - Acquire or generate samples until you stop the task.
+
+    'hwtimed' - Acquire or generate samples continuously using
+      hardware timing without a buffer. Hardware timed single
+      point sample mode is supported only for the sample clock
+      and change detection timing types.
+
+  samples_per_channel - The number of samples to acquire or
+    generate for each channel in the task if sample_mode is
+    'finite'.  If sample_mode is 'continuous', NI-DAQmx uses
+    this value to determine the buffer size.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_timing_burst_handshaking_export_clock"></a>
+        <a name="configure_timing_burst_handshaking_export_clock"></a>
+        <div class="functionHeader">
+        
+        def configure_timing_burst_handshaking_export_clock(self, *args, **kws):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L994" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Configures when the DAQ device transfers data to a peripheral device, 
+using the DAQ device's onboard sample clock to control burst handshaking 
+timing.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_timing_burst_handshaking_import_clock"></a>
+        <a name="configure_timing_burst_handshaking_import_clock"></a>
+        <div class="functionHeader">
+        
+        def configure_timing_burst_handshaking_import_clock(self, *args, **kws):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1002" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Configures when the DAQ device transfers data to a peripheral device, 
+using an imported sample clock to control burst handshaking timing.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_trigger_analog_edge_start"></a>
+        <a name="configure_trigger_analog_edge_start"></a>
+        <div class="functionHeader">
+        
+        def configure_trigger_analog_edge_start(self, source, slope='rising', level=1.0):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1010" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Configures the task to start acquiring or generating samples
+when an analog signal crosses the level you specify.
+
+Parameters:
+
+source - The name of a channel or terminal where there is an
+  analog signal to use as the source of the trigger. For E
+  Series devices, if you use a channel name, the channel must
+  be the first channel in the task. The only terminal you can
+  use for E Series devices is PFI0.
+
+slope - Specifies on which slope of the signal to start
+  acquiring or generating samples when the signal crosses
+  trigger level:
+
+  'rising' - Trigger on the rising slope of the signal.
+  'falling' - Trigger on the falling slope of the signal.
+
+level - The threshold at which to start acquiring or
+  generating samples. Specify this value in the units of the
+  measurement or generation. Use trigger slope to specify on
+  which slope to trigger at this threshold.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_trigger_analog_window_start"></a>
+        <a name="configure_trigger_analog_window_start"></a>
+        <div class="functionHeader">
+        
+        def configure_trigger_analog_window_start(self, source, when='entering', top=1.0, bottom=-1.0):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1040" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Configures the task to start acquiring or generating samples
+when an analog signal enters or leaves a range you specify.
+
+Parameters:
+
+source - The name of a virtual channel or terminal where there
+  is an analog signal to use as the source of the trigger.
+
+  For E Series devices, if you use a virtual channel, it must
+  be the first channel in the task. The only terminal you can
+  use for E Series devices is PFI0.
+
+when - Specifies whether the task starts measuring or
+  generating samples when the signal enters the window or when
+  it leaves the window. Use windowBottom and windowTop to
+  specify the limits of the window.
+
+  'entering' - Trigger when the signal enters the window.
+  'leaving' - Trigger when the signal leaves the window.
+
+top - The upper limit of the window. Specify this value in the
+  units of the measurement or generation.
+
+bottom - The lower limit of the window. Specify this value in
+  the units of the measurement or generation.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_trigger_digital_edge_start"></a>
+        <a name="configure_trigger_digital_edge_start"></a>
+        <div class="functionHeader">
+        
+        def configure_trigger_digital_edge_start(self, source, edge='rising'):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1073" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Configures the task to start acquiring or generating samples
+on a rising or falling edge of a digital signal.
+
+Parameters:
+
+source - The name of a terminal where there is a digital
+  signal to use as the source of the trigger.
+
+edge - Specifies on which edge of a digital signal to start
+  acquiring or generating samples:
+
+  'rising' - Rising edge(s).
+  'falling' - Falling edge(s).</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_trigger_digital_pattern_start"></a>
+        <a name="configure_trigger_digital_pattern_start"></a>
+        <div class="functionHeader">
+        
+        def configure_trigger_digital_pattern_start(self, source, pattern, when='matches'):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1095" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Configures a task to start acquiring or generating samples
+when a digital pattern is matched.
+
+Parameters:
+
+source - Specifies the physical channels to use for pattern
+  matching. The order of the physical channels determines the
+  order of the pattern. If a port is included, the order of
+  the physical channels within the port is in ascending order.
+
+pattern - Specifies the digital pattern that must be met for
+  the trigger to occur.
+
+when - Specifies the conditions under which the trigger
+  occurs:
+
+  'matches' - Pattern matches.
+  'does_not_match' - Pattern does not match.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.configure_trigger_disable_start"></a>
+        <a name="configure_trigger_disable_start"></a>
+        <div class="functionHeader">
+        
+        def configure_trigger_disable_start(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1121" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Configures the task to start acquiring or generating samples immediately
+upon starting the task.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_buffer"></a>
+        <a name="set_buffer"></a>
+        <div class="functionHeader">
+        
+        def set_buffer(self, samples_per_channel):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1128" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Overrides the automatic I/O buffer allocation that NI-DAQmx performs.
+
+Parameters:
+
+samples_per_channel - The number of samples the buffer can
+  hold for each channel in the task. Zero indicates no buffer
+  should be allocated. Use a buffer size of 0 to perform a
+  hardware-timed operation without using a buffer.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_physical_channel_name"></a>
+        <a name="get_physical_channel_name"></a>
+        <div class="functionHeader">
+        
+        def get_physical_channel_name(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1165" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates the name of the physical channel upon which this virtual 
+channel is based.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_channel_type"></a>
+        <a name="get_channel_type"></a>
+        <div class="functionHeader">
+        
+        def get_channel_type(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1175" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates the type of the virtual channel.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.is_channel_global"></a>
+        <a name="is_channel_global"></a>
+        <div class="functionHeader">
+        
+        def is_channel_global(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1187" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates whether the channel is a global channel.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_buffer_size"></a>
+        <a name="get_buffer_size"></a>
+        <div class="functionHeader">
+        
+        def get_buffer_size(self, on_board=False):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1197" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Specifies the number of samples the I/O buffer can hold for each channel
+in the task. Zero indicates to allocate no buffer. Use a buffer size of 0 
+to perform a hardware-timed operation without using a buffer. Setting this 
+property overrides the automatic I/O buffer allocation that NI-DAQmx 
+performs.</p>
+If on_board is True then specifies in samples per channel the size of 
+the onboard I/O buffer of the device.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_buffer_size"></a>
+        <a name="set_buffer_size"></a>
+        <div class="functionHeader">
+        
+        def set_buffer_size(self, sz):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1217" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.reset_buffer_size"></a>
+        <a name="reset_buffer_size"></a>
+        <div class="functionHeader">
+        
+        def reset_buffer_size(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1221" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_max"></a>
+        <a name="get_max"></a>
+        <div class="functionHeader">
+        
+        def get_max(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1225" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Specifies the maximum value you expect to measure or generate.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_max"></a>
+        <a name="set_max"></a>
+        <div class="functionHeader">
+        
+        def set_max(self, channel_name, value):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1234" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.reset_max"></a>
+        <a name="reset_max"></a>
+        <div class="functionHeader">
+        
+        def reset_max(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1238" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_min"></a>
+        <a name="get_min"></a>
+        <div class="functionHeader">
+        
+        def get_min(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1242" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Specifies the minimum value you expect to measure or generate.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_min"></a>
+        <a name="set_min"></a>
+        <div class="functionHeader">
+        
+        def set_min(self, channel_name, value):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1251" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.reset_min"></a>
+        <a name="reset_min"></a>
+        <div class="functionHeader">
+        
+        def reset_min(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1255" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_high"></a>
+        <a name="get_high"></a>
+        <div class="functionHeader">
+        
+        def get_high(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1259" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_low"></a>
+        <a name="get_low"></a>
+        <div class="functionHeader">
+        
+        def get_low(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1265" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_gain"></a>
+        <a name="get_gain"></a>
+        <div class="functionHeader">
+        
+        def get_gain(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1271" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_measurment_type"></a>
+        <a name="get_measurment_type"></a>
+        <div class="functionHeader">
+        
+        def get_measurment_type(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1277" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_units"></a>
+        <a name="get_units"></a>
+        <div class="functionHeader">
+        
+        def get_units(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1304" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_auto_zero_mode"></a>
+        <a name="get_auto_zero_mode"></a>
+        <div class="functionHeader">
+        
+        def get_auto_zero_mode(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1317" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_data_transfer_mechanism"></a>
+        <a name="get_data_transfer_mechanism"></a>
+        <div class="functionHeader">
+        
+        def get_data_transfer_mechanism(self, channel_name):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1326" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_regeneration"></a>
+        <a name="get_regeneration"></a>
+        <div class="functionHeader">
+        
+        def get_regeneration(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1336" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Return True if regeneration (generating the same data more than once) is
+allowed.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_regeneration"></a>
+        <a name="set_regeneration"></a>
+        <div class="functionHeader">
+        
+        def set_regeneration(self, allow=True):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1349" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.reset_regeneration"></a>
+        <a name="reset_regeneration"></a>
+        <div class="functionHeader">
+        
+        def reset_regeneration(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1354" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_arm_start_trigger"></a>
+        <a name="set_arm_start_trigger"></a>
+        <div class="functionHeader">
+        
+        def set_arm_start_trigger(self, trigger_type='digital_edge'):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1357" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Specifies the type of trigger to use to arm the task for a
+Start Trigger. If you configure an Arm Start Trigger, the task
+does not respond to a Start Trigger until the device receives
+the Arm Start Trigger.
+
+Parameters:
+
+trigger_type:
+
+  'digital_edge' - Trigger on a rising or falling edge of a digital signal.
+  None - Disable the trigger.</pre>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_arm_start_trigger"></a>
+        <a name="get_arm_start_trigger"></a>
+        <div class="functionHeader">
+        
+        def get_arm_start_trigger(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1379" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.reset_arm_start_trigger"></a>
+        <a name="reset_arm_start_trigger"></a>
+        <div class="functionHeader">
+        
+        def reset_arm_start_trigger(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1388" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_arm_start_trigger_source"></a>
+        <a name="set_arm_start_trigger_source"></a>
+        <div class="functionHeader">
+        
+        def set_arm_start_trigger_source(self, source):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1391" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Specifies the name of a terminal where there is a digital signal to use 
+as the source of the Arm Start Trigger.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_arm_start_trigger_edge"></a>
+        <a name="set_arm_start_trigger_edge"></a>
+        <div class="functionHeader">
+        
+        def set_arm_start_trigger_edge(self, edge='rising'):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1398" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Specifies on which edge of a digital signal to arm the task for a Start 
+Trigger.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_pause_trigger"></a>
+        <a name="set_pause_trigger"></a>
+        <div class="functionHeader">
+        
+        def set_pause_trigger(self, trigger_type=None):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1409" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_pause_trigger_source"></a>
+        <a name="set_pause_trigger_source"></a>
+        <div class="functionHeader">
+        
+        def set_pause_trigger_source(self, source):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1419" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Specifies the name of a virtual channel or terminal where there is an 
+analog signal to use as the source of the trigger.</p>
+For E Series devices, if you use a channel name, the channel must be the
+only channel in the task. The only terminal you can use for E Series 
+devices is PFI0.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.set_pause_trigger_when"></a>
+        <a name="set_pause_trigger_when"></a>
+        <div class="functionHeader">
+        
+        def set_pause_trigger_when(self, when=None):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1436" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div><p>Specifies whether the task pauses above or below the threshold you 
+specify with Level.</p>
+<p>Specifies whether the task pauses while the trigger signal is inside or 
+outside the window you specify with Bottom and Top.</p>
+Specifies whether the task pauses while the signal is high or low.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_info_str"></a>
+        <a name="get_info_str"></a>
+        <div class="functionHeader">
+        
+        def get_info_str(self, global_info=False):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1460" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div class="undocumented">Undocumented</div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_read_current_position"></a>
+        <a name="get_read_current_position"></a>
+        <div class="functionHeader">
+        
+        def get_read_current_position(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1510" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates in samples per channel the current position in the buffer.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_samples_per_channel_available"></a>
+        <a name="get_samples_per_channel_available"></a>
+        <div class="functionHeader">
+        
+        def get_samples_per_channel_available(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1519" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates the number of samples available to read per channel. This 
+value is the same for all channels in the task.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.get_samples_per_channel_acquired"></a>
+        <a name="get_samples_per_channel_acquired"></a>
+        <div class="functionHeader">
+        
+        def get_samples_per_channel_acquired(self):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1528" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <div>Indicates the total number of samples acquired by each channel. NI-DAQmx
+returns a single value because this value is the same for all channels.
+<table class="fieldTable"></table></div>
+        </div>
+      </div><div class="function">
+        <a name="nidaqmx.libnidaqmx.Task.wait_until_done"></a>
+        <a name="wait_until_done"></a>
+        <div class="functionHeader">
+        
+        def wait_until_done(self, timeout=-1):
+        <a href="http://code.google.com/p/pylibnidaqmx/source/browse/trunk/nidaqmx/libnidaqmx.py#L1538" class="functionSourceLink">
+        
+        (source)
+      </a>
+      </div>
+        <div class="functionBody">
+          
+          <pre>Waits for the measurement or generation to complete. Use this
+function to ensure that the specified operation is complete
+before you stop the task.
+
+Parameters:
+
+timeout - The maximum amount of time, in seconds, to wait for
+  the measurement or generation to complete. The function
+  returns an error if the time elapses before the measurement or
+  generation is complete.
+
+  A value of -1 (DAQmx_Val_WaitInfinitely) means to wait
+  indefinitely.
+
+  If you set timeout to 0, the function checks once and
+  returns an error if the measurement or generation is not
+  done.</pre>
+        </div>
+      </div>
+    
+    <address>
+      <a href="index.html">API Documentation</a> for <a href="http://code.google.com/p/pylibnidaqmx/">PyLibNIDAQmx</a>, generated by <a href="http://codespeak.net/~mwh/pydoctor/">pydoctor</a> at 2009-11-11 13:03:58.
+    </address>
+  </body>
+</html>
