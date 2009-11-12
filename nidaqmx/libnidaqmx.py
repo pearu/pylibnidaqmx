@@ -105,8 +105,6 @@ if lib is None:
 
 libnidaqmx = ctypes.cdll.LoadLibrary(lib)
 
-
-
 int8 = ctypes.c_int8
 uInt8 = ctypes.c_uint8
 int16 = ctypes.c_int16
@@ -206,7 +204,14 @@ def CHK(return_code, funcname):
 def CALL(name, *args):
     funcname = 'DAQmx' + name
     func = getattr(libnidaqmx, funcname)
-    r = func(*args)
+    new_args = []
+    for a in args:
+        if isinstance (a, unicode):
+            print name, 'argument',a, 'is unicode'
+            new_args.append (str (a))
+        else:
+            new_args.append (a)
+    r = func(*new_args)
     r = CHK(r, funcname)
     return r
 
@@ -517,6 +522,7 @@ class Task(uInt32):
         loop after you finish with the task to avoid allocating
         unnecessary memory.
         """
+        name = str(name)
         uInt32.__init__(self, 0)
         CALL('CreateTask', name, ctypes.byref(self))
         buf_size = 1000
@@ -599,8 +605,9 @@ class Task(uInt32):
 
     def stop (self):
         """
-        Stops the task and returns it to the state it was in before you called StartTask
-        or called an NI-DAQmx Write function with autoStart set to TRUE.
+        Stops the task and returns it to the state it was in before
+        you called StartTask or called an NI-DAQmx Write function with
+        autoStart set to TRUE.
 
         If you do not call StartTask and StopTask when you call
         NI-DAQmx Read functions or NI-DAQmx Write functions multiple
@@ -985,6 +992,7 @@ class Task(uInt32):
             'finite'.  If sample_mode is 'continuous', NI-DAQmx uses
             this value to determine the buffer size.
         """
+        source = str(source)
         active_edge_map = dict (rising = DAQmx_Val_Rising,
                                 falling = DAQmx_Val_Falling)
         sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
@@ -1072,6 +1080,7 @@ class Task(uInt32):
         bottom - The lower limit of the window. Specify this value in
           the units of the measurement or generation.
         """
+        source = str(source)
         when_map = dict (entering=DAQmx_Val_EnteringWin,
                          leaving=DAQmx_Val_LeavingWin)
         when_val = self._get_map_value('when', when_map, when)
@@ -1094,6 +1103,7 @@ class Task(uInt32):
           'falling' - Falling edge(s).
 
         """
+        source = str(source)
         edge_map = dict (rising=DAQmx_Val_Rising,
                          falling=DAQmx_Val_Falling)
         edge_val = self._get_map_value ('edge', edge_map, edge)
@@ -1120,6 +1130,8 @@ class Task(uInt32):
           'matches' - Pattern matches.
           'does_not_match' - Pattern does not match.
         """
+        source = str(source)
+        pattern = str(pattern)
         when_map = dict(matches = DAQmx_Val_PatternMatches,
                         does_not_match = DAQmx_Val_PatternDoesNotMatch)
         when_val = self._get_map_value('when', when_map, when)
@@ -1174,6 +1186,7 @@ class Task(uInt32):
         Indicates the name of the physical channel upon which this
         virtual channel is based.
         """
+        channel_name = str (channel_name)
         buf_size = 1000
         buf = ctypes.create_string_buffer('\000' * buf_size)
         r = CALL('GetPhysicalChanName', self, channel_name, ctypes.byref(buf), uInt32(buf_size))
@@ -1183,6 +1196,7 @@ class Task(uInt32):
         """
         Indicates the type of the virtual channel.
         """
+        channel_name = str (channel_name)
         t = int32(0)
         CALL('GetChanType', self, channel_name, ctypes.byref(t))
         channel_type_map = {DAQmx_Val_AI:'AI', DAQmx_Val_AO:'AO',
@@ -1195,6 +1209,7 @@ class Task(uInt32):
         """
         Indicates whether the channel is a global channel.
         """
+        channel_name = str (channel_name)
         d = bool32(0)
         CALL('GetChanIsGlobal', self, channel_name, ctypes.byref (d))
         return bool(d.value)
@@ -1233,16 +1248,19 @@ class Task(uInt32):
         """
         Specifies the maximum value you expect to measure or generate.
         """
+        channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
         CALL ('Get%sMax' % (channel_type), self, channel_name, ctypes.byref(d))
         return d.value
 
     def set_max(self, channel_name, value):
+        channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Set%sMax' % (channel_type), self, channel_name, float64 (value))==0
 
     def reset_max(self, channel_name):
+        channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Reset%sMax' % (channel_type), self, channel_name)==0
 
@@ -1250,38 +1268,45 @@ class Task(uInt32):
         """
         Specifies the minimum value you expect to measure or generate.
         """
+        channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
         CALL ('Get%sMin' % (channel_type), self, channel_name, ctypes.byref(d))
         return d.value
 
     def set_min(self, channel_name, value):
+        channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Set%sMin' % (channel_type), self, channel_name, float64 (value))==0
 
     def reset_min(self, channel_name):
+        channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Reset%sMin' % (channel_type), self, channel_name)==0
 
     def get_high(self, channel_name):
+        channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
         CALL ('Get%sRngHigh' % (channel_type), self, channel_name, ctypes.byref(d))
         return d.value
 
     def get_low(self, channel_name):
+        channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
         CALL ('Get%sRngLow' % (channel_type), self, channel_name, ctypes.byref(d))
         return d.value
 
     def get_gain (self, channel_name):
+        channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
         CALL ('Get%sGain' % (channel_type), self, channel_name, ctypes.byref(d))
         return d.value
 
     def get_measurment_type(self, channel_name):
+        channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
         if channel_type=='AI':
@@ -1309,6 +1334,7 @@ class Task(uInt32):
         return measurment_type_map[d.value]
 
     def get_units (self, channel_name):
+        channel_name = str(channel_name)
         mt = self.get_measurment_type(channel_name)
         channel_type = self.channel_type
         if mt=='voltage':
@@ -1322,6 +1348,7 @@ class Task(uInt32):
         raise NotImplementedError(`channel_name, mt`)
 
     def get_auto_zero_mode (self, channel_name):
+        channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
         r = CALL('Get%sAutoZeroMode' % (channel_type), self, channel_name, ctypes.byref (d))
@@ -1331,6 +1358,7 @@ class Task(uInt32):
         return auto_zero_mode_map[d.value]
 
     def get_data_transfer_mechanism(self, channel_name):
+        channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
         r = CALL('Get%sDataXferMech' % (channel_type), self, channel_name, ctypes.byref (d))
@@ -1400,6 +1428,7 @@ class Task(uInt32):
         Specifies the name of a terminal where there is a digital
         signal to use as the source of the Arm Start Trigger.
         """
+        source = str (source)
         return CALL ('SetDigEdgeArmStartTrigSrc', self, source)==0
 
     def set_arm_start_trigger_edge (self, edge='rising'):
@@ -1432,6 +1461,7 @@ class Task(uInt32):
         must be the only channel in the task. The only terminal you
         can use for E Series devices is PFI0.
         """
+        source = str(source)
         if self._pause_trigger_type is None:
             raise TypeError('pause trigger type is not specified')
         routine_map = dict(digital_level = 'SetDigLvlPauseTrigSrc',
@@ -1626,6 +1656,8 @@ class AnalogInputTask(Task):
 
         Returns True on success.
         """
+        phys_channel = str(phys_channel)
+        channel_name = str(channel_name)
         terminal_map = dict (default = DAQmx_Val_Cfg_Default,
                              rse = DAQmx_Val_RSE,
                              nrse = DAQmx_Val_NRSE,
@@ -1741,6 +1773,10 @@ class AnalogOutputTask (Task):
 
         See also AnalogInputTask.create_voltage_channel method.
         """
+        phys_channel = str(phys_channel)
+        channel_name = str(channel_name)
+        if custom_scale_name is not None:
+            custom_scale_name = str(custom_scale_name)
         self.set_channel_type('AO')
         units_map = dict (volts = DAQmx_Val_Volts,
                           custom = DAQmx_Val_FromCustomScale)
@@ -1817,12 +1853,19 @@ class AnalogOutputTask (Task):
         number_of_channels = self.get_number_of_channels()
 
         if len(data.shape)==1:
-            assert number_of_channels == 1, `number_of_channels, data.shape`
-            samples_per_channel = data.shape[0]
-            if layout=='group_by_scan_number':
-                data = data.reshape ((samples_per_channel, 1))
+            if number_of_channels==1:
+                assert number_of_channels == 1, `number_of_channels, data.shape`
+                samples_per_channel = data.shape[0]
+                if layout=='group_by_scan_number':
+                    data = data.reshape ((samples_per_channel, 1))
+                else:
+                    data = data.reshape ((1, samples_per_channel))
             else:
-                data = data.reshape ((1, samples_per_channel))
+                samples_per_channel = data.size / number_of_channels
+                if layout=='group_by_scan_number':
+                    data = data.reshape ((samples_per_channel, number_of_channels))
+                else:
+                    data = data.reshape ((number_of_channels, samples_per_channel))
         else:
             assert len (data.shape)==2,`data.shape`
             if layout=='group_by_scan_number':
@@ -1872,6 +1915,7 @@ class DigitalInputTask(Task):
           'per_line' - One channel for each line
           'for_all_lines' - One channel for all lines
         """
+        lines = str (lines)
         grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
                             for_all_lines = DAQmx_Val_ChanForAllLines)
         grouping_val = self._get_map_value('grouping', grouping_map, grouping)
@@ -2001,6 +2045,7 @@ class DigitalOutputTask(Task):
           'per_line' - One channel for each line
           'for_all_lines' - One channel for all lines
         """
+        lines = str (lines)
         grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
                             for_all_lines = DAQmx_Val_ChanForAllLines)
         grouping_val = self._get_map_value('grouping', grouping_map, grouping)
@@ -2138,6 +2183,8 @@ class CounterInputTask(Task):
             terminal.
 
         """
+        counter = str(counter)
+        name = str(name)
         edge_map = dict (rising=DAQmx_Val_Rising, falling=DAQmx_Val_Falling)
         direction_map = dict (up=DAQmx_Val_CountUp, down=DAQmx_Val_CountDown,
                               ext=DAQmx_Val_ExtControlled)
@@ -2201,6 +2248,8 @@ class CounterOutputTask(Task):
           to determine pulse width and the interval between pulses.
 
         """
+        counter = str(counter)
+        name = str(name)
         units_map = dict (hertz = DAQmx_Val_Hz)
         idle_state_map = dict (low=DAQmx_Val_Low, high=DAQmx_Val_High)
         units_val = self._get_map_value('units', units_map, units)
@@ -2256,6 +2305,8 @@ class CounterOutputTask(Task):
         high_ticks - The number of timebase ticks that the pulse is
           high.
         """
+        counter = str(counter)
+        name = str(name)
         idle_state_map = dict (low=DAQmx_Val_Low, high=DAQmx_Val_High)
         idle_state_val = self._get_map_value('idle_state', idle_state_map, idle_state)
         return CALL('CreateCOPulseChanTicks', self, counter, name, source, idle_state_val,
@@ -2307,6 +2358,8 @@ class CounterOutputTask(Task):
 
         high_time - The amount of time the pulse is high, in seconds.
         """
+        counter = str(counter)
+        name = str(name)
         units_map = dict (seconds = DAQmx_Val_Seconds)
         idle_state_map = dict (low=DAQmx_Val_Low, high=DAQmx_Val_High)
         units_val = self._get_map_value('units', units_map, units)
@@ -2318,6 +2371,8 @@ class CounterOutputTask(Task):
         """
         Specifies on which terminal to generate pulses.
         """
+        channel = str(channel)
+        terminal = str(terminal)
         return CALL ('SetCOPulseTerm', self, channel, terminal)==0
 
 DoneEventCallback_map = dict(AI=ctypes.CFUNCTYPE (int32, AnalogInputTask, int32, void_p),
