@@ -1857,9 +1857,9 @@ class AnalogOutputTask (Task):
                 assert number_of_channels == 1, `number_of_channels, data.shape`
                 samples_per_channel = data.shape[0]
                 if layout=='group_by_scan_number':
-                    data = data.reshape ((samples_per_channel, 1))
+                    data = data.reshape((samples_per_channel, 1))
                 else:
-                    data = data.reshape ((1, samples_per_channel))
+                    data = data.reshape((1, samples_per_channel))
             else:
                 samples_per_channel = data.size / number_of_channels
                 if layout=='group_by_scan_number':

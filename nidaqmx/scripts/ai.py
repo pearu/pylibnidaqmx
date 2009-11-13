@@ -8,7 +8,7 @@
 from __future__ import division
 import os
 import sys
-
+import time
 ### START UPDATE SYS.PATH ###
 ### END UPDATE SYS.PATH ###
 
@@ -22,6 +22,9 @@ from nidaqmx.optparse_options import get_method_arguments, set_ai_options
 
 def runner (parser, options, args):
     task = AnalogInputTask()
+
+    print 'Created AnalogInputTask %s (task.value=%s)' % (task, task.value)
+
     args, kws = get_method_arguments('create_voltage_channel', options)
     print 'create_voltage_channel', kws
     task.create_voltage_channel (**kws)
@@ -37,40 +40,34 @@ def runner (parser, options, args):
     task.configure_timing_sample_clock(**kws)
     print 'task'
     task.start()
-    args, kws = get_method_arguments('ai_read', options)
+    args, read_kws = get_method_arguments('ai_read', options)
+    kws = read_kws
     fill_mode = kws.get ('fill_mode', 'group_by_scan_number')
-    print 'read', kws
-    try:
-        data = task.read (**kws)
-    except KeyboardInterrupt:
-        print 'Caught Ctrl-C.'
-        del task
+    print 'read', read_kws
+
+    if options.ai_task=='show':
+        from nidaqmx.wxagg_plot import animated_plot
+        start_time = time.time()
+        def func(task=task):
+            current_time = time.time()
+            data = task.read(**read_kws)
+            if fill_mode == 'group_by_scan_number':
+                data = data.T
+            tm = np.arange(data.shape[-1], dtype=float)/clock_rate + (current_time - start_time)
+            return tm, data, channels
+        try:
+            animated_plot(func, 1000*(task.samples_per_channel/clock_rate+0.1))
+        finally:
+            del task
         return
-    del task
-
-    if fill_mode == 'group_by_scan_number':
-        data = data.T
-
-    if options.ai_task=='print':
+    elif options.ai_task=='print':
+        try:
+            data = task.read (**kws)
+        finally:
+            del task
         print data
-    elif options.ai_task=='plot':
-        from matplotlib import pyplot as plt
-        def on_keypressed(event):
-            key = event.key
-            if key=='q':
-                sys.exit(0)
-        fig = plt.figure(1, figsize=(12,6))
-        fig.canvas.mpl_connect('key_press_event', on_keypressed)
-        tm = np.arange(data.shape[-1], dtype=float)/clock_rate
-        for index in range(len(channels)):
-            plt.plot(tm, data[index])
-        plt.legend(channels)
-        plt.xlabel('Seconds')
-        plt.ylabel('Volts')
-        plt.title('nof samples=%s' % (len(tm)))
-        plt.draw()
-        plt.show()
     else:
+        del task
         raise NotImplementedError (`options.ai_task`)
 
 def main ():

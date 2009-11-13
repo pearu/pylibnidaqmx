@@ -35,7 +35,7 @@ Description:
     get_ai_read_options_group (parser, parser)
     parser.add_option('--ai-task',
                       default = 'print',
-                      choices = ['print', 'plot'])
+                      choices = ['print', 'plot', 'show'])
     parser.add_option_group (get_configure_timing_options_group (parser))
 
 def set_ao_options (parser):
