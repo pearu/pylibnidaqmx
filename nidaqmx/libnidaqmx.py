@@ -1880,7 +1880,20 @@ class AnalogOutputTask (Task):
 
         return samples_written.value
 
-class DigitalInputTask(Task):
+class DigitalTask (Task):
+
+    def get_number_of_lines(self, channel):
+        """
+        Indicates the number of digital lines in the channel.
+        """
+        channel_type = self.channel_type
+        assert channel_type in ['DI', 'DO'],`channel_type, channel`
+        channel = str (channel)
+        d = uInt32(0)
+        CALL('Get%sNumLines' % (channel_type), self, channel, ctypes.byref(d))
+        return d.value
+
+class DigitalInputTask(DigitalTask):
 
     channel_type = 'DI'
 
@@ -1919,6 +1932,7 @@ class DigitalInputTask(Task):
         grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
                             for_all_lines = DAQmx_Val_ChanForAllLines)
         grouping_val = self._get_map_value('grouping', grouping_map, grouping)
+        self.one_channel_for_all_lines =  grouping_val==DAQmx_Val_ChanForAllLines
         return CALL('CreateDIChan', self, lines, name, grouping_val)==0
 
     def read(self, samples_per_channel=None, timeout=10.0, fill_mode='group_by_scan_number'):
@@ -1984,24 +1998,32 @@ class DigitalInputTask(Task):
                              group_by_scan_number = DAQmx_Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
-        if samples_per_channel is None:
+        if samples_per_channel in [None,-1]:
             samples_per_channel = self.get_samples_per_channel_available()
 
+        if self.one_channel_for_all_lines:
+            nof_lines = []
+            for channel in self.get_names_of_channels():
+                nof_lines.append(self.get_number_of_lines (channel))
+            c = int (max (nof_lines))
+            dtype = getattr(np, 'uint%s'%(8 * c))
+        else:
+            c = 1
+            dtype = np.uint8
         number_of_channels = self.get_number_of_channels()
         if fill_mode=='group_by_scan_number':
-            data = np.zeros((samples_per_channel, number_of_channels),dtype=np.uint8)
+            data = np.zeros((samples_per_channel, number_of_channels),dtype=dtype)
         else:
-            data = np.zeros((number_of_channels, samples_per_channel),dtype=np.uint8)
+            data = np.zeros((number_of_channels, samples_per_channel),dtype=dtype)
 
         samples_read = int32(0)
         bytes_per_sample = int32(0)
 
         CALL ('ReadDigitalLines', self, samples_per_channel, float64 (timeout),
-              fill_mode_val, data.ctypes.data, uInt32 (data.size), 
+              fill_mode_val, data.ctypes.data, uInt32 (data.size * c), 
               ctypes.byref (samples_read), ctypes.byref (bytes_per_sample),
               None
               )
-
         if samples_read.value < samples_per_channel:
             if fill_mode=='group_by_scan_number':
                 return data[:samples_read.value], bytes_per_sample.value
@@ -2010,7 +2032,7 @@ class DigitalInputTask(Task):
         return data, bytes_per_sample.value
 
 
-class DigitalOutputTask(Task):
+class DigitalOutputTask(DigitalTask):
 
     channel_type = 'DO'
 

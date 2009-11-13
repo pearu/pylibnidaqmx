@@ -12,6 +12,31 @@ def get_method_arguments(methodname, options, kws=None):
             kws[name[len(methodname)+1:]] = value
     return tuple(args), kws
 
+def set_di_options (parser):
+    if os.name == 'posix':
+        parser.run_methods = ['subcommand']
+
+    import nidaqmx
+    from nidaqmx.libnidaqmx import make_pattern
+    parser.set_usage ('''\
+%prog [options]
+
+Description:
+  %prog provides graphical interface to NIDAQmx digital input task.
+''')
+    phys_channel_choices = []
+    for dev in nidaqmx.DigitalInputTask.get_system_devices():
+        phys_channel_choices.extend(dev.get_digital_input_lines())
+    pattern = make_pattern(phys_channel_choices)
+    parser.add_option ('--create-channel-lines',
+                       type = 'string',
+                       help = 'Specify digital lines as a pattern ['+pattern+']. Default: %default.')
+    get_digital_io_options_group (parser, parser)
+    get_di_read_options_group (parser, parser)
+    parser.add_option('--di-task',
+                      default = 'print',
+                      choices = ['print'])
+
 def set_ai_options (parser):
     if os.name == 'posix':
         parser.run_methods = ['subcommand']
@@ -111,6 +136,18 @@ def get_analog_io_options_group (parser, group=None, skip_terminal=False):
 
     return group
 
+def get_digital_io_options_group (parser, group=None):
+    if group is None:
+        group = OptionGroup (parser, 'Digital I/O options')
+
+    group.add_option ('--create-channel-name',
+                      type = 'string')
+    group.add_option ('--create-channel-grouping',
+                      choices = ['per_line', 'for_all_lines']
+                      )
+    return group
+
+
 def get_ai_read_options_group(parser, group=None):
     assert group is not None, `group`
     group.add_option ('--ai-read-samples-per-channel',
@@ -119,6 +156,18 @@ def get_ai_read_options_group(parser, group=None):
                       default = 10.0,
                       type = 'float')
     group.add_option ('--ai-read-fill-mode',
+                      choices = ['group_by_scan_number','group_by_channel'])
+
+    return group
+
+def get_di_read_options_group(parser, group=None):
+    assert group is not None, `group`
+    group.add_option ('--di-read-samples-per-channel',
+                      type = 'int')
+    group.add_option ('--di-read-timeout',
+                      default = 10.0,
+                      type = 'float')
+    group.add_option ('--di-read-fill-mode',
                       choices = ['group_by_scan_number','group_by_channel'])
 
     return group
