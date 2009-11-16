@@ -37,6 +37,32 @@ Description:
                       default = 'print',
                       choices = ['print'])
 
+def set_do_options (parser):
+    if os.name == 'posix':
+        parser.run_methods = ['subcommand']
+
+    import nidaqmx
+    from nidaqmx.libnidaqmx import make_pattern
+    parser.set_usage ('''\
+%prog [options]
+
+Description:
+  %prog provides graphical interface to NIDAQmx digital output task.
+''')
+    phys_channel_choices = []
+    for dev in nidaqmx.DigitalOutputTask.get_system_devices():
+        phys_channel_choices.extend(dev.get_digital_output_lines())
+    pattern = make_pattern(phys_channel_choices)
+    parser.add_option ('--create-channel-lines',
+                       type = 'string',
+                       help = 'Specify digital lines as a pattern ['+pattern+']. Default: %default.')
+    get_digital_io_options_group (parser, parser)
+    get_do_write_options_group (parser, parser)
+    parser.add_option('--do-task', default = 'scalar1', choices = ['scalar1', 'scalar0', 'ten', 'tenfive'])
+    parser.add_option ('--do-task-duration',
+                       type = 'float',
+                       default = 60.0)
+
 def set_ai_options (parser):
     if os.name == 'posix':
         parser.run_methods = ['subcommand']
@@ -180,6 +206,18 @@ def get_ao_write_options_group(parser, group=None):
                       default = 10.0,
                       type = 'float')
     group.add_option ('--ao-write-layout',
+                      choices = ['group_by_scan_number','group_by_channel'])
+
+    return group
+
+def get_do_write_options_group(parser, group=None):
+    assert group is not None, `group`
+    group.add_option ('--do-write-auto-start', action='store_true')
+    group.add_option ('--no-do-write-auto-start', dest='do_write_auto_start', action='store_false')
+    group.add_option ('--do-write-timeout',
+                      default = 10.0,
+                      type = 'float')
+    group.add_option ('--do-write-layout',
                       choices = ['group_by_scan_number','group_by_channel'])
 
     return group

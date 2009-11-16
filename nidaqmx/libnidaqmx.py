@@ -1854,7 +1854,6 @@ class AnalogOutputTask (Task):
 
         if len(data.shape)==1:
             if number_of_channels==1:
-                assert number_of_channels == 1, `number_of_channels, data.shape`
                 samples_per_channel = data.shape[0]
                 if layout=='group_by_scan_number':
                     data = data.reshape((samples_per_channel, 1))
@@ -2071,6 +2070,7 @@ class DigitalOutputTask(DigitalTask):
         grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
                             for_all_lines = DAQmx_Val_ChanForAllLines)
         grouping_val = self._get_map_value('grouping', grouping_map, grouping)
+        self.one_channel_for_all_lines =  grouping_val==DAQmx_Val_ChanForAllLines
         return CALL('CreateDOChan', self, lines, name, grouping_val)==0
 
     def write(self, data, 
@@ -2128,12 +2128,18 @@ class DigitalOutputTask(DigitalTask):
             data = np.asarray(data, dtype = np.uint8)
 
         if len(data.shape)==1:
-            assert number_of_channels == 1, `number_of_channels, data.shape`
-            samples_per_channel = data.shape[0]
-            if layout=='group_by_scan_number':
-                data = data.reshape((samples_per_channel, 1))
+            if number_of_channels == 1:
+                samples_per_channel = data.shape[0]
+                if layout=='group_by_scan_number':
+                    data = data.reshape((samples_per_channel, 1))
+                else:
+                    data = data.reshape((1, samples_per_channel))
             else:
-                data = data.reshape((1, samples_per_channel))
+                samples_per_channel = data.size / number_of_channels
+                if layout=='group_by_scan_number':
+                    data = data.reshape ((samples_per_channel, number_of_channels))
+                else:
+                    data = data.reshape ((number_of_channels, samples_per_channel))
         else:
             assert len (data.shape)==2,`data.shape`
             if layout=='group_by_scan_number':

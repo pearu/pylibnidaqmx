@@ -53,7 +53,7 @@ def runner (parser, options, args):
             data = data.T
     else:
         raise NotImplementedError (`options.ai_task`)
-    print 'samples available/written per channel= %s/%s ' % (data.size/len(channels), task.write(data.ravel(), **kws))
+    print 'samples available/written per channel= %s/%s ' % (data.size//len(channels), task.write(data.ravel(), **kws))
 
     if not options.ao_write_auto_start:
         task.start()
