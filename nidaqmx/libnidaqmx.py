@@ -32,7 +32,11 @@ Task methods:
   configure_timing_change_detection(rising_edge_channel=,falling_edge_channel=,sample_mode=,samples_per_channel=)
   configure_timing_sample_clock(source=OnboardClock,rate=1,
     active_edge=rising|falling,sample_mode=finite|continuous|hwtimed,samples_per_channel=)
-  
+
+  get_sample_clock_max_rate() - analog input only
+  get_ai_convert_max_rate()
+  set/get/reset_sample_clock_rate(value//)
+
   configure_trigger_analog_edge_start(source, slope=rising|falling,level=)
   configure_trigger_analog_window_start(source, when=entering|leaving,top=,bottom=)
   configure_trigger_digital_edge_start(source, edge=rising|falling)
@@ -179,7 +183,7 @@ for name, value in d.items():
     if name.startswith ('_'): continue
     exec '%s = %r' % (name, value)
 
-def CHK(return_code, funcname):
+def CHK(return_code, funcname, *args):
     if return_code==0: # call was succesful
         pass
     else:
@@ -188,17 +192,17 @@ def CHK(return_code, funcname):
         r = libnidaqmx.DAQmxGetErrorString(return_code, ctypes.byref(buf), buf_size)
         if r:
             if return_code < 0:
-                raise RuntimeError('%s failed with error %s=%d: %s'%\
-                                       (funcname, error_map[return_code], return_code, repr(buf.value)))
+                raise RuntimeError('%s%s failed with error %s=%d: %s'%\
+                                       (funcname, args, error_map[return_code], return_code, repr(buf.value)))
             else:
                 warning = error_map.get(return_code, return_code)
-                sys.stderr.write('%s warning: %s\n' % (funcname, warning))                
+                sys.stderr.write('%s%s warning: %s\n' % (funcname, args, warning))                
         else:
             text = '\n  '.join(['']+textwrap.wrap(buf.value, 80)+['-'*10])
             if return_code < 0:
-                raise RuntimeError('%s:%s' % (funcname, text))
+                raise RuntimeError('%s%s:%s' % (funcname,args, text))
             else:
-                sys.stderr.write('%s warning:%s\n' % (funcname, text))
+                sys.stderr.write('%s%s warning:%s\n' % (funcname, args, text))
     return return_code
 
 def CALL(name, *args):
@@ -212,16 +216,18 @@ def CALL(name, *args):
         else:
             new_args.append (a)
     r = func(*new_args)
-    r = CHK(r, funcname)
+    r = CHK(r, funcname, *new_args)
     return r
 
-def make_pattern(paths):
+def make_pattern(paths, main=True):
     """
     See _test_make_pattern
     """
     patterns = {}
     flag = False
     for path in paths:
+        if path.startswith('/'):
+            path = path[1:]
         splitted = path.split('/',1)
         if len(splitted)==1:
             if patterns:
@@ -241,7 +247,7 @@ def make_pattern(paths):
         map(l.add, splitted[1:])
     r = []
     for prefix in sorted(patterns.keys()):
-        lst = list (patterns[prefix])
+        lst = list(patterns[prefix])
         if len (lst)==1:
             if flag:
                 r.append(prefix + lst[0])
@@ -249,7 +255,13 @@ def make_pattern(paths):
                 r.append(prefix +'/'+ lst[0])
         elif lst:
             if prefix:
-                subpattern = make_pattern (lst)
+                subpattern = make_pattern(lst, main=False)
+                if subpattern is None:
+                    if main:
+                        return ','.join(paths)
+                        raise NotImplementedError (`lst, prefix, paths, patterns`)
+                    else:
+                        return None
                 if ',' in subpattern:
                     subpattern = '{%s}' % (subpattern)
                 if flag:
@@ -258,11 +270,14 @@ def make_pattern(paths):
                     r.append(prefix+'/'+subpattern)
             else:
                 slst = sorted(map(int,lst))
-                assert slst == range(slst[0], slst[-1]+1),`slst, lst`
+                #assert slst == range(slst[0], slst[-1]+1),`slst, lst`
                 if len (slst)==1:
                     r.append(str (slst[0]))
-                else:
+                elif slst == range (slst[0], slst[-1]+1):
                     r.append('%s:%s' % (slst[0],slst[-1]))
+                else:
+                    return None
+                    raise NotImplementedError(`slst`,`prefix`,`paths`)
         else:
             r.append(prefix)
     return ','.join(r)
@@ -1243,6 +1258,66 @@ class Task(uInt32):
     def reset_buffer_size(self):
         channel_io_type = self.channel_io_type
         return CALL('ResetBuf%sBufSize' % (channel_io_type.title()), self) == 0
+
+    def get_sample_clock_rate(self):
+        """
+        Specifies the sampling rate in samples per channel per
+        second. If you use an external source for the Sample Clock,
+        set this input to the maximum expected rate of that clock.
+        """
+        d = float64(0)
+        CALL ('GetSampClkRate', self, ctypes.byref(d))
+        return d.value
+
+    def set_sample_clock_rate(self, value):
+        return CALL ('SetSampClkRate', self, float64 (value))==0
+
+    def reset_sample_clock_rate(self):
+        return CALL ('ResetSampClkRate', self)==0
+
+    def get_ai_convert_max_rate(self):
+        """
+        Indicates the maximum convert rate supported by the task,
+        given the current devices and channel count.
+
+        This rate is generally faster than the default AI Convert
+        Clock rate selected by NI-DAQmx, because NI-DAQmx adds in an
+        additional 10 microseconds per channel settling time to
+        compensate for most potential system settling constraints.
+
+        For single channel tasks, the maximum AI Convert Clock rate is
+        the maximum rate of the ADC. For multiple channel tasks, the
+        maximum AI Convert Clock rate is the maximum convert rate of
+        the analog front end. Sig
+        """
+        d = float64(0)
+        CALL ('GetAIConvMaxRate', self, ctypes.byref(d))
+        return d.value
+
+    def get_sample_clock_max_rate (self):
+        """
+        Indicates the maximum Sample Clock rate supported by the task,
+        based on other timing settings. For output tasks, the maximum
+        Sample Clock rate is the maximum rate of the DAC. For input
+        tasks, NI-DAQmx calculates the maximum sampling rate
+        differently for multiplexed devices than simultaneous sampling
+        devices.
+
+        For multiplexed devices, NI-DAQmx calculates the maximum
+        sample clock rate based on the maximum AI Convert Clock rate
+        unless you set Rate. If you set that property, NI-DAQmx
+        calculates the maximum sample clock rate based on that
+        setting. Use Maximum Rate to query the maximum AI Convert
+        Clock rate. NI-DAQmx also uses the minimum sample clock delay
+        to calculate the maximum sample clock rate unless you set
+        Delay.
+
+        For simultaneous sampling devices, the maximum Sample Clock
+        rate is the maximum rate of the ADC.
+        """
+        d = float64(0)
+        CALL ('GetSampClkMaxRate', self, ctypes.byref(d))
+        return d.value
 
     def get_max(self, channel_name):
         """
