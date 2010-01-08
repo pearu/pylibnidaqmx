@@ -102,10 +102,26 @@ from numpy import ctypeslib
 import ctypes
 import ctypes.util
 
-lib = ctypes.util.find_library('nidaqmx')
+# TODO: Find the location of the NIDAQmx.h automatically (eg by using the location of the library)
+if os.name=='nt':
+    # UNTESTED: Please report results to http://code.google.com/p/pylibnidaqmx/issues
+    libname = 'nicaiu'
+    include_nidaqmx_h = r'C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h'
+    lib = ctypes.util.find_library(libname)
+    if lib is None:
+        # try default installation path:
+        lib = r'C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\nicaiu.dll'
+        if os.path.isfile(lib):
+            print 'You should add %r to PATH environment variable and reboot.' % (os.path.dirname (lib))
+        else:
+            lib = None
+else:
+    include_nidaqmx_h = '/usr/local/include/NIDAQmx.h'
+    libname = 'nidaqmx'
+    lib = ctypes.util.find_library(libname)
 
 if lib is None:
-    raise ImportError('Failed to find NI-DAQmx library. Make sure that libnidaqmx is installed and its location is listed in PATH|LD_LIBRARY_PATH|..')
+    raise ImportError('Failed to find NI-DAQmx library. Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|..' % (libname))
 
 libnidaqmx = ctypes.cdll.LoadLibrary(lib)
 
@@ -139,10 +155,7 @@ except ImportError:
     nidaqmx_h = None
 
 if nidaqmx_h is None:
-    # TODO: Find the location of the NIDAQmx.h automatically
-    include_nidaqmx_h = '/usr/local/include/NIDAQmx.h'
-    assert os.path.isfile (include_nidaqmx_h), `include_nidaqmx_h`    
-
+    assert os.path.isfile (include_nidaqmx_h), `include_nidaqmx_h`
     d = {}
     l = ['# This file is auto-generated. Do not edit!']
     error_map = {}
@@ -176,6 +189,7 @@ if nidaqmx_h is None:
     f = open(fn, 'w')
     f.write ('\n'.join(l) + '\n')
     f.close()
+    print 'Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues' % (fn)
 else:
     d = nidaqmx_h.__dict__
 
