@@ -36,6 +36,7 @@ Task methods:
   get_sample_clock_max_rate() - analog input only
   get_ai_convert_max_rate()
   set/get/reset_sample_clock_rate(value//)
+  set/get/reset_convert_clock_rate(value//)
 
   configure_trigger_analog_edge_start(source, slope=rising|falling,level=)
   configure_trigger_analog_window_start(source, when=entering|leaving,top=,bottom=)
@@ -85,6 +86,9 @@ CounterInput/OutputTask methods:
 
   set_terminal_pulse(channel, terminal)
 
+CounterInput methods:
+  set/get/reset_duplicate_count_prevention(channel, enable=True//)
+  set/get/reset_timebase_rate(channel, rate//)
 """
 # Author: Pearu Peterson
 # Created: July 2009
@@ -1274,20 +1278,57 @@ class Task(uInt32):
         return CALL('ResetBuf%sBufSize' % (channel_io_type.title()), self) == 0
 
     def get_sample_clock_rate(self):
-        """
-        Specifies the sampling rate in samples per channel per
-        second. If you use an external source for the Sample Clock,
-        set this input to the maximum expected rate of that clock.
+        """ See set_sample_clock_rate documentation.
         """
         d = float64(0)
         CALL ('GetSampClkRate', self, ctypes.byref(d))
         return d.value
 
     def set_sample_clock_rate(self, value):
+        """
+        Specifies the sampling rate in samples per channel per
+        second. If you use an external source for the Sample Clock,
+        set this input to the maximum expected rate of that clock.
+        """
         return CALL ('SetSampClkRate', self, float64 (value))==0
 
     def reset_sample_clock_rate(self):
+        """ See set_sample_clock_rate documentation.
+        """
         return CALL ('ResetSampClkRate', self)==0
+
+    def get_convert_clock_rate(self):
+        """ See set_convert_clock_rate documentation.
+        """
+        d = float64(0)
+        CALL ('GetAIConvRate', self, ctypes.byref(d))
+        return d.value
+
+    def set_convert_clock_rate(self, value):
+        """
+        Specifies the rate at which to clock the analog-to-digital
+        converter. This clock is specific to the analog input section
+        of multiplexed devices.
+
+        By default, NI-DAQmx selects the maximum convert rate
+        supported by the device, plus 10 microseconds per channel
+        settling time. Other task settings, such as high channel
+        counts or setting Delay, can result in a faster default
+        convert rate.
+
+        If you connect signal conditioning accessories with track and
+        hold capabilities, such as an SCXI module, to the device,
+        NI-DAQmx uses the fastest convert rate possible that meets the
+        settling requirements for the slowest module sampled. Refer to
+        the device documentation for the signal conditioning accessory
+        for more information.
+        """
+        return CALL ('SetAIConvRate', self, float64 (value))==0
+
+    def reset_convert_clock_rate(self):
+        """ See set_convert_clock_rate documentation.
+        """
+        return CALL ('ResetAIConvRate', self)==0
 
     def get_ai_convert_max_rate(self):
         """
@@ -1631,6 +1672,9 @@ class Task(uInt32):
                 lines.append(tab+'High/Low values: %s/%s' % (self.get_high(channel_name),
                                                              self.get_low (channel_name)))
                 lines.append(tab+'Auto zero mode: %s' % (self.get_auto_zero_mode(channel_name)))
+            if self.channel_type=='CI':
+                lines.append(tab+'Timebase rate: %sHz' % (self.get_timebase_rate(channel_name)))
+                lines.append(tab+'Dublicate count prevention: %s' % (self.get_dublicate_count_prevention(channel_name)))
         return '\n'.join(lines)
 
     def get_read_current_position (self):
@@ -2314,6 +2358,53 @@ class CounterInputTask(Task):
         Specifies the input terminal of the signal to measure.
         """
         return CALL('SetCICountEdgesTerm', self, channel, terminal)==0
+
+    def get_duplicate_count_prevention(self, channel):
+        """ See set_duplicate_count_prevention documentation.
+        """
+        b = bool32(0)
+        r = CALL('GetCIDupCountPrevent', self, channel, ctypes.byref(b))
+        assert r==0,`r, channel, b`
+        return b != 0
+
+    def set_duplicate_count_prevention(self, channel, enable=True):
+        """
+        Specifies whether to enable duplicate count prevention for the
+        channel.
+        """
+        b = bool32(enable)
+        return CALL('SetCIDupCountPrevent', self, channel, b)==0
+
+    def reset_duplicate_count_prevention(self, channel):
+        """ See set_duplicate_count_prevention documentation.
+        """
+        return CALL('ResetCIDupCountPrevent', self, channel)==0
+
+    def get_timebase_rate(self, channel):
+        """ See set_timebase_rate documnetation.
+        """
+        data = float64(0)
+        r = CALL('GetCICtrTimebaseRate', self, channel, ctypes.byref(data))
+        assert r==0,`r, channel, data`
+        return data.value
+
+    def set_timebase_rate(self, channel, rate):
+        """
+        Specifies in Hertz the frequency of the counter
+        timebase. Specifying the rate of a counter timebase allows you
+        to take measurements in terms of time or frequency rather than
+        in ticks of the timebase. If you use an external timebase and
+        do not specify the rate, you can take measurements only in
+        terms of ticks of the timebase.
+        """
+        data = float64(rate)
+        return CALL('SetCICtrTimebaseRate', self, channel, data)==0
+
+    def reset_timebase_rate(self, channel, rate):
+        """ See set_timebase_rate documnetation.
+        """
+        return CALL('ResetCICtrTimebaseRate', self, channel)==0
+
 
 class CounterOutputTask(Task):
     
