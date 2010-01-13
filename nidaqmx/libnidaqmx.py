@@ -105,6 +105,7 @@ import numpy as np
 from numpy import ctypeslib
 import ctypes
 import ctypes.util
+import warnings
 
 # TODO: Find the location of the NIDAQmx.h automatically (eg by using the location of the library)
 if os.name=='nt':
@@ -124,10 +125,14 @@ else:
     libname = 'nidaqmx'
     lib = ctypes.util.find_library(libname)
 
+libnidaqmx = None
 if lib is None:
-    raise ImportError('Failed to find NI-DAQmx library. Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|..' % (libname))
-
-libnidaqmx = ctypes.cdll.LoadLibrary(lib)
+    warnings.warn('''\
+Failed to find NI-DAQmx library.
+Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.
+The functionality of libnidaqmx.py will be disabled.''' % (libname), ImportWarning)
+else:
+    libnidaqmx = ctypes.cdll.LoadLibrary(lib)
 
 int8 = ctypes.c_int8
 uInt8 = ctypes.c_uint8
@@ -143,6 +148,8 @@ float64 = ctypes.c_double
 void_p = ctypes.c_void_p
 
 def get_nidaqmx_version ():
+    if libnidaqmx is None:
+        return None
     d = uInt32 (0)
     libnidaqmx.DAQmxGetSysNIDAQMajorVersion(ctypes.byref(d))
     major = d.value
@@ -150,56 +157,58 @@ def get_nidaqmx_version ():
     minor = d.value
     return '%s.%s' % (major, minor)
 
-nidaqmx_version = get_nidaqmx_version()
-nidaqmx_h_name = 'nidaqmx_h_%s' % (nidaqmx_version.replace ('.', '_'))
+if libnidaqmx is not None:
 
-try:
-    exec 'import %s as nidaqmx_h' % (nidaqmx_h_name)
-except ImportError:
-    nidaqmx_h = None
+    nidaqmx_version = get_nidaqmx_version()
+    nidaqmx_h_name = 'nidaqmx_h_%s' % (nidaqmx_version.replace ('.', '_'))
 
-if nidaqmx_h is None:
-    assert os.path.isfile (include_nidaqmx_h), `include_nidaqmx_h`
-    d = {}
-    l = ['# This file is auto-generated. Do not edit!']
-    error_map = {}
-    f = open (include_nidaqmx_h, 'r')
-    for line in f.readlines():
-        if not line.startswith('#define'): continue
-        i = line.find('//')
-        words = line[7:i].strip().split(None, 2)
-        if len (words)!=2: continue
-        name, value = words
-        if not name.startswith('DAQmx') or name.endswith(')'):
-            continue
-        if value.startswith('0x'):
-            exec '%s = %s' % (name, value)
-            d[name] = eval(value)
-            l.append('%s = %s' % (name, value))
-        elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
-            assert value[0]=='(' and value[-1]==')', `name, value`
-            value = int(value[1:-1])
-            error_map[value] = name[10:]
-        elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
-            d[name] = eval(value)
-            l.append('%s = %s' % (name, value))
-        else:
-            print name, value
-            pass
-    l.append('error_map = %r' % (error_map))
+    try:
+        exec 'import %s as nidaqmx_h' % (nidaqmx_h_name)
+    except ImportError:
+        nidaqmx_h = None
 
-    fn = os.path.join (os.path.dirname(os.path.abspath (__file__)), nidaqmx_h_name+'.py')
-    print 'Generating %r' % (fn)
-    f = open(fn, 'w')
-    f.write ('\n'.join(l) + '\n')
-    f.close()
-    print 'Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues' % (fn)
-else:
-    d = nidaqmx_h.__dict__
+    if nidaqmx_h is None:
+        assert os.path.isfile (include_nidaqmx_h), `include_nidaqmx_h`
+        d = {}
+        l = ['# This file is auto-generated. Do not edit!']
+        error_map = {}
+        f = open (include_nidaqmx_h, 'r')
+        for line in f.readlines():
+            if not line.startswith('#define'): continue
+            i = line.find('//')
+            words = line[7:i].strip().split(None, 2)
+            if len (words)!=2: continue
+            name, value = words
+            if not name.startswith('DAQmx') or name.endswith(')'):
+                continue
+            if value.startswith('0x'):
+                exec '%s = %s' % (name, value)
+                d[name] = eval(value)
+                l.append('%s = %s' % (name, value))
+            elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
+                assert value[0]=='(' and value[-1]==')', `name, value`
+                value = int(value[1:-1])
+                error_map[value] = name[10:]
+            elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
+                d[name] = eval(value)
+                l.append('%s = %s' % (name, value))
+            else:
+                print name, value
+                pass
+        l.append('error_map = %r' % (error_map))
 
-for name, value in d.items():
-    if name.startswith ('_'): continue
-    exec '%s = %r' % (name, value)
+        fn = os.path.join (os.path.dirname(os.path.abspath (__file__)), nidaqmx_h_name+'.py')
+        print 'Generating %r' % (fn)
+        f = open(fn, 'w')
+        f.write ('\n'.join(l) + '\n')
+        f.close()
+        print 'Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues' % (fn)
+    else:
+        d = nidaqmx_h.__dict__
+
+    for name, value in d.items():
+        if name.startswith ('_'): continue
+        exec '%s = %r' % (name, value)
 
 def CHK(return_code, funcname, *args):
     if return_code==0: # call was succesful
