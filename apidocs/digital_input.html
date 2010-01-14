@@ -1,0 +1,836 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Digital Input task &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="index.html" />
+    <link rel="next" title="Counter Input task" href="counter_input.html" />
+    <link rel="prev" title="Analog Input task" href="analog_input.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="counter_input.html" title="Counter Input task"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="analog_input.html" title="Analog Input task"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="digital-input-task">
+<h1>Digital Input task<a class="headerlink" href="#digital-input-task" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask">
+<em class="property">
+class </em><tt class="descclassname">nidaqmx.libnidaqmx.</tt><tt class="descname">DigitalInputTask</tt><big>(</big><em>name=''</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.alter_state">
+<tt class="descname">alter_state</tt><big>(</big><em>state</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.alter_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alters the state of a task according to the action you
+specify. To minimize the time required to start a task, for
+example, DAQmxTaskControl can commit the task prior to
+starting.</p>
+<p>Actions:</p>
+<p>&#8216;start&#8217; - Starts execution of the task.</p>
+<p>&#8216;stop&#8217; - Stops execution of the task.</p>
+<dl class="docutils">
+<dt>&#8216;verify&#8217; - Verifies that all task parameters are valid for the</dt>
+<dd>hardware.</dd>
+<dt>&#8216;commit&#8217; - Programs the hardware as much as possible according</dt>
+<dd>to the task configuration.</dd>
+<dt>&#8216;reserve&#8217; - Reserves the hardware resources needed for the</dt>
+<dd>task. No other tasks can reserve these same resources.</dd>
+</dl>
+<p>&#8216;unreserve&#8217; - Releases all previously reserved resources.</p>
+<dl class="docutils">
+<dt>&#8216;abort&#8217; - Abort is used to stop an operation, such as Read or</dt>
+<dd>Write, that is currently active. Abort puts the task into an
+unstable but recoverable state. To recover the task, call
+Start to restart the task or call Stop to reset the task
+without starting it.</dd>
+</dl>
+<p>Returns True on success.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_burst_handshaking_export_clock">
+<tt class="descname">configure_timing_burst_handshaking_export_clock</tt><big>(</big><em>*args</em>, <em>**kws</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_burst_handshaking_export_clock" title="Permalink to this definition">¶</a></dt>
+<dd>Configures when the DAQ device transfers data to a peripheral
+device, using the DAQ device&#8217;s onboard sample clock to control
+burst handshaking timing.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_burst_handshaking_import_clock">
+<tt class="descname">configure_timing_burst_handshaking_import_clock</tt><big>(</big><em>*args</em>, <em>**kws</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_burst_handshaking_import_clock" title="Permalink to this definition">¶</a></dt>
+<dd>Configures when the DAQ device transfers data to a peripheral
+device, using an imported sample clock to control burst
+handshaking timing.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_change_detection">
+<tt class="descname">configure_timing_change_detection</tt><big>(</big><em>rising_edge_channel=''</em>, <em>falling_edge_channel=''</em>, <em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_change_detection" title="Permalink to this definition">¶</a></dt>
+<dd>Configures the task to acquire samples on the rising and/or
+falling edges of the lines or ports you specify.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_handshaking">
+<tt class="descname">configure_timing_handshaking</tt><big>(</big><em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_handshaking" title="Permalink to this definition">¶</a></dt>
+<dd>Determines the number of digital samples to acquire or
+generate using digital handshaking between the device and a
+peripheral device.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_implicit">
+<tt class="descname">configure_timing_implicit</tt><big>(</big><em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_implicit" title="Permalink to this definition">¶</a></dt>
+<dd>Sets only the number of samples to acquire or generate without
+specifying timing. Typically, you should use this function
+when the task does not require sample timing, such as tasks
+that use counters for buffered frequency measurement, buffered
+period measurement, or pulse train generation.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_sample_clock">
+<tt class="descname">configure_timing_sample_clock</tt><big>(</big><em>source='OnboardClock'</em>, <em>rate=1</em>, <em>active_edge='rising'</em>, <em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_timing_sample_clock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the source of the Sample Clock, the rate of the Sample
+Clock, and the number of samples to acquire or generate.</p>
+<p>Parameters:</p>
+<blockquote>
+<dl class="docutils">
+<dt>source - The source terminal of the Sample Clock. To use the</dt>
+<dd>internal clock of the device, use None or use &#8216;OnboardClock&#8217;.</dd>
+<dt>rate - The sampling rate in samples per second. If you use</dt>
+<dd>an external source for the Sample Clock, set this value to
+the maximum expected rate of that clock.</dd>
+<dt>active_edge - Specifies on which edge of the clock to</dt>
+<dd><p class="first">acquire or generate samples:</p>
+<dl class="last docutils">
+<dt>&#8216;rising&#8217; - Acquire or generate samples on the rising edges</dt>
+<dd>of the Sample Clock.</dd>
+<dt>&#8216;falling&#8217; - Acquire or generate samples on the falling</dt>
+<dd>edges of the Sample Clock.</dd>
+</dl>
+</dd>
+<dt>sample_mode - Specifies whether the task acquires or</dt>
+<dd><p class="first">generates samples continuously or if it acquires or
+generates a finite number of samples:</p>
+<p>&#8216;finite&#8217; - Acquire or generate a finite number of samples.</p>
+<p>&#8216;continuous&#8217; - Acquire or generate samples until you stop the task.</p>
+<dl class="last docutils">
+<dt>&#8216;hwtimed&#8217; - Acquire or generate samples continuously using</dt>
+<dd>hardware timing without a buffer. Hardware timed single
+point sample mode is supported only for the sample clock
+and change detection timing types.</dd>
+</dl>
+</dd>
+<dt>samples_per_channel - The number of samples to acquire or</dt>
+<dd>generate for each channel in the task if sample_mode is
+&#8216;finite&#8217;.  If sample_mode is &#8216;continuous&#8217;, NI-DAQmx uses
+this value to determine the buffer size.</dd>
+</dl>
+</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_analog_edge_start">
+<tt class="descname">configure_trigger_analog_edge_start</tt><big>(</big><em>source</em>, <em>slope='rising'</em>, <em>level=1.0</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_analog_edge_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the task to start acquiring or generating samples
+when an analog signal crosses the level you specify.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>source - The name of a channel or terminal where there is an</dt>
+<dd>analog signal to use as the source of the trigger. For E
+Series devices, if you use a channel name, the channel must
+be the first channel in the task. The only terminal you can
+use for E Series devices is PFI0.</dd>
+<dt>slope - Specifies on which slope of the signal to start</dt>
+<dd><p class="first">acquiring or generating samples when the signal crosses
+trigger level:</p>
+<p class="last">&#8216;rising&#8217; - Trigger on the rising slope of the signal.
+&#8216;falling&#8217; - Trigger on the falling slope of the signal.</p>
+</dd>
+<dt>level - The threshold at which to start acquiring or</dt>
+<dd>generating samples. Specify this value in the units of the
+measurement or generation. Use trigger slope to specify on
+which slope to trigger at this threshold.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_analog_window_start">
+<tt class="descname">configure_trigger_analog_window_start</tt><big>(</big><em>source</em>, <em>when='entering'</em>, <em>top=1.0</em>, <em>bottom=-1.0</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_analog_window_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the task to start acquiring or generating samples
+when an analog signal enters or leaves a range you specify.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>source - The name of a virtual channel or terminal where there</dt>
+<dd><p class="first">is an analog signal to use as the source of the trigger.</p>
+<p class="last">For E Series devices, if you use a virtual channel, it must
+be the first channel in the task. The only terminal you can
+use for E Series devices is PFI0.</p>
+</dd>
+<dt>when - Specifies whether the task starts measuring or</dt>
+<dd><p class="first">generating samples when the signal enters the window or when
+it leaves the window. Use windowBottom and windowTop to
+specify the limits of the window.</p>
+<p class="last">&#8216;entering&#8217; - Trigger when the signal enters the window.
+&#8216;leaving&#8217; - Trigger when the signal leaves the window.</p>
+</dd>
+<dt>top - The upper limit of the window. Specify this value in the</dt>
+<dd>units of the measurement or generation.</dd>
+<dt>bottom - The lower limit of the window. Specify this value in</dt>
+<dd>the units of the measurement or generation.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_digital_edge_start">
+<tt class="descname">configure_trigger_digital_edge_start</tt><big>(</big><em>source</em>, <em>edge='rising'</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_digital_edge_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the task to start acquiring or generating samples
+on a rising or falling edge of a digital signal.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>source - The name of a terminal where there is a digital</dt>
+<dd>signal to use as the source of the trigger.</dd>
+<dt>edge - Specifies on which edge of a digital signal to start</dt>
+<dd><p class="first">acquiring or generating samples:</p>
+<p class="last">&#8216;rising&#8217; - Rising edge(s).
+&#8216;falling&#8217; - Falling edge(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_digital_pattern_start">
+<tt class="descname">configure_trigger_digital_pattern_start</tt><big>(</big><em>source</em>, <em>pattern</em>, <em>when='matches'</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_digital_pattern_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures a task to start acquiring or generating samples
+when a digital pattern is matched.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>source - Specifies the physical channels to use for pattern</dt>
+<dd>matching. The order of the physical channels determines the
+order of the pattern. If a port is included, the order of
+the physical channels within the port is in ascending order.</dd>
+<dt>pattern - Specifies the digital pattern that must be met for</dt>
+<dd>the trigger to occur.</dd>
+<dt>when - Specifies the conditions under which the trigger</dt>
+<dd><p class="first">occurs:</p>
+<p class="last">&#8216;matches&#8217; - Pattern matches.
+&#8216;does_not_match&#8217; - Pattern does not match.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_disable_start">
+<tt class="descname">configure_trigger_disable_start</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.configure_trigger_disable_start" title="Permalink to this definition">¶</a></dt>
+<dd>Configures the task to start acquiring or generating samples
+immediately upon starting the task.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.create_channel">
+<tt class="descname">create_channel</tt><big>(</big><em>lines</em>, <em>name=''</em>, <em>grouping='per_line'</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.create_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates channel(s) to measure digital signals and adds the
+channel(s) to the task you specify with taskHandle. You can
+group digital lines into one digital channel or separate them
+into multiple digital channels. If you specify one or more
+entire ports in lines by using port physical channel names,
+you cannot separate the ports into multiple channels. To
+separate ports into multiple channels, use this function
+multiple times with a different port each time.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>lines - The names of the digital lines used to create a</dt>
+<dd>virtual channel. You can specify a list or range of lines.</dd>
+<dt>name - The name of the created virtual channel(s). If you</dt>
+<dd>create multiple virtual channels with one call to this
+function, you can specify a list of names separated by
+commas. If you do not specify a name, NI-DAQmx uses the
+physical channel name as the virtual channel name. If you
+specify your own names for name, you must use the names when
+you refer to these channels in other NI-DAQmx functions.</dd>
+</dl>
+<p>grouping - Specifies whether to group digital lines into one
+or more virtual channels. If you specify one or more entire
+ports in lines, you must set grouping to &#8216;for_all_lines&#8217;:</p>
+<blockquote>
+&#8216;per_line&#8217; - One channel for each line
+&#8216;for_all_lines&#8217; - One channel for all lines</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_ai_convert_max_rate">
+<tt class="descname">get_ai_convert_max_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_ai_convert_max_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates the maximum convert rate supported by the task,
+given the current devices and channel count.</p>
+<p>This rate is generally faster than the default AI Convert
+Clock rate selected by NI-DAQmx, because NI-DAQmx adds in an
+additional 10 microseconds per channel settling time to
+compensate for most potential system settling constraints.</p>
+<p>For single channel tasks, the maximum AI Convert Clock rate is
+the maximum rate of the ADC. For multiple channel tasks, the
+maximum AI Convert Clock rate is the maximum convert rate of
+the analog front end. Sig</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_buffer_size">
+<tt class="descname">get_buffer_size</tt><big>(</big><em>on_board=False</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_buffer_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies the number of samples the I/O buffer can hold for
+each channel in the task. Zero indicates to allocate no
+buffer. Use a buffer size of 0 to perform a hardware-timed
+operation without using a buffer. Setting this property
+overrides the automatic I/O buffer allocation that NI-DAQmx
+performs.</p>
+<p>If on_board is True then specifies in samples per channel the
+size of the onboard I/O buffer of the device.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_channel_type">
+<tt class="descname">get_channel_type</tt><big>(</big><em>channel_name</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_channel_type" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the type of the virtual channel.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_convert_clock_rate">
+<tt class="descname">get_convert_clock_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_convert_clock_rate" title="Permalink to this definition">¶</a></dt>
+<dd>See set_convert_clock_rate documentation.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_max">
+<tt class="descname">get_max</tt><big>(</big><em>channel_name</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_max" title="Permalink to this definition">¶</a></dt>
+<dd>Specifies the maximum value you expect to measure or generate.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_min">
+<tt class="descname">get_min</tt><big>(</big><em>channel_name</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_min" title="Permalink to this definition">¶</a></dt>
+<dd>Specifies the minimum value you expect to measure or generate.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_number_of_channels">
+<tt class="descname">get_number_of_channels</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_number_of_channels" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the number of virtual channels in the task.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_number_of_lines">
+<tt class="descname">get_number_of_lines</tt><big>(</big><em>channel</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_number_of_lines" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the number of digital lines in the channel.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_physical_channel_name">
+<tt class="descname">get_physical_channel_name</tt><big>(</big><em>channel_name</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_physical_channel_name" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the name of the physical channel upon which this
+virtual channel is based.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_read_current_position">
+<tt class="descname">get_read_current_position</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_read_current_position" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates in samples per channel the current position in the
+buffer.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_regeneration">
+<tt class="descname">get_regeneration</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_regeneration" title="Permalink to this definition">¶</a></dt>
+<dd>Return True if regeneration (generating the same data more
+than once) is allowed.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_sample_clock_max_rate">
+<tt class="descname">get_sample_clock_max_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_sample_clock_max_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates the maximum Sample Clock rate supported by the task,
+based on other timing settings. For output tasks, the maximum
+Sample Clock rate is the maximum rate of the DAC. For input
+tasks, NI-DAQmx calculates the maximum sampling rate
+differently for multiplexed devices than simultaneous sampling
+devices.</p>
+<p>For multiplexed devices, NI-DAQmx calculates the maximum
+sample clock rate based on the maximum AI Convert Clock rate
+unless you set Rate. If you set that property, NI-DAQmx
+calculates the maximum sample clock rate based on that
+setting. Use Maximum Rate to query the maximum AI Convert
+Clock rate. NI-DAQmx also uses the minimum sample clock delay
+to calculate the maximum sample clock rate unless you set
+Delay.</p>
+<p>For simultaneous sampling devices, the maximum Sample Clock
+rate is the maximum rate of the ADC.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_sample_clock_rate">
+<tt class="descname">get_sample_clock_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_sample_clock_rate" title="Permalink to this definition">¶</a></dt>
+<dd>See set_sample_clock_rate documentation.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_samples_per_channel_acquired">
+<tt class="descname">get_samples_per_channel_acquired</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_samples_per_channel_acquired" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the total number of samples acquired by each
+channel. NI-DAQmx returns a single value because this value is
+the same for all channels.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_samples_per_channel_available">
+<tt class="descname">get_samples_per_channel_available</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_samples_per_channel_available" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the number of samples available to read per
+channel. This value is the same for all channels in the task.</dd></dl>
+
+<dl class="classmethod">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_system_devices">
+<em class="property">
+classmethod </em><tt class="descname">get_system_devices</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_system_devices" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates the names of all devices installed in the system.</dd></dl>
+
+<dl class="classmethod">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_system_global_channels">
+<em class="property">
+classmethod </em><tt class="descname">get_system_global_channels</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_system_global_channels" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates an array that contains the names of all global
+channels saved on the system.</dd></dl>
+
+<dl class="classmethod">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.get_system_tasks">
+<em class="property">
+classmethod </em><tt class="descname">get_system_tasks</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.get_system_tasks" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates an array that contains the names of all tasks saved
+on the system.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.is_channel_global">
+<tt class="descname">is_channel_global</tt><big>(</big><em>channel_name</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.is_channel_global" title="Permalink to this definition">¶</a></dt>
+<dd>Indicates whether the channel is a global channel.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.is_done">
+<tt class="descname">is_done</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.is_done" title="Permalink to this definition">¶</a></dt>
+<dd>Queries the status of the task and indicates if it completed
+execution. Use this function to ensure that the specified
+operation is complete before you stop the task.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.read">
+<tt class="descname">read</tt><big>(</big><em>samples_per_channel=None</em>, <em>timeout=10.0</em>, <em>fill_mode='group_by_scan_number'</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads multiple samples from each digital line in a task. Each
+line in a channel gets one byte per sample.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>samples_per_channel - The number of samples, per channel, to</dt>
+<dd><p class="first">read. The default value of -1 (DAQmx_Val_Auto) reads all
+available samples. If readArray does not contain enough
+space, this function returns as many samples as fit in
+readArray.</p>
+<p>NI-DAQmx determines how many samples to read based on
+whether the task acquires samples continuously or acquires a
+finite number of samples.</p>
+<p>If the task acquires samples continuously and you set this
+parameter to -1, this function reads all the samples
+currently available in the buffer.</p>
+<p class="last">If the task acquires a finite number of samples and you set
+this parameter to -1, the function waits for the task to
+acquire all requested samples, then reads those samples. If
+you set the Read All Available Data property to TRUE, the
+function reads the samples currently available in the buffer
+and does not wait for the task to acquire all requested
+samples.</p>
+</dd>
+<dt>timeout - The amount of time, in seconds, to wait for the</dt>
+<dd><p class="first">function to read the sample(s). The default value is 10.0
+seconds. To specify an infinite wait, pass -1
+(DAQmx_Val_WaitInfinitely). This function returns an error
+if the timeout elapses.</p>
+<p class="last">A value of 0 indicates to try once to read the requested
+samples. If all the requested samples are read, the function
+is successful. Otherwise, the function returns a timeout
+error and returns the samples that were actually read.</p>
+</dd>
+<dt>fill_mode - Specifies whether or not the samples are</dt>
+<dd><p class="first">interleaved:</p>
+<p class="last">&#8216;group_by_channel&#8217; - Group by channel (non-interleaved).
+&#8216;group_by_scan_number&#8217; - Group by scan number (interleaved).</p>
+</dd>
+</dl>
+<p>Output:</p>
+<blockquote>
+<dl class="docutils">
+<dt>data - The array to read samples into. Each numBytesPerSamp</dt>
+<dd>corresponds to one sample per channel, with each element
+in that grouping corresponding to a line in that channel,
+up to the number of lines contained in the channel.</dd>
+<dt>bytes_per_sample - The number of elements in readArray that</dt>
+<dd>constitutes a sample per channel. For each sample per
+channel, numBytesPerSamp is the number of bytes that
+channel consists of.</dd>
+</dl>
+</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.register_done_event">
+<tt class="descname">register_done_event</tt><big>(</big><em>func</em>, <em>options=0</em>, <em>cb_data=None</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.register_done_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a callback function to receive an event when a task
+stops due to an error or when a finite acquisition task or
+finite generation task completes execution. A Done event does
+not occur when a task is stopped explicitly, such as by
+calling DAQmxStopTask.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>func - The function that you want DAQmx to call when the event</dt>
+<dd><p class="first">occurs.  The function you pass in this parameter must have
+the following prototype:</p>
+<dl class="docutils">
+<dt>def func(task, status, cb_data = None):</dt>
+<dd>return 0</dd>
+</dl>
+<p class="last">Upon entry to the callback, the taskHandle parameter
+contains the handle to the task on which the event
+occurred. The status parameter contains the status of the
+task when the event occurred. If the status value is
+negative, it indicates an error. If the status value is
+zero, it indicates no error. If the status value is
+positive, it indicates a warning. The callbackData parameter
+contains the value you passed in the callbackData parameter
+of this function.</p>
+</dd>
+<dt>options - Use this parameter to set certain options. You can</dt>
+<dd><p class="first">combine flags with the bitwise-OR operator (&#8216;|&#8217;) to set
+multiple options. Pass a value of zero if no options need to
+be set.</p>
+<dl class="docutils">
+<dt>&#8216;sync&#8217; - The callback function is called in the thread which</dt>
+<dd>registered the event. In order for the callback to occur,
+you must be processing messages. If you do not set this
+flag, the callback function is called in a DAQmx thread by
+default.</dd>
+</dl>
+<p class="last">Note: If you are receiving synchronous events faster than
+you are processing them, then the user interface of your
+application might become unresponsive.</p>
+</dd>
+<dt>cb_data - A value that you want DAQmx to pass to the callback</dt>
+<dd>function as the function data parameter. Do not pass the
+address of a local variable or any other variable that might
+not be valid when the function is executed.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.register_every_n_samples_event">
+<tt class="descname">register_every_n_samples_event</tt><big>(</big><em>func</em>, <em>samples=1</em>, <em>options=0</em>, <em>cb_data=None</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.register_every_n_samples_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a callback function to receive an event when the
+specified number of samples is written from the device to the
+buffer or from the buffer to the device. This function only
+works with devices that support buffered tasks.</p>
+<p>When you stop a task explicitly any pending events are
+discarded. For example, if you call DAQmxStopTask then you do
+not receive any pending events.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>func - The function that you want DAQmx to call when the event</dt>
+<dd><p class="first">occurs. The function you pass in this parameter must have
+the following prototype:</p>
+<dl class="docutils">
+<dt>def func(task, event_type, samples, cb_data):</dt>
+<dd>return 0</dd>
+</dl>
+<p class="last">Upon entry to the callback, the task parameter contains the
+handle to the task on which the event occurred. The
+event_type parameter contains the value you passed in the
+event_type parameter of this function. The samples parameter
+contains the value you passed in the samples parameter of
+this function. The cb_data parameter contains the value you
+passed in the cb_data parameter of this function.</p>
+</dd>
+<dt>samples - The number of samples after which each event should</dt>
+<dd>occur.</dd>
+</dl>
+<p>options, cb_data - see register_done_event documentation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.register_signal_event">
+<tt class="descname">register_signal_event</tt><big>(</big><em>func</em>, <em>signal</em>, <em>options=0</em>, <em>cb_data=None</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.register_signal_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a callback function to receive an event when the
+specified hardware event occurs.</p>
+<p>When you stop a task explicitly any pending events are
+discarded. For example, if you call DAQmxStopTask then you do
+not receive any pending events.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>func - The function that you want DAQmx to call when the event</dt>
+<dd><p class="first">occurs. The function you pass in this parameter must have the
+following prototype:</p>
+<dl class="docutils">
+<dt>def func(task, signalID, cb_data):</dt>
+<dd>return 0</dd>
+</dl>
+<p class="last">Upon entry to the callback, the task parameter contains the
+handle to the task on which the event occurred. The signalID
+parameter contains the value you passed in the signal
+parameter of this function. The cb_data parameter contains
+the value you passed in the cb_data parameter of this
+function.</p>
+</dd>
+</dl>
+<p>signal - The signal for which you want to receive results:</p>
+<blockquote>
+&#8216;sample_clock&#8217; - Sample clock
+&#8216;sample_complete&#8217; - Sample complete event
+&#8216;change_detection&#8217; - Change detection event
+&#8216;counter_output&#8217; - Counter output event</blockquote>
+<p>options, cb_data - see register_done_event documentation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.reset_convert_clock_rate">
+<tt class="descname">reset_convert_clock_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.reset_convert_clock_rate" title="Permalink to this definition">¶</a></dt>
+<dd>See set_convert_clock_rate documentation.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.reset_sample_clock_rate">
+<tt class="descname">reset_sample_clock_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.reset_sample_clock_rate" title="Permalink to this definition">¶</a></dt>
+<dd>See set_sample_clock_rate documentation.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_arm_start_trigger">
+<tt class="descname">set_arm_start_trigger</tt><big>(</big><em>trigger_type='digital_edge'</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_arm_start_trigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies the type of trigger to use to arm the task for a
+Start Trigger. If you configure an Arm Start Trigger, the task
+does not respond to a Start Trigger until the device receives
+the Arm Start Trigger.</p>
+<p>Parameters:</p>
+<p>trigger_type:</p>
+<blockquote>
+&#8216;digital_edge&#8217; - Trigger on a rising or falling edge of a digital signal.
+None - Disable the trigger.</blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_arm_start_trigger_edge">
+<tt class="descname">set_arm_start_trigger_edge</tt><big>(</big><em>edge='rising'</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_arm_start_trigger_edge" title="Permalink to this definition">¶</a></dt>
+<dd>Specifies on which edge of a digital signal to arm the task
+for a Start Trigger.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_arm_start_trigger_source">
+<tt class="descname">set_arm_start_trigger_source</tt><big>(</big><em>source</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_arm_start_trigger_source" title="Permalink to this definition">¶</a></dt>
+<dd>Specifies the name of a terminal where there is a digital
+signal to use as the source of the Arm Start Trigger.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_buffer">
+<tt class="descname">set_buffer</tt><big>(</big><em>samples_per_channel</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the automatic I/O buffer allocation that NI-DAQmx performs.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>samples_per_channel - The number of samples the buffer can</dt>
+<dd>hold for each channel in the task. Zero indicates no buffer
+should be allocated. Use a buffer size of 0 to perform a
+hardware-timed operation without using a buffer.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_convert_clock_rate">
+<tt class="descname">set_convert_clock_rate</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_convert_clock_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies the rate at which to clock the analog-to-digital
+converter. This clock is specific to the analog input section
+of multiplexed devices.</p>
+<p>By default, NI-DAQmx selects the maximum convert rate
+supported by the device, plus 10 microseconds per channel
+settling time. Other task settings, such as high channel
+counts or setting Delay, can result in a faster default
+convert rate.</p>
+<p>If you connect signal conditioning accessories with track and
+hold capabilities, such as an SCXI module, to the device,
+NI-DAQmx uses the fastest convert rate possible that meets the
+settling requirements for the slowest module sampled. Refer to
+the device documentation for the signal conditioning accessory
+for more information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_pause_trigger_source">
+<tt class="descname">set_pause_trigger_source</tt><big>(</big><em>source</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_pause_trigger_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies the name of a virtual channel or terminal where
+there is an analog signal to use as the source of the trigger.</p>
+<p>For E Series devices, if you use a channel name, the channel
+must be the only channel in the task. The only terminal you
+can use for E Series devices is PFI0.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_pause_trigger_when">
+<tt class="descname">set_pause_trigger_when</tt><big>(</big><em>when=None</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_pause_trigger_when" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specifies whether the task pauses above or below the threshold
+you specify with Level.</p>
+<p>Specifies whether the task pauses while the trigger signal is
+inside or outside the window you specify with Bottom and Top.</p>
+<p>Specifies whether the task pauses while the signal is high or
+low.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.set_sample_clock_rate">
+<tt class="descname">set_sample_clock_rate</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.set_sample_clock_rate" title="Permalink to this definition">¶</a></dt>
+<dd>Specifies the sampling rate in samples per channel per
+second. If you use an external source for the Sample Clock,
+set this input to the maximum expected rate of that clock.</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.start">
+<tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transitions the task from the committed state to the running
+state, which begins measurement or generation. Using this
+function is required for some applications and optional for
+others.</p>
+<p>If you do not use this function, a measurement task starts
+automatically when a read operation begins. The autoStart
+parameter of the NI-DAQmx Write functions determines if a
+generation task starts automatically when you use an NI-DAQmx
+Write function.</p>
+<p>If you do not call StartTask and StopTask when you
+call NI-DAQmx Read functions or NI-DAQmx Write functions
+multiple times, such as in a loop, the task starts and stops
+repeatedly. Starting and stopping a task repeatedly reduces
+the performance of the application.</p>
+<p>Returns True on success.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the task and returns it to the state it was in before
+you called StartTask or called an NI-DAQmx Write function with
+autoStart set to TRUE.</p>
+<p>If you do not call StartTask and StopTask when you call
+NI-DAQmx Read functions or NI-DAQmx Write functions multiple
+times, such as in a loop, the task starts and stops
+repeatedly. Starting and stopping a task repeatedly reduces
+the performance of the application.</p>
+<p>Returns True on success.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.value">
+<tt class="descname">value</tt><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.value" title="Permalink to this definition">¶</a></dt>
+<dd>current value</dd></dl>
+
+<dl class="method">
+<dt id="nidaqmx.libnidaqmx.DigitalInputTask.wait_until_done">
+<tt class="descname">wait_until_done</tt><big>(</big><em>timeout=-1</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.DigitalInputTask.wait_until_done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for the measurement or generation to complete. Use this
+function to ensure that the specified operation is complete
+before you stop the task.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>timeout :</strong> :</p>
+<blockquote class="last">
+<p>The maximum amount of time, in seconds, to wait for the
+measurement or generation to complete. The function returns
+an error if the time elapses before the measurement or
+generation is complete.</p>
+<p>A value of -1 (DAQmx_Val_WaitInfinitely) means to wait
+indefinitely.</p>
+<p>If you set timeout to 0, the function checks once and
+returns an error if the measurement or generation is not
+done.</p>
+</blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="analog_input.html"
+                                  title="previous chapter">Analog Input task</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="counter_input.html"
+                                  title="next chapter">Counter Input task</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/digital_input.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="counter_input.html" title="Counter Input task"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="analog_input.html" title="Analog Input task"
+             >previous</a> |</li>
+        <li><a href="index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.2.
+    </div>
+  </body>
+</html>

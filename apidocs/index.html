@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PyLibNIDAQmx &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="" />
+    <link rel="next" title="Analog Input task" href="analog_input.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
+          <a href="analog_input.html" title="Analog Input task"
+             accesskey="N">next</a> |</li>
+        <li><a href="">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-nidaqmx.__init__">
+<h1>PyLibNIDAQmx<a class="headerlink" href="#module-nidaqmx.__init__" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Release:</th><td class="field-body">0.2</td>
+</tr>
+<tr class="field"><th class="field-name">Date:</th><td class="field-body">January 14, 2010</td>
+</tr>
+</tbody>
+</table>
+<p>The <a class="reference" href="http://code.google.com/p/pylibnidaqmx/">PyLibNIDAQmx</a> project provides a Python package <tt class="docutils literal"><span class="pre">nidaqmx</span></tt>
+that wraps the libnidaqmx library to Python using <a class="reference" href="http://docs.python.org/library/ctypes.html">ctypes</a>.</p>
+<p>The package is tested with NIDAQwx library 8.0 using <a class="reference" href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/1123">PCI-6602</a> and
+<a class="reference" href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/201814">PCIe-6259</a> cards on openSUSE 11.0 Linux. There is also Windows
+support implemented but not tested by us. Please report any issues to
+<a class="reference" href="http://code.google.com/p/pylibnidaqmx/issues/list">PyLibNIDAQmx Issue Tracker</a>.</p>
+<div class="section" id="module-nidaqmx">
+<h2>Module <tt class="xref docutils literal"><span class="pre">nidaqmx</span></tt><a class="headerlink" href="#module-nidaqmx" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="xref docutils literal"><span class="pre">nidaqmx</span></tt> package provides the following classes:</p>
+<blockquote>
+<tt class="xref docutils literal"><span class="pre">AnalogInputTask</span></tt>, 
+<tt class="xref docutils literal"><span class="pre">AnalogOutputTask</span></tt>, 
+<tt class="xref docutils literal"><span class="pre">DigitalInputTask</span></tt>, 
+<tt class="xref docutils literal"><span class="pre">DigitalOutputTask</span></tt>,
+<tt class="xref docutils literal"><span class="pre">CounterInputTask</span></tt>, 
+<tt class="xref docutils literal"><span class="pre">CounterOutputTask</span></tt></blockquote>
+<p>that expose NIDAQmx tasks to Python environment. The instances of
+these task classes provide methods to create channels, to set timing
+and triggering properties, as well as to read or write data.</p>
+<div class="section" id="example-usage">
+<h3>Example usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h3>
+<p>The following example demonstrates how to create an analog output
+task that generates voltage to given channel of the NI card:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nidaqmx</span> <span class="kn">import</span> <span class="n">AnalogOutputTask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="mf">9.95</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">1000</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">*</span><span class="mf">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span> <span class="o">=</span> <span class="n">AnalogOutputTask</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">create_voltage_channel</span><span class="p">(</span><span class="s">&#39;Dev1/ao2&#39;</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">configure_timing_sample_clock</span><span class="p">(</span><span class="n">rate</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">raw_input</span><span class="p">(</span><span class="s">&#39;Generating voltage continuously. Press Enter to interrupt..&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">task</span>
+</pre></div>
+</div>
+<p>The generated voltage can be measured as well when connecting the corresponding
+channels in the NI card:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nidaqmx</span> <span class="kn">import</span> <span class="n">AnalogInputTask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span> <span class="o">=</span> <span class="n">AnalogInputTask</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">create_voltage_channel</span><span class="p">(</span><span class="s">&#39;Dev1/ai16&#39;</span><span class="p">,</span> <span class="n">terminal</span> <span class="o">=</span> <span class="s">&#39;rse&#39;</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">configure_timing_sample_clock</span><span class="p">(</span><span class="n">rate</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mf">2000</span><span class="p">,</span> <span class="n">fill_mode</span><span class="o">=</span><span class="s">&#39;group_by_channel&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">task</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">plot</span><span class="p">,</span> <span class="n">show</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span> <span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">show</span> <span class="p">()</span>
+</pre></div>
+</div>
+<p>that should plot two sine waves.</p>
+</div>
+</div>
+<div class="section" id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference" href="analog_input.html">Analog Input task</a></li>
+<li class="toctree-l1"><a class="reference" href="digital_input.html">Digital Input task</a></li>
+<li class="toctree-l1"><a class="reference" href="counter_input.html">Counter Input task</a></li>
+<li class="toctree-l1"><a class="reference" href="analog_output.html">Analog Output task</a></li>
+<li class="toctree-l1"><a class="reference" href="digital_output.html">Digital Output task</a></li>
+<li class="toctree-l1"><a class="reference" href="counter_output.html">Counter Output task</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference" href="">PyLibNIDAQmx</a><ul>
+<li><a class="reference" href="#module-nidaqmx">Module <tt class="docutils literal"><span class="pre">nidaqmx</span></tt></a><ul>
+<li><a class="reference" href="#example-usage">Example usage</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#reference">Reference</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="analog_input.html"
+                                  title="next chapter">Analog Input task</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analog_input.html" title="Analog Input task"
+             >next</a> |</li>
+        <li><a href="">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.2.
+    </div>
+  </body>
+</html>
