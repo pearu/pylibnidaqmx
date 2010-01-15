@@ -7,6 +7,7 @@
 #svn propset svn:mime-type image/png *.png
 #svn propset svn:mime-type text/javascript *.js
 
+#rm apidocs/.buildinfo # full rebuild
 cd doc && make html
 cd -
 cd apidocs 

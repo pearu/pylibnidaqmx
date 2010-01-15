@@ -1,6 +1,12 @@
-/**
- * Sphinx stylesheet -- basic theme
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
+ * basic.css
+ * ~~~~~~~~~
+ *
+ * Sphinx stylesheet -- basic theme.
+ *
+ * :copyright: Copyright 2007-2010 by the Sphinx team, see AUTHORS.
+ * :license: BSD, see LICENSE for details.
+ *
  */
 
 /* -- main layout ----------------------------------------------------------- */
@@ -127,6 +133,10 @@ span.linkdescr {
 
 /* -- general index --------------------------------------------------------- */
 
+table.indextable {
+    width: 100%;
+}
+
 table.indextable td {
     text-align: left;
     vertical-align: top;
@@ -150,6 +160,20 @@ img.toggler {
     margin-right: 3px;
     margin-top: 3px;
     cursor: pointer;
+}
+
+div.modindex-jumpbox {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin: 1em 0 1em 0;
+    padding: 0.4em;
+}
+
+div.genindex-jumpbox {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin: 1em 0 1em 0;
+    padding: 0.4em;
 }
 
 /* -- general body styles --------------------------------------------------- */
@@ -252,7 +276,7 @@ table.docutils {
 }
 
 table.docutils td, table.docutils th {
-    padding: 1px 8px 1px 0;
+    padding: 1px 8px 1px 5px;
     border-top: 0;
     border-left: 0;
     border-right: 0;
@@ -332,6 +356,18 @@ dl.glossary dt {
     background-color: #ffa
 }
 
+.line-block {
+    display: block;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.line-block .line-block {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 1.5em;
+}
+
 /* -- code displays --------------------------------------------------------- */
 
 pre {
@@ -378,7 +414,7 @@ img.math {
     vertical-align: middle;
 }
 
-div.math p {
+div.body div.math p {
     text-align: center;
 }
 
@@ -392,7 +428,7 @@ span.eqno {
     div.document,
     div.documentwrapper,
     div.bodywrapper {
-        margin: 0;
+        margin: 0 !important;
         width: 100%;
     }
 
