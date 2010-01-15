@@ -1,0 +1,133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nidaqmx.DigitalOutputTask.register_done_event &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nidaqmx-digitaloutputtask-register-done-event">
+<h1>nidaqmx.DigitalOutputTask.register_done_event<a class="headerlink" href="#nidaqmx-digitaloutputtask-register-done-event" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="nidaqmx.DigitalOutputTask.register_done_event">
+<tt class="descclassname">DigitalOutputTask.</tt><tt class="descname">register_done_event</tt><big>(</big><em>func</em>, <em>options=0</em>, <em>cb_data=None</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalOutputTask.register_done_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a callback function to receive an event when a task
+stops due to an error or when a finite acquisition task or
+finite generation task completes execution. A Done event does
+not occur when a task is stopped explicitly, such as by
+calling DAQmxStopTask.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>func - The function that you want DAQmx to call when the event</dt>
+<dd><p class="first">occurs.  The function you pass in this parameter must have
+the following prototype:</p>
+<dl class="docutils">
+<dt>def func(task, status, cb_data = None):</dt>
+<dd>return 0</dd>
+</dl>
+<p class="last">Upon entry to the callback, the taskHandle parameter
+contains the handle to the task on which the event
+occurred. The status parameter contains the status of the
+task when the event occurred. If the status value is
+negative, it indicates an error. If the status value is
+zero, it indicates no error. If the status value is
+positive, it indicates a warning. The callbackData parameter
+contains the value you passed in the callbackData parameter
+of this function.</p>
+</dd>
+<dt>options - Use this parameter to set certain options. You can</dt>
+<dd><p class="first">combine flags with the bitwise-OR operator (&#8216;|&#8217;) to set
+multiple options. Pass a value of zero if no options need to
+be set.</p>
+<dl class="docutils">
+<dt>&#8216;sync&#8217; - The callback function is called in the thread which</dt>
+<dd>registered the event. In order for the callback to occur,
+you must be processing messages. If you do not set this
+flag, the callback function is called in a DAQmx thread by
+default.</dd>
+</dl>
+<p class="last">Note: If you are receiving synchronous events faster than
+you are processing them, then the user interface of your
+application might become unresponsive.</p>
+</dd>
+<dt>cb_data - A value that you want DAQmx to pass to the callback</dt>
+<dd>function as the function data parameter. Do not pass the
+address of a local variable or any other variable that might
+not be valid when the function is executed.</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
+    </div>
+  </body>
+</html>

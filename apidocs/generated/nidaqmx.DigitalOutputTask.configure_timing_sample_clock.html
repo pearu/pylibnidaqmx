@@ -1,0 +1,126 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nidaqmx.DigitalOutputTask.configure_timing_sample_clock &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nidaqmx-digitaloutputtask-configure-timing-sample-clock">
+<h1>nidaqmx.DigitalOutputTask.configure_timing_sample_clock<a class="headerlink" href="#nidaqmx-digitaloutputtask-configure-timing-sample-clock" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="nidaqmx.DigitalOutputTask.configure_timing_sample_clock">
+<tt class="descclassname">DigitalOutputTask.</tt><tt class="descname">configure_timing_sample_clock</tt><big>(</big><em>source='OnboardClock'</em>, <em>rate=1</em>, <em>active_edge='rising'</em>, <em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalOutputTask.configure_timing_sample_clock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the source of the Sample Clock, the rate of the Sample
+Clock, and the number of samples to acquire or generate.</p>
+<p>Parameters:</p>
+<blockquote>
+<dl class="docutils">
+<dt>source - The source terminal of the Sample Clock. To use the</dt>
+<dd>internal clock of the device, use None or use &#8216;OnboardClock&#8217;.</dd>
+<dt>rate - The sampling rate in samples per second. If you use</dt>
+<dd>an external source for the Sample Clock, set this value to
+the maximum expected rate of that clock.</dd>
+<dt>active_edge - Specifies on which edge of the clock to</dt>
+<dd><p class="first">acquire or generate samples:</p>
+<dl class="last docutils">
+<dt>&#8216;rising&#8217; - Acquire or generate samples on the rising edges</dt>
+<dd>of the Sample Clock.</dd>
+<dt>&#8216;falling&#8217; - Acquire or generate samples on the falling</dt>
+<dd>edges of the Sample Clock.</dd>
+</dl>
+</dd>
+<dt>sample_mode - Specifies whether the task acquires or</dt>
+<dd><p class="first">generates samples continuously or if it acquires or
+generates a finite number of samples:</p>
+<p>&#8216;finite&#8217; - Acquire or generate a finite number of samples.</p>
+<p>&#8216;continuous&#8217; - Acquire or generate samples until you stop the task.</p>
+<dl class="last docutils">
+<dt>&#8216;hwtimed&#8217; - Acquire or generate samples continuously using</dt>
+<dd>hardware timing without a buffer. Hardware timed single
+point sample mode is supported only for the sample clock
+and change detection timing types.</dd>
+</dl>
+</dd>
+<dt>samples_per_channel - The number of samples to acquire or</dt>
+<dd>generate for each channel in the task if sample_mode is
+&#8216;finite&#8217;.  If sample_mode is &#8216;continuous&#8217;, NI-DAQmx uses
+this value to determine the buffer size.</dd>
+</dl>
+</blockquote>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
+    </div>
+  </body>
+</html>

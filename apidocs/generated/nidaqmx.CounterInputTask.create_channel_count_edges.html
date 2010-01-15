@@ -1,0 +1,133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nidaqmx.CounterInputTask.create_channel_count_edges &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nidaqmx-counterinputtask-create-channel-count-edges">
+<h1>nidaqmx.CounterInputTask.create_channel_count_edges<a class="headerlink" href="#nidaqmx-counterinputtask-create-channel-count-edges" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="nidaqmx.CounterInputTask.create_channel_count_edges">
+<tt class="descclassname">CounterInputTask.</tt><tt class="descname">create_channel_count_edges</tt><big>(</big><em>counter</em>, <em>name=''</em>, <em>edge='rising'</em>, <em>init=0</em>, <em>direction='up'</em><big>)</big><a class="headerlink" href="#nidaqmx.CounterInputTask.create_channel_count_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a channel to count the number of rising or falling
+edges of a digital signal and adds the channel to the task you
+specify with taskHandle. You can create only one counter input
+channel at a time with this function because a task can
+include only one counter input channel. To read from multiple
+counters simultaneously, use a separate task for each
+counter. Connect the input signal to the default input
+terminal of the counter unless you select a different input
+terminal.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>counter - The name of the counter to use to create virtual</dt>
+<dd>channels.</dd>
+<dt>name - The name(s) to assign to the created virtual</dt>
+<dd><p class="first">channel(s). If you do not specify a name, NI-DAQmx uses the
+physical channel name as the virtual channel name. If you
+specify your own names for nameToAssignToChannel, you must
+use the names when you refer to these channels in other
+NI-DAQmx functions.</p>
+<p class="last">If you create multiple virtual channels with one call to
+this function, you can specify a list of names separated by
+commas. If you provide fewer names than the number of
+virtual channels you create, NI-DAQmx automatically assigns
+names to the virtual channels.</p>
+</dd>
+<dt>edge - Specifies on which edges of the input signal to</dt>
+<dd><p class="first">increment or decrement the count:</p>
+<p class="last">&#8216;rising&#8217; - Rising edge(s).
+&#8216;falling&#8217; - Falling edge(s).</p>
+</dd>
+</dl>
+<p>init - The value from which to start counting.</p>
+<dl class="docutils">
+<dt>direction - Specifies whether to increment or decrement the</dt>
+<dd><p class="first">counter on each edge:</p>
+<p>&#8216;up&#8217; - Increment the count register on each edge.</p>
+<p>&#8216;down&#8217; - Decrement the count register on each edge.</p>
+<dl class="last docutils">
+<dt>&#8216;ext&#8217; - The state of a digital line controls the count</dt>
+<dd>direction. Each counter has a default count direction
+terminal.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
+    </div>
+  </body>
+</html>

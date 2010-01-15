@@ -1,0 +1,117 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nidaqmx.DigitalInputTask.register_every_n_samples_event &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nidaqmx-digitalinputtask-register-every-n-samples-event">
+<h1>nidaqmx.DigitalInputTask.register_every_n_samples_event<a class="headerlink" href="#nidaqmx-digitalinputtask-register-every-n-samples-event" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="nidaqmx.DigitalInputTask.register_every_n_samples_event">
+<tt class="descclassname">DigitalInputTask.</tt><tt class="descname">register_every_n_samples_event</tt><big>(</big><em>func</em>, <em>samples=1</em>, <em>options=0</em>, <em>cb_data=None</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalInputTask.register_every_n_samples_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a callback function to receive an event when the
+specified number of samples is written from the device to the
+buffer or from the buffer to the device. This function only
+works with devices that support buffered tasks.</p>
+<p>When you stop a task explicitly any pending events are
+discarded. For example, if you call DAQmxStopTask then you do
+not receive any pending events.</p>
+<p>Parameters:</p>
+<dl class="docutils">
+<dt>func - The function that you want DAQmx to call when the event</dt>
+<dd><p class="first">occurs. The function you pass in this parameter must have
+the following prototype:</p>
+<dl class="docutils">
+<dt>def func(task, event_type, samples, cb_data):</dt>
+<dd>return 0</dd>
+</dl>
+<p class="last">Upon entry to the callback, the task parameter contains the
+handle to the task on which the event occurred. The
+event_type parameter contains the value you passed in the
+event_type parameter of this function. The samples parameter
+contains the value you passed in the samples parameter of
+this function. The cb_data parameter contains the value you
+passed in the cb_data parameter of this function.</p>
+</dd>
+<dt>samples - The number of samples after which each event should</dt>
+<dd>occur.</dd>
+</dl>
+<p>options, cb_data - see register_done_event documentation.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
+    </div>
+  </body>
+</html>

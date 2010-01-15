@@ -1,0 +1,324 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nidaqmx.DigitalOutputTask &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nidaqmx-digitaloutputtask">
+<h1>nidaqmx.DigitalOutputTask<a class="headerlink" href="#nidaqmx-digitaloutputtask" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="nidaqmx.DigitalOutputTask">
+<em class="property">class </em><tt class="descclassname">nidaqmx.</tt><tt class="descname">DigitalOutputTask</tt><big>(</big><em>name=''</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalOutputTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exposes NIDAQmx digital output task to Python.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><a title="nidaqmx.DigitalOutputTask.alter_state" class="reference" href="nidaqmx.DigitalOutputTask.alter_state.html#nidaqmx.DigitalOutputTask.alter_state"><tt class="xref docutils literal"><span class="pre">alter_state</span></tt></a>(state)</td>
+<td>Alters the state of a task according to the action you specify.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_timing_burst_handshaking_export_clock" class="reference" href="nidaqmx.DigitalOutputTask.configure_timing_burst_handshaking_export_clock.html#nidaqmx.DigitalOutputTask.configure_timing_burst_handshaking_export_clock"><tt class="xref docutils literal"><span class="pre">configure_timing_burst_handshaking_export_clock</span></tt></a>(...)</td>
+<td>Configures when the DAQ device transfers data to a peripheral</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_timing_burst_handshaking_import_clock" class="reference" href="nidaqmx.DigitalOutputTask.configure_timing_burst_handshaking_import_clock.html#nidaqmx.DigitalOutputTask.configure_timing_burst_handshaking_import_clock"><tt class="xref docutils literal"><span class="pre">configure_timing_burst_handshaking_import_clock</span></tt></a>(...)</td>
+<td>Configures when the DAQ device transfers data to a peripheral</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_timing_change_detection" class="reference" href="nidaqmx.DigitalOutputTask.configure_timing_change_detection.html#nidaqmx.DigitalOutputTask.configure_timing_change_detection"><tt class="xref docutils literal"><span class="pre">configure_timing_change_detection</span></tt></a>([...])</td>
+<td>Configures the task to acquire samples on the rising and/or</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_timing_handshaking" class="reference" href="nidaqmx.DigitalOutputTask.configure_timing_handshaking.html#nidaqmx.DigitalOutputTask.configure_timing_handshaking"><tt class="xref docutils literal"><span class="pre">configure_timing_handshaking</span></tt></a>([sample_mode,&nbsp;...])</td>
+<td>Determines the number of digital samples to acquire or</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_timing_implicit" class="reference" href="nidaqmx.DigitalOutputTask.configure_timing_implicit.html#nidaqmx.DigitalOutputTask.configure_timing_implicit"><tt class="xref docutils literal"><span class="pre">configure_timing_implicit</span></tt></a>([sample_mode,&nbsp;...])</td>
+<td>Sets only the number of samples to acquire or generate without specifying timing.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_timing_sample_clock" class="reference" href="nidaqmx.DigitalOutputTask.configure_timing_sample_clock.html#nidaqmx.DigitalOutputTask.configure_timing_sample_clock"><tt class="xref docutils literal"><span class="pre">configure_timing_sample_clock</span></tt></a>([source,&nbsp;...])</td>
+<td>Sets the source of the Sample Clock, the rate of the Sample</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_trigger_analog_edge_start" class="reference" href="nidaqmx.DigitalOutputTask.configure_trigger_analog_edge_start.html#nidaqmx.DigitalOutputTask.configure_trigger_analog_edge_start"><tt class="xref docutils literal"><span class="pre">configure_trigger_analog_edge_start</span></tt></a>(source)</td>
+<td>Configures the task to start acquiring or generating samples when an analog signal crosses the level you specify.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_trigger_analog_window_start" class="reference" href="nidaqmx.DigitalOutputTask.configure_trigger_analog_window_start.html#nidaqmx.DigitalOutputTask.configure_trigger_analog_window_start"><tt class="xref docutils literal"><span class="pre">configure_trigger_analog_window_start</span></tt></a>(source)</td>
+<td>Configures the task to start acquiring or generating samples when an analog signal enters or leaves a range you specify.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_trigger_digital_edge_start" class="reference" href="nidaqmx.DigitalOutputTask.configure_trigger_digital_edge_start.html#nidaqmx.DigitalOutputTask.configure_trigger_digital_edge_start"><tt class="xref docutils literal"><span class="pre">configure_trigger_digital_edge_start</span></tt></a>(source)</td>
+<td>Configures the task to start acquiring or generating samples on a rising or falling edge of a digital signal.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_trigger_digital_pattern_start" class="reference" href="nidaqmx.DigitalOutputTask.configure_trigger_digital_pattern_start.html#nidaqmx.DigitalOutputTask.configure_trigger_digital_pattern_start"><tt class="xref docutils literal"><span class="pre">configure_trigger_digital_pattern_start</span></tt></a>(...)</td>
+<td>Configures a task to start acquiring or generating samples when a digital pattern is matched.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.configure_trigger_disable_start" class="reference" href="nidaqmx.DigitalOutputTask.configure_trigger_disable_start.html#nidaqmx.DigitalOutputTask.configure_trigger_disable_start"><tt class="xref docutils literal"><span class="pre">configure_trigger_disable_start</span></tt></a>()</td>
+<td>Configures the task to start acquiring or generating samples</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.create_channel" class="reference" href="nidaqmx.DigitalOutputTask.create_channel.html#nidaqmx.DigitalOutputTask.create_channel"><tt class="xref docutils literal"><span class="pre">create_channel</span></tt></a>(lines[,&nbsp;name,&nbsp;grouping])</td>
+<td>Creates channel(s) to generate digital signals and adds the</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_ai_convert_max_rate" class="reference" href="nidaqmx.DigitalOutputTask.get_ai_convert_max_rate.html#nidaqmx.DigitalOutputTask.get_ai_convert_max_rate"><tt class="xref docutils literal"><span class="pre">get_ai_convert_max_rate</span></tt></a>()</td>
+<td>Indicates the maximum convert rate supported by the task, given the current devices and channel count.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_arm_start_trigger" class="reference" href="nidaqmx.DigitalOutputTask.get_arm_start_trigger.html#nidaqmx.DigitalOutputTask.get_arm_start_trigger"><tt class="xref docutils literal"><span class="pre">get_arm_start_trigger</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_auto_zero_mode" class="reference" href="nidaqmx.DigitalOutputTask.get_auto_zero_mode.html#nidaqmx.DigitalOutputTask.get_auto_zero_mode"><tt class="xref docutils literal"><span class="pre">get_auto_zero_mode</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_buffer_size" class="reference" href="nidaqmx.DigitalOutputTask.get_buffer_size.html#nidaqmx.DigitalOutputTask.get_buffer_size"><tt class="xref docutils literal"><span class="pre">get_buffer_size</span></tt></a>([on_board])</td>
+<td>Specifies the number of samples the I/O buffer can hold for</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_channel_type" class="reference" href="nidaqmx.DigitalOutputTask.get_channel_type.html#nidaqmx.DigitalOutputTask.get_channel_type"><tt class="xref docutils literal"><span class="pre">get_channel_type</span></tt></a>(channel_name)</td>
+<td>Indicates the type of the virtual channel.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_convert_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.get_convert_clock_rate.html#nidaqmx.DigitalOutputTask.get_convert_clock_rate"><tt class="xref docutils literal"><span class="pre">get_convert_clock_rate</span></tt></a>()</td>
+<td>See set_convert_clock_rate documentation.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_data_transfer_mechanism" class="reference" href="nidaqmx.DigitalOutputTask.get_data_transfer_mechanism.html#nidaqmx.DigitalOutputTask.get_data_transfer_mechanism"><tt class="xref docutils literal"><span class="pre">get_data_transfer_mechanism</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_devices" class="reference" href="nidaqmx.DigitalOutputTask.get_devices.html#nidaqmx.DigitalOutputTask.get_devices"><tt class="xref docutils literal"><span class="pre">get_devices</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_gain" class="reference" href="nidaqmx.DigitalOutputTask.get_gain.html#nidaqmx.DigitalOutputTask.get_gain"><tt class="xref docutils literal"><span class="pre">get_gain</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_high" class="reference" href="nidaqmx.DigitalOutputTask.get_high.html#nidaqmx.DigitalOutputTask.get_high"><tt class="xref docutils literal"><span class="pre">get_high</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_info_str" class="reference" href="nidaqmx.DigitalOutputTask.get_info_str.html#nidaqmx.DigitalOutputTask.get_info_str"><tt class="xref docutils literal"><span class="pre">get_info_str</span></tt></a>([global_info])</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_low" class="reference" href="nidaqmx.DigitalOutputTask.get_low.html#nidaqmx.DigitalOutputTask.get_low"><tt class="xref docutils literal"><span class="pre">get_low</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_major_version" class="reference" href="nidaqmx.DigitalOutputTask.get_major_version.html#nidaqmx.DigitalOutputTask.get_major_version"><tt class="xref docutils literal"><span class="pre">get_major_version</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_max" class="reference" href="nidaqmx.DigitalOutputTask.get_max.html#nidaqmx.DigitalOutputTask.get_max"><tt class="xref docutils literal"><span class="pre">get_max</span></tt></a>(channel_name)</td>
+<td>Specifies the maximum value you expect to measure or generate.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_measurment_type" class="reference" href="nidaqmx.DigitalOutputTask.get_measurment_type.html#nidaqmx.DigitalOutputTask.get_measurment_type"><tt class="xref docutils literal"><span class="pre">get_measurment_type</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_min" class="reference" href="nidaqmx.DigitalOutputTask.get_min.html#nidaqmx.DigitalOutputTask.get_min"><tt class="xref docutils literal"><span class="pre">get_min</span></tt></a>(channel_name)</td>
+<td>Specifies the minimum value you expect to measure or generate.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_minor_version" class="reference" href="nidaqmx.DigitalOutputTask.get_minor_version.html#nidaqmx.DigitalOutputTask.get_minor_version"><tt class="xref docutils literal"><span class="pre">get_minor_version</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_names_of_channels" class="reference" href="nidaqmx.DigitalOutputTask.get_names_of_channels.html#nidaqmx.DigitalOutputTask.get_names_of_channels"><tt class="xref docutils literal"><span class="pre">get_names_of_channels</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_number_of_channels" class="reference" href="nidaqmx.DigitalOutputTask.get_number_of_channels.html#nidaqmx.DigitalOutputTask.get_number_of_channels"><tt class="xref docutils literal"><span class="pre">get_number_of_channels</span></tt></a>()</td>
+<td>Indicates the number of virtual channels in the task.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_number_of_lines" class="reference" href="nidaqmx.DigitalOutputTask.get_number_of_lines.html#nidaqmx.DigitalOutputTask.get_number_of_lines"><tt class="xref docutils literal"><span class="pre">get_number_of_lines</span></tt></a>(channel)</td>
+<td>Indicates the number of digital lines in the channel.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_physical_channel_name" class="reference" href="nidaqmx.DigitalOutputTask.get_physical_channel_name.html#nidaqmx.DigitalOutputTask.get_physical_channel_name"><tt class="xref docutils literal"><span class="pre">get_physical_channel_name</span></tt></a>(channel_name)</td>
+<td>Indicates the name of the physical channel upon which this</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_read_current_position" class="reference" href="nidaqmx.DigitalOutputTask.get_read_current_position.html#nidaqmx.DigitalOutputTask.get_read_current_position"><tt class="xref docutils literal"><span class="pre">get_read_current_position</span></tt></a>()</td>
+<td>Indicates in samples per channel the current position in the</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_regeneration" class="reference" href="nidaqmx.DigitalOutputTask.get_regeneration.html#nidaqmx.DigitalOutputTask.get_regeneration"><tt class="xref docutils literal"><span class="pre">get_regeneration</span></tt></a>()</td>
+<td>Return True if regeneration (generating the same data more</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_sample_clock_max_rate" class="reference" href="nidaqmx.DigitalOutputTask.get_sample_clock_max_rate.html#nidaqmx.DigitalOutputTask.get_sample_clock_max_rate"><tt class="xref docutils literal"><span class="pre">get_sample_clock_max_rate</span></tt></a>()</td>
+<td>Indicates the maximum Sample Clock rate supported by the task,</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_sample_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.get_sample_clock_rate.html#nidaqmx.DigitalOutputTask.get_sample_clock_rate"><tt class="xref docutils literal"><span class="pre">get_sample_clock_rate</span></tt></a>()</td>
+<td>See <a title="nidaqmx.DigitalOutputTask.set_sample_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.set_sample_clock_rate.html#nidaqmx.DigitalOutputTask.set_sample_clock_rate"><tt class="xref docutils literal"><span class="pre">set_sample_clock_rate</span></tt></a> documentation.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_samples_per_channel_acquired" class="reference" href="nidaqmx.DigitalOutputTask.get_samples_per_channel_acquired.html#nidaqmx.DigitalOutputTask.get_samples_per_channel_acquired"><tt class="xref docutils literal"><span class="pre">get_samples_per_channel_acquired</span></tt></a>()</td>
+<td>Indicates the total number of samples acquired by each channel.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_samples_per_channel_available" class="reference" href="nidaqmx.DigitalOutputTask.get_samples_per_channel_available.html#nidaqmx.DigitalOutputTask.get_samples_per_channel_available"><tt class="xref docutils literal"><span class="pre">get_samples_per_channel_available</span></tt></a>()</td>
+<td>Indicates the number of samples available to read per channel.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_system_devices" class="reference" href="nidaqmx.DigitalOutputTask.get_system_devices.html#nidaqmx.DigitalOutputTask.get_system_devices"><tt class="xref docutils literal"><span class="pre">get_system_devices</span></tt></a>()</td>
+<td>Indicates the names of all devices installed in the system.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_system_global_channels" class="reference" href="nidaqmx.DigitalOutputTask.get_system_global_channels.html#nidaqmx.DigitalOutputTask.get_system_global_channels"><tt class="xref docutils literal"><span class="pre">get_system_global_channels</span></tt></a>()</td>
+<td>Indicates an array that contains the names of all global</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_system_tasks" class="reference" href="nidaqmx.DigitalOutputTask.get_system_tasks.html#nidaqmx.DigitalOutputTask.get_system_tasks"><tt class="xref docutils literal"><span class="pre">get_system_tasks</span></tt></a>()</td>
+<td>Indicates an array that contains the names of all tasks saved</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_units" class="reference" href="nidaqmx.DigitalOutputTask.get_units.html#nidaqmx.DigitalOutputTask.get_units"><tt class="xref docutils literal"><span class="pre">get_units</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.get_version" class="reference" href="nidaqmx.DigitalOutputTask.get_version.html#nidaqmx.DigitalOutputTask.get_version"><tt class="xref docutils literal"><span class="pre">get_version</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.is_channel_global" class="reference" href="nidaqmx.DigitalOutputTask.is_channel_global.html#nidaqmx.DigitalOutputTask.is_channel_global"><tt class="xref docutils literal"><span class="pre">is_channel_global</span></tt></a>(channel_name)</td>
+<td>Indicates whether the channel is a global channel.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.is_done" class="reference" href="nidaqmx.DigitalOutputTask.is_done.html#nidaqmx.DigitalOutputTask.is_done"><tt class="xref docutils literal"><span class="pre">is_done</span></tt></a>()</td>
+<td>Queries the status of the task and indicates if it completed execution.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.register_done_event" class="reference" href="nidaqmx.DigitalOutputTask.register_done_event.html#nidaqmx.DigitalOutputTask.register_done_event"><tt class="xref docutils literal"><span class="pre">register_done_event</span></tt></a>(func[,&nbsp;options,&nbsp;cb_data])</td>
+<td>Registers a callback function to receive an event when a task stops due to an error or when a finite acquisition task or finite generation task completes execution.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.register_every_n_samples_event" class="reference" href="nidaqmx.DigitalOutputTask.register_every_n_samples_event.html#nidaqmx.DigitalOutputTask.register_every_n_samples_event"><tt class="xref docutils literal"><span class="pre">register_every_n_samples_event</span></tt></a>(func[,&nbsp;...])</td>
+<td>Registers a callback function to receive an event when the specified number of samples is written from the device to the buffer or from the buffer to the device.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.register_signal_event" class="reference" href="nidaqmx.DigitalOutputTask.register_signal_event.html#nidaqmx.DigitalOutputTask.register_signal_event"><tt class="xref docutils literal"><span class="pre">register_signal_event</span></tt></a>(func,&nbsp;signal[,&nbsp;...])</td>
+<td>Registers a callback function to receive an event when the specified hardware event occurs.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_arm_start_trigger" class="reference" href="nidaqmx.DigitalOutputTask.reset_arm_start_trigger.html#nidaqmx.DigitalOutputTask.reset_arm_start_trigger"><tt class="xref docutils literal"><span class="pre">reset_arm_start_trigger</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_buffer_size" class="reference" href="nidaqmx.DigitalOutputTask.reset_buffer_size.html#nidaqmx.DigitalOutputTask.reset_buffer_size"><tt class="xref docutils literal"><span class="pre">reset_buffer_size</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_convert_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.reset_convert_clock_rate.html#nidaqmx.DigitalOutputTask.reset_convert_clock_rate"><tt class="xref docutils literal"><span class="pre">reset_convert_clock_rate</span></tt></a>()</td>
+<td>See set_convert_clock_rate documentation.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_max" class="reference" href="nidaqmx.DigitalOutputTask.reset_max.html#nidaqmx.DigitalOutputTask.reset_max"><tt class="xref docutils literal"><span class="pre">reset_max</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_min" class="reference" href="nidaqmx.DigitalOutputTask.reset_min.html#nidaqmx.DigitalOutputTask.reset_min"><tt class="xref docutils literal"><span class="pre">reset_min</span></tt></a>(channel_name)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_regeneration" class="reference" href="nidaqmx.DigitalOutputTask.reset_regeneration.html#nidaqmx.DigitalOutputTask.reset_regeneration"><tt class="xref docutils literal"><span class="pre">reset_regeneration</span></tt></a>()</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.reset_sample_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.reset_sample_clock_rate.html#nidaqmx.DigitalOutputTask.reset_sample_clock_rate"><tt class="xref docutils literal"><span class="pre">reset_sample_clock_rate</span></tt></a>()</td>
+<td>See set_sample_clock_rate documentation.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_arm_start_trigger" class="reference" href="nidaqmx.DigitalOutputTask.set_arm_start_trigger.html#nidaqmx.DigitalOutputTask.set_arm_start_trigger"><tt class="xref docutils literal"><span class="pre">set_arm_start_trigger</span></tt></a>([trigger_type])</td>
+<td>Specifies the type of trigger to use to arm the task for a</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_arm_start_trigger_edge" class="reference" href="nidaqmx.DigitalOutputTask.set_arm_start_trigger_edge.html#nidaqmx.DigitalOutputTask.set_arm_start_trigger_edge"><tt class="xref docutils literal"><span class="pre">set_arm_start_trigger_edge</span></tt></a>([edge])</td>
+<td>Specifies on which edge of a digital signal to arm the task</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_arm_start_trigger_source" class="reference" href="nidaqmx.DigitalOutputTask.set_arm_start_trigger_source.html#nidaqmx.DigitalOutputTask.set_arm_start_trigger_source"><tt class="xref docutils literal"><span class="pre">set_arm_start_trigger_source</span></tt></a>(source)</td>
+<td>Specifies the name of a terminal where there is a digital</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_buffer" class="reference" href="nidaqmx.DigitalOutputTask.set_buffer.html#nidaqmx.DigitalOutputTask.set_buffer"><tt class="xref docutils literal"><span class="pre">set_buffer</span></tt></a>(samples_per_channel)</td>
+<td>Overrides the automatic I/O buffer allocation that NI-DAQmx performs.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_buffer_size" class="reference" href="nidaqmx.DigitalOutputTask.set_buffer_size.html#nidaqmx.DigitalOutputTask.set_buffer_size"><tt class="xref docutils literal"><span class="pre">set_buffer_size</span></tt></a>(sz)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_channel_type" class="reference" href="nidaqmx.DigitalOutputTask.set_channel_type.html#nidaqmx.DigitalOutputTask.set_channel_type"><tt class="xref docutils literal"><span class="pre">set_channel_type</span></tt></a>(t)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_convert_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.set_convert_clock_rate.html#nidaqmx.DigitalOutputTask.set_convert_clock_rate"><tt class="xref docutils literal"><span class="pre">set_convert_clock_rate</span></tt></a>(value)</td>
+<td>Specifies the rate at which to clock the analog-to-digital converter.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_max" class="reference" href="nidaqmx.DigitalOutputTask.set_max.html#nidaqmx.DigitalOutputTask.set_max"><tt class="xref docutils literal"><span class="pre">set_max</span></tt></a>(channel_name,&nbsp;value)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_min" class="reference" href="nidaqmx.DigitalOutputTask.set_min.html#nidaqmx.DigitalOutputTask.set_min"><tt class="xref docutils literal"><span class="pre">set_min</span></tt></a>(channel_name,&nbsp;value)</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_pause_trigger" class="reference" href="nidaqmx.DigitalOutputTask.set_pause_trigger.html#nidaqmx.DigitalOutputTask.set_pause_trigger"><tt class="xref docutils literal"><span class="pre">set_pause_trigger</span></tt></a>([trigger_type])</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_pause_trigger_source" class="reference" href="nidaqmx.DigitalOutputTask.set_pause_trigger_source.html#nidaqmx.DigitalOutputTask.set_pause_trigger_source"><tt class="xref docutils literal"><span class="pre">set_pause_trigger_source</span></tt></a>(source)</td>
+<td>Specifies the name of a virtual channel or terminal where there is an analog signal to use as the source of the trigger.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_pause_trigger_when" class="reference" href="nidaqmx.DigitalOutputTask.set_pause_trigger_when.html#nidaqmx.DigitalOutputTask.set_pause_trigger_when"><tt class="xref docutils literal"><span class="pre">set_pause_trigger_when</span></tt></a>([when])</td>
+<td>Specifies whether the task pauses above or below the threshold</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_regeneration" class="reference" href="nidaqmx.DigitalOutputTask.set_regeneration.html#nidaqmx.DigitalOutputTask.set_regeneration"><tt class="xref docutils literal"><span class="pre">set_regeneration</span></tt></a>([allow])</td>
+<td></td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.set_sample_clock_rate" class="reference" href="nidaqmx.DigitalOutputTask.set_sample_clock_rate.html#nidaqmx.DigitalOutputTask.set_sample_clock_rate"><tt class="xref docutils literal"><span class="pre">set_sample_clock_rate</span></tt></a>(value)</td>
+<td>Specifies the sampling rate in samples per channel per second.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.start" class="reference" href="nidaqmx.DigitalOutputTask.start.html#nidaqmx.DigitalOutputTask.start"><tt class="xref docutils literal"><span class="pre">start</span></tt></a>()</td>
+<td>Transitions the task from the committed state to the running state, which begins measurement or generation.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.stop" class="reference" href="nidaqmx.DigitalOutputTask.stop.html#nidaqmx.DigitalOutputTask.stop"><tt class="xref docutils literal"><span class="pre">stop</span></tt></a>()</td>
+<td>Stops the task and returns it to the state it was in before</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.wait_until_done" class="reference" href="nidaqmx.DigitalOutputTask.wait_until_done.html#nidaqmx.DigitalOutputTask.wait_until_done"><tt class="xref docutils literal"><span class="pre">wait_until_done</span></tt></a>([timeout])</td>
+<td>Waits for the measurement or generation to complete.</td>
+</tr>
+<tr><td><a title="nidaqmx.DigitalOutputTask.write" class="reference" href="nidaqmx.DigitalOutputTask.write.html#nidaqmx.DigitalOutputTask.write"><tt class="xref docutils literal"><span class="pre">write</span></tt></a>(data[,&nbsp;auto_start,&nbsp;timeout,&nbsp;layout])</td>
+<td>Writes multiple samples to each digital line in a task.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
+    </div>
+  </body>
+</html>

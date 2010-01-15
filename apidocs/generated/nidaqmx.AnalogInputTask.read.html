@@ -1,0 +1,151 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nidaqmx.AnalogInputTask.read &mdash; PyLibNIDAQmx v0.2.0.dev16 documentation</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.2.0.dev16',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="PyLibNIDAQmx v0.2.0.dev16 documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nidaqmx-analoginputtask-read">
+<h1>nidaqmx.AnalogInputTask.read<a class="headerlink" href="#nidaqmx-analoginputtask-read" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="nidaqmx.AnalogInputTask.read">
+<tt class="descclassname">AnalogInputTask.</tt><tt class="descname">read</tt><big>(</big><em>samples_per_channel=None</em>, <em>timeout=10.0</em>, <em>fill_mode='group_by_scan_number'</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogInputTask.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads multiple floating-point samples from a task that
+contains one or more analog input channels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>samples_per_channel</strong> : int</p>
+<blockquote>
+<p>The number of samples, per channel, to read. The default
+value of -1 (DAQmx_Val_Auto) reads all available samples. If
+readArray does not contain enough space, this function
+returns as many samples as fit in readArray.</p>
+<p>NI-DAQmx determines how many samples to read based on
+whether the task acquires samples continuously or acquires a
+finite number of samples.</p>
+<p>If the task acquires samples continuously and you set this
+parameter to -1, this function reads all the samples
+currently available in the buffer.</p>
+<p>If the task acquires a finite number of samples and you set
+this parameter to -1, the function waits for the task to
+acquire all requested samples, then reads those samples. If
+you set the Read All Available Samples property to TRUE, the
+function reads the samples currently available in the buffer
+and does not wait for the task to acquire all requested
+samples.</p>
+</blockquote>
+<p><strong>timeout</strong> : float</p>
+<blockquote>
+<p>The amount of time, in seconds, to wait for the function to
+read the sample(s). The default value is 10.0 seconds. To
+specify an infinite wait, pass -1
+(DAQmx_Val_WaitInfinitely). This function returns an error
+if the timeout elapses.</p>
+<p>A value of 0 indicates to try once to read the requested
+samples. If all the requested samples are read, the function
+is successful. Otherwise, the function returns a timeout
+error and returns the samples that were actually read.</p>
+</blockquote>
+<p><strong>fill_mode</strong> : {&#8216;group_by_channel&#8217;, &#8216;group_by_scan_number&#8217;}</p>
+<blockquote>
+<p>Specifies whether or not the samples are interleaved:</p>
+<blockquote>
+<dl class="docutils">
+<dt>&#8216;group_by_channel&#8217;</dt>
+<dd><p class="first last">Group by channel (non-interleaved).</p>
+</dd>
+<dt>&#8216;group_by_scan_number&#8217;</dt>
+<dd><p class="first last">Group by scan number (interleaved).</p>
+</dd>
+</dl>
+</blockquote>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data :</strong> :</p>
+<blockquote class="last">
+<p>The array to read samples into, organized according to <em>fill_mode</em>.</p>
+</blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../index.html">PyLibNIDAQmx v0.2.0.dev16 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2009-2010, Pearu Peterson.
+      Last updated on Jan 14, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
+    </div>
+  </body>
+</html>

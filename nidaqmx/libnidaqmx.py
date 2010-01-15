@@ -1,5 +1,21 @@
 #!/usr/bin/env python
+#
+# Please follow
+#   http://projects.scipy.org/numpy/wiki/CodingStyleGuidelines
+#
+# Author: Pearu Peterson
+# Created: July 2009
+
 """
+
+
+"""
+
+"""
+=================
+:mod:`libnidaqmx`
+=================
+
 ctypes based wrapper to the NIDAQmx library
 ===========================================
 
@@ -30,8 +46,7 @@ Task methods:
   configure_timing_handchaking(sample_mode=,samples_per_channel=)
   configure_timing_implicit(sample_mode=,samples_per_channel=)
   configure_timing_change_detection(rising_edge_channel=,falling_edge_channel=,sample_mode=,samples_per_channel=)
-  configure_timing_sample_clock(source=OnboardClock,rate=1,
-    active_edge=rising|falling,sample_mode=finite|continuous|hwtimed,samples_per_channel=)
+  configure_timing_sample_clock(source=OnboardClock,rate=1,active_edge=rising|falling,sample_mode=finite|continuous|hwtimed,samples_per_channel=)
 
   get_sample_clock_max_rate() - analog input only
   get_ai_convert_max_rate()
@@ -90,8 +105,7 @@ CounterInput methods:
   set/get/reset_duplicate_count_prevention(channel, enable=True//)
   set/get/reset_timebase_rate(channel, rate//)
 """
-# Author: Pearu Peterson
-# Created: July 2009
+
 
 __all__ = ['AnalogInputTask', 'AnalogOutputTask',
            'DigitalInputTask', 'DigitalOutputTask',
@@ -502,6 +516,9 @@ class Device(str):
 
 class Task(uInt32):
 
+    """ Base class to task classes.
+    """
+
     @classmethod
     def get_major_version(cls):
         d = uInt32 (0)
@@ -560,7 +577,7 @@ class Task(uInt32):
         Creates a task.
 
         If you create a task within a loop, NI-DAQmx creates a new
-        task in each iteration of the loop. Use `del task` within the
+        task in each iteration of the loop. Use ``del task`` within the
         loop after you finish with the task to avoid allocating
         unnecessary memory.
         """
@@ -1287,7 +1304,7 @@ class Task(uInt32):
         return CALL('ResetBuf%sBufSize' % (channel_io_type.title()), self) == 0
 
     def get_sample_clock_rate(self):
-        """ See set_sample_clock_rate documentation.
+        """ See :meth:`set_sample_clock_rate` documentation.
         """
         d = float64(0)
         CALL ('GetSampClkRate', self, ctypes.byref(d))
@@ -1720,11 +1737,14 @@ class Task(uInt32):
         function to ensure that the specified operation is complete
         before you stop the task.
 
-        Parameters:
+        Parameters
+        ----------
 
-        timeout - The maximum amount of time, in seconds, to wait for
-          the measurement or generation to complete. The function
-          returns an error if the time elapses before the measurement or
+        timeout : 
+
+          The maximum amount of time, in seconds, to wait for the
+          measurement or generation to complete. The function returns
+          an error if the time elapses before the measurement or
           generation is complete.
         
           A value of -1 (DAQmx_Val_WaitInfinitely) means to wait
@@ -1739,6 +1759,10 @@ class Task(uInt32):
 
 class AnalogInputTask(Task):
 
+    """Exposes NIDAQmx analog input task to Python.
+
+    """
+
     channel_type = 'AI'
 
     def create_voltage_channel(self, phys_channel, channel_name="", terminal='default',
@@ -1751,18 +1775,21 @@ class AnalogInputTask(Task):
         voltage to be scaled by excitation, call
         DAQmxCreateAIVoltageChanWithExcit.
 
-        Parameters:
+        Parameters
+        ----------
 
-        phys_channel - The names of the physical channels to use to
-          create virtual channels. You can specify a list or range of
-          physical channels.
+        phys_channel : str
+          The names of the physical channels to use to create virtual
+          channels. You can specify a list or range of physical
+          channels.
 
-        channel_name - The name(s) to assign to the created virtual
-          channel(s). If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for nameToAssignToChannel, you must
-          use the names when you refer to these channels in other
-          NI-DAQmx functions.
+        channel_name : str
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
 
           If you create multiple virtual channels with one call to
           this function, you can specify a list of names separated by
@@ -1770,31 +1797,46 @@ class AnalogInputTask(Task):
           virtual channels you create, NI-DAQmx automatically assigns
           names to the virtual channels.
 
-        terminal - The input terminal configuration for the channel:
+        terminal : {'default', 'rse', 'nrse', 'diff', 'pseudodiff'}
+          The input terminal configuration for the channel:
 
-          'default' - At run time, NI-DAQmx chooses the default
-            terminal configuration for the channel.
+            'default'
+              At run time, NI-DAQmx chooses the default terminal
+              configuration for the channel.
 
-          'rse' - Referenced single-ended mode
-          'nrse' - Nonreferenced single-ended mode
-          'diff' - Differential mode
-          'pseudodiff' - Pseudodifferential mode 
+            'rse'
+              Referenced single-ended mode
 
-        min_val - The minimum value, in units, that you expect to measure.
+            'nrse'
+              Nonreferenced single-ended mode
 
-        max_val - The maximum value, in units, that you expect to measure.
+            'diff'
+              Differential mode
+          
+            'pseudodiff'
+              Pseudodifferential mode 
 
-        units - The units to use to return the voltage measurements:
+        min_val :
+          The minimum value, in units, that you expect to measure.
 
-          'volts' - volts
+        max_val :
+          The maximum value, in units, that you expect to measure.
 
-          'custom' - Units a custom scale specifies. Use
-            custom_scale_name to specify a custom scale.
+        units : {'volts', 'custom'}
+          The units to use to return the voltage measurements:
 
-        custom_scale_name - The name of a custom scale to apply to the
-          channel. To use this parameter, you must set units to
-          'custom'.  If you do not set units to 'custom', you must set
-          custom_scale_name to None.
+            'volts'
+              volts
+
+            'custom'
+              Units a custom scale specifies. Use custom_scale_name to
+              specify a custom scale.
+
+        custom_scale_name :
+          The name of a custom scale to apply to the channel. To use
+          this parameter, you must set units to 'custom'.  If you do
+          not set units to 'custom', you must set custom_scale_name to
+          None.
 
         Returns True on success.
         """
@@ -1826,13 +1868,14 @@ class AnalogInputTask(Task):
         Reads multiple floating-point samples from a task that
         contains one or more analog input channels.
 
-        Parameters:
+        Parameters
+        ----------
 
-        samples_per_channel - The number of samples, per channel, to
-          read. The default value of -1 (DAQmx_Val_Auto) reads all
-          available samples. If readArray does not contain enough
-          space, this function returns as many samples as fit in
-          readArray.
+        samples_per_channel : int
+          The number of samples, per channel, to read. The default
+          value of -1 (DAQmx_Val_Auto) reads all available samples. If
+          readArray does not contain enough space, this function
+          returns as many samples as fit in readArray.
 
           NI-DAQmx determines how many samples to read based on
           whether the task acquires samples continuously or acquires a
@@ -1850,9 +1893,10 @@ class AnalogInputTask(Task):
           and does not wait for the task to acquire all requested
           samples.
 
-        timeout - The amount of time, in seconds, to wait for the
-          function to read the sample(s). The default value is 10.0
-          seconds. To specify an infinite wait, pass -1
+        timeout : float
+          The amount of time, in seconds, to wait for the function to
+          read the sample(s). The default value is 10.0 seconds. To
+          specify an infinite wait, pass -1
           (DAQmx_Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
@@ -1861,21 +1905,26 @@ class AnalogInputTask(Task):
           is successful. Otherwise, the function returns a timeout
           error and returns the samples that were actually read.
 
-        fill_mode - Specifies whether or not the samples are
-          interleaved:
+        fill_mode : {'group_by_channel', 'group_by_scan_number'}
+          Specifies whether or not the samples are interleaved:
 
-          'group_by_channel' - Group by channel (non-interleaved).
-          'group_by_scan_number' - Group by scan number (interleaved).
+            'group_by_channel'
+              Group by channel (non-interleaved).
 
-        Output:
+            'group_by_scan_number'
+              Group by scan number (interleaved).
+
+        Returns
+        -------
         
-        data - The array to read samples into, organized according to fill_mode.
+        data :
+          The array to read samples into, organized according to `fill_mode`.
 
-        Note on data storage order:
+        Note on data storage order
+        --------------------------
 
         In non-interleaved mode: ch0:s1, ch0:s2, ..., ch1:s1, ch1:s2,..., ch2:s1,..
         In interleaved mode: ch0:s1, ch1:s1, ch2:s1, ch0:s2, ch1:s2, ch2:s2,...
-
         """
         fill_mode_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
                              group_by_scan_number = DAQmx_Val_GroupByScanNumber)
@@ -1903,6 +1952,9 @@ class AnalogInputTask(Task):
     
 
 class AnalogOutputTask (Task):
+
+    """Exposes NIDAQmx analog output task to Python.
+    """
 
     channel_type = 'AO'
 
@@ -2035,6 +2087,9 @@ class DigitalTask (Task):
         return d.value
 
 class DigitalInputTask(DigitalTask):
+
+    """Exposes NIDAQmx digital input task to Python.
+    """
 
     channel_type = 'DI'
 
@@ -2175,6 +2230,9 @@ class DigitalInputTask(DigitalTask):
 
 class DigitalOutputTask(DigitalTask):
 
+    """Exposes NIDAQmx digital output task to Python.
+    """
+
     channel_type = 'DO'
 
     def create_channel(self, lines, name='', grouping='per_line'):
@@ -2302,6 +2360,9 @@ class DigitalOutputTask(DigitalTask):
 
 class CounterInputTask(Task):
 
+    """Exposes NIDAQmx counter input task to Python.
+    """
+
     channel_type = 'CI'
 
     def create_channel_count_edges (self, counter, name="", edge='rising',
@@ -2347,7 +2408,9 @@ class CounterInputTask(Task):
           counter on each edge:
 
           'up' - Increment the count register on each edge.
+
           'down' - Decrement the count register on each edge.
+
           'ext' - The state of a digital line controls the count
             direction. Each counter has a default count direction
             terminal.
@@ -2416,6 +2479,9 @@ class CounterInputTask(Task):
 
 
 class CounterOutputTask(Task):
+
+    """Exposes NIDAQmx counter output task to Python.
+    """
     
     channel_type = 'CO'
 
