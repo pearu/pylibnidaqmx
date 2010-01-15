@@ -12,7 +12,7 @@ The :mod:`nidaqmx` package provides the following classes:
   CounterInputTask
   CounterOutputTask
 
-that expose NIDAQmx tasks to Python environment. The instances of
+that expose NI-DAQmx tasks to Python environment. The instances of
 these task classes provide methods to create channels, to set timing
 and triggering properties, as well as to read or write data.
 

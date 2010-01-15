@@ -52,11 +52,11 @@
 </tbody>
 </table>
 <p>The <a class="reference" href="http://code.google.com/p/pylibnidaqmx/">PyLibNIDAQmx</a> project provides a Python package <tt class="docutils literal"><span class="pre">nidaqmx</span></tt>
-that wraps the libnidaqmx library to Python using <a class="reference" href="http://docs.python.org/library/ctypes.html">ctypes</a>.</p>
-<p>The package is tested with NIDAQwx library 8.0 using <a class="reference" href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/1123">PCI-6602</a> and
-<a class="reference" href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/201814">PCIe-6259</a> cards on openSUSE 11.0 Linux. There is also Windows
-support implemented but not tested by us. Please report any issues to
-<a class="reference" href="http://code.google.com/p/pylibnidaqmx/issues/list">PyLibNIDAQmx Issue Tracker</a>.</p>
+that wraps the <a class="reference" href="http://www.ni.com/dataacquisition/nidaqmx.htm">NI-DAQmx driver software</a> for Python using <a class="reference" href="http://docs.python.org/library/ctypes.html">ctypes</a>.</p>
+<p>The package is tested with NI-DAQwx library version 8.0 using
+<a class="reference" href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/1123">PCI-6602</a> and <a class="reference" href="http://sine.ni.com/nips/cds/view/p/lang/en/nid/201814">PCIe-6259</a> cards on openSUSE 11.0 Linux. There is
+also Windows support implemented but not tested by us. Please report
+any issues to <a class="reference" href="http://code.google.com/p/pylibnidaqmx/issues/list">PyLibNIDAQmx Issue Tracker</a>.</p>
 <p>The <tt class="xref docutils literal"><span class="pre">nidaqmx</span></tt> package provides the following classes:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -84,7 +84,7 @@ support implemented but not tested by us. Please report any issues to
 </tr>
 </tbody>
 </table>
-<p>that expose NIDAQmx tasks to Python environment. The instances of
+<p>that expose NI-DAQmx tasks to Python environment. The instances of
 these task classes provide methods to create channels, to set timing
 and triggering properties, as well as to read or write data.</p>
 <div class="section" id="example-usage">
