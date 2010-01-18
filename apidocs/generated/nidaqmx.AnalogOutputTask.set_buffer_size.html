@@ -44,7 +44,17 @@
 <dl class="method">
 <dt id="nidaqmx.AnalogOutputTask.set_buffer_size">
 <tt class="descclassname">AnalogOutputTask.</tt><tt class="descname">set_buffer_size</tt><big>(</big><em>sz</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogOutputTask.set_buffer_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Specifies the number of samples the I/O buffer can hold for
+each channel in the task. Zero indicates to allocate no
+buffer. Use a buffer size of 0 to perform a hardware-timed
+operation without using a buffer. Setting this property
+overrides the automatic I/O buffer allocation that NI-DAQmx
+performs.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a title="nidaqmx.AnalogOutputTask.get_buffer_size" class="reference" href="nidaqmx.AnalogOutputTask.get_buffer_size.html#nidaqmx.AnalogOutputTask.get_buffer_size"><tt class="xref docutils literal"><span class="pre">get_buffer_size</span></tt></a>, <a title="nidaqmx.AnalogOutputTask.reset_buffer_size" class="reference" href="nidaqmx.AnalogOutputTask.reset_buffer_size.html#nidaqmx.AnalogOutputTask.reset_buffer_size"><tt class="xref docutils literal"><span class="pre">reset_buffer_size</span></tt></a></p>
+</div>
+</dd></dl>
 
 </div>
 
@@ -82,7 +92,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 15, 2010.
+      Last updated on Jan 18, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

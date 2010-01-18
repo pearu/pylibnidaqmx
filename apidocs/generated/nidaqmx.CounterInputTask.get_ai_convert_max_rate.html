@@ -41,21 +41,6 @@
             
   <div class="section" id="nidaqmx-counterinputtask-get-ai-convert-max-rate">
 <h1>nidaqmx.CounterInputTask.get_ai_convert_max_rate<a class="headerlink" href="#nidaqmx-counterinputtask-get-ai-convert-max-rate" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
-<dt id="nidaqmx.CounterInputTask.get_ai_convert_max_rate">
-<tt class="descclassname">CounterInputTask.</tt><tt class="descname">get_ai_convert_max_rate</tt><big>(</big><big>)</big><a class="headerlink" href="#nidaqmx.CounterInputTask.get_ai_convert_max_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indicates the maximum convert rate supported by the task,
-given the current devices and channel count.</p>
-<p>This rate is generally faster than the default AI Convert
-Clock rate selected by NI-DAQmx, because NI-DAQmx adds in an
-additional 10 microseconds per channel settling time to
-compensate for most potential system settling constraints.</p>
-<p>For single channel tasks, the maximum AI Convert Clock rate is
-the maximum rate of the ADC. For multiple channel tasks, the
-maximum AI Convert Clock rate is the maximum convert rate of
-the analog front end. Sig</p>
-</dd></dl>
-
 </div>
 
 
@@ -92,7 +77,7 @@ the analog front end. Sig</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 15, 2010.
+      Last updated on Jan 18, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

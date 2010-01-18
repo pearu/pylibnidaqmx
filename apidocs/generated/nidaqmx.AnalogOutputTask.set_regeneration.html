@@ -44,7 +44,16 @@
 <dl class="method">
 <dt id="nidaqmx.AnalogOutputTask.set_regeneration">
 <tt class="descclassname">AnalogOutputTask.</tt><tt class="descname">set_regeneration</tt><big>(</big><em>allow=True</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogOutputTask.set_regeneration" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Specifies whether to allow NI-DAQmx to generate the same data
+multiple times.</p>
+<p>If you enable regeneration and write new data to the buffer,
+NI-DAQmx can generate a combination of old and new data, a
+phenomenon called glitching.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a title="nidaqmx.AnalogOutputTask.get_regeneration" class="reference" href="nidaqmx.AnalogOutputTask.get_regeneration.html#nidaqmx.AnalogOutputTask.get_regeneration"><tt class="xref docutils literal"><span class="pre">get_regeneration</span></tt></a>, <a title="nidaqmx.AnalogOutputTask.reset_regeneration" class="reference" href="nidaqmx.AnalogOutputTask.reset_regeneration.html#nidaqmx.AnalogOutputTask.reset_regeneration"><tt class="xref docutils literal"><span class="pre">reset_regeneration</span></tt></a></p>
+</div>
+</dd></dl>
 
 </div>
 
@@ -82,7 +91,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 15, 2010.
+      Last updated on Jan 18, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

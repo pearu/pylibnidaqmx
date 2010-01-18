@@ -7,105 +7,8 @@
 # Created: July 2009
 
 """
-
-
+See http://pylibnidaqmx.googlecode.com/svn/trunk/apidocs/index.html
 """
-
-"""
-=================
-:mod:`libnidaqmx`
-=================
-
-ctypes based wrapper to the NIDAQmx library
-===========================================
-
-Tested with NIDAQwx library 8.0 using PCI-6602 and PCIe-6259 cards.
-
-Usage
------
-
-To create task handle, use
-
-  Task(name="")
-
-where Task is [Analog|Digital|Counter][Input|Output]Task,
-
-Task methods:
-
-  start()
-  stop()
-  is_done()
-  alter_state(state=start|stop|verify|commit|reserve|unreserve|abort)
-  wait_until_done(timeout=-1)
-
-  register_every_n_samples_event(func,samples=1,options=0|sync,cb_data=None)
-  register_done_event(func,options=,cb_data=)
-  register_signal_event(func,signal=sample_clock|sample_complete|change_detection|counter_output,options=,cb_data)
-
-  
-  configure_timing_handchaking(sample_mode=,samples_per_channel=)
-  configure_timing_implicit(sample_mode=,samples_per_channel=)
-  configure_timing_change_detection(rising_edge_channel=,falling_edge_channel=,sample_mode=,samples_per_channel=)
-  configure_timing_sample_clock(source=OnboardClock,rate=1,active_edge=rising|falling,sample_mode=finite|continuous|hwtimed,samples_per_channel=)
-
-  get_sample_clock_max_rate() - analog input only
-  get_ai_convert_max_rate()
-  set/get/reset_sample_clock_rate(value//)
-  set/get/reset_convert_clock_rate(value//)
-
-  configure_trigger_analog_edge_start(source, slope=rising|falling,level=)
-  configure_trigger_analog_window_start(source, when=entering|leaving,top=,bottom=)
-  configure_trigger_digital_edge_start(source, edge=rising|falling)
-  configure_trigger_digital_pattern_start(source, pattern, when=matches|does_not_match)
-  configure_trigger_disable_start()
-
-  set_buffer(samples_per_channel)
-  set/get/reset_buffer_size(sz//)
-  set/get/reset_max(channel_name,value//)
-  set/get/reset_min(channel_name,value//)
-  get_low/high/gain/measurment_type/units/auto_zero_mode/data_transfer_mechanism(channel_name)
-
-  set/get/reset_regeneration(bool//)
-
-  set/get/reset_arm_start_trigger(trigger_type=digital_edge//)
-  set_arm_start_trigger_source(source)
-  set_arm_start_trigger_edge(edge=rising|falling)
-
-  set_pause_trigger(trigger_type=analog_level|analog_window|digital_level)
-  set_pause_trigger_source(source)
-  set_pause_trigger_when(when=above|below|inside|outside|high|low)
-
-AnalogInput/OutputTask methods:
-  
-  create_voltage_channel(phys_channel,channel_name=,terminal=default|rse|nrse|diff|pseudodiff,
-    min_val=,max_val=,units=volts|custom,custom_scale_name=)
-
-  read(samples_per_channel=,timeout=10,fill_mode=group_by_scan_number|group_by_channel) -> data
-  write(data, auto_start=True,timeout=10,layout=group_by_scan_number|group_by_channel)
-
-DigitalInput/OutputTask methods:
-
-  create_channel(lines, name=, grouping=per_line|for_all_lines)
-
-  read(samples_per_channel=,timeout=10,fill_mode=group_by_scan_number|group_by_channel) -> data, bytes_per_sample
-  write(data,auto_start=True,timeout=10,layout=group_by_scan_number|group_by_channel)
-
-CounterInput/OutputTask methods:
-
-  create_channel_count_edges(counter,name=,edge=rising|falling,init=0,direction=up|down|ext)
-  set_terminal_count_edges(channel, terminal)
-
-  create_channel_frequency(counter,name=,units=hertz,idle_state=low|high,delay=0,freq=1,duty_cycle=0.5)
-  create_channel_ticks(counter,name=,source=,idle_state=low|high,delay=0,low_ticks=1,high_ticks=1)
-  create_channel_time(counter,name=,units=seconds,idle_state=low|high,delay=0,low_time=1,high_time=1)
-
-  set_terminal_pulse(channel, terminal)
-
-CounterInput methods:
-  set/get/reset_duplicate_count_prevention(channel, enable=True//)
-  set/get/reset_timebase_rate(channel, rate//)
-"""
-
 
 __all__ = ['AnalogInputTask', 'AnalogOutputTask',
            'DigitalInputTask', 'DigitalOutputTask',
@@ -260,9 +163,15 @@ def CALL(name, *args):
     r = CHK(r, funcname, *new_args)
     return r
 
-def make_pattern(paths, main=True):
+def make_pattern(paths, _main=True):
     """
-    See _test_make_pattern
+    Returns a pattern string from a list of path strings.
+
+    For example::
+
+    >>> make_pattern(['Dev1/ao1', 'Dev1/ao2','Dev1/ao3', 'Dev1/ao4'])
+    'Dev1/ao1:4'
+
     """
     patterns = {}
     flag = False
@@ -296,9 +205,9 @@ def make_pattern(paths, main=True):
                 r.append(prefix +'/'+ lst[0])
         elif lst:
             if prefix:
-                subpattern = make_pattern(lst, main=False)
+                subpattern = make_pattern(lst, _main=False)
                 if subpattern is None:
-                    if main:
+                    if _main:
                         return ','.join(paths)
                         raise NotImplementedError (`lst, prefix, paths, patterns`)
                     else:
@@ -521,18 +430,29 @@ class Task(uInt32):
 
     @classmethod
     def get_major_version(cls):
+        """
+        Indicates the major portion of the installed version of
+        NI-DAQ, such as 7 for version 7.0.
+        """
         d = uInt32 (0)
         CALL ('GetSysNIDAQMajorVersion', ctypes.byref (d))
         return d.value
 
     @classmethod
     def get_minor_version(cls):
+        """
+        Indicates the minor portion of the installed version of
+        NI-DAQ, such as 0 for version 7.0.
+        """
         d = uInt32 (0)
         CALL ('GetSysNIDAQMinorVersion', ctypes.byref (d))
         return d.value
 
     @classmethod
     def get_version (cls):
+        """
+        Return NI-DAQ driver software version string.
+        """
         return '%s.%s' % (cls.get_major_version (), cls.get_minor_version ())
 
     @classmethod
@@ -590,7 +510,9 @@ class Task(uInt32):
         self.name = buf.value
         self.sample_mode = None
 
-    def set_channel_type(self, t):
+    def _set_channel_type(self, t):
+        """ Sets channel type for the task.
+        """
         assert t in ['AI', 'AO', 'DI', 'DO', 'CI', 'CO'],`t`
         if self.channel_type is None:
             self.channel_type = t
@@ -599,6 +521,8 @@ class Task(uInt32):
 
     @property
     def channel_io_type (self):
+        """ Return channel IO type: 'input' or 'output'.
+        """
         t = self.channel_type
         if t is None:
             raise TypeError('%s: cannot determine channel I/O type when no channels have been created.' % (self.__class__.__name__))
@@ -625,6 +549,8 @@ class Task(uInt32):
 
 
     def __repr__(self):
+        """ Returns string representation of a task instance.
+        """
         return '%s(%r)' % (self.__class__.__name__, self.name)
 
     def is_done(self):
@@ -662,7 +588,7 @@ class Task(uInt32):
         """
         return CALL('StartTask', self) == 0
 
-    def stop (self):
+    def stop(self):
         """
         Stops the task and returns it to the state it was in before
         you called StartTask or called an NI-DAQmx Write function with
@@ -680,6 +606,9 @@ class Task(uInt32):
 
     @classmethod
     def _get_map_value(cls, label, map, key):
+        """
+        Helper method.
+        """
         val = map.get(key)
         if val is None:
             raise ValueError('Expected %s %s but got %r' % (label, '|'.join(map.keys ()), key))
@@ -694,6 +623,9 @@ class Task(uInt32):
         return d.value
         
     def get_names_of_channels (self):
+        """
+        Indicates the names of all virtual channels in the task.
+        """
         buf_size = 1000
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL('GetTaskChannels', self, ctypes.byref(buf), buf_size)
@@ -703,6 +635,10 @@ class Task(uInt32):
         return names
 
     def get_devices (self):
+        """
+        Indicates an array containing the names of all devices in the
+        task.
+        """
         buf_size = 1000
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL('GetTaskDevices', self, ctypes.byref(buf), buf_size)
@@ -942,8 +878,6 @@ class Task(uInt32):
     # DAQmxCreateAIPosLVDTChan, DAQmxCreateAIPosRVDTChan
 
     # DAQmxCreateTEDSAI*
-
-
 
     # Not implemented: DAQmxCreateAOCurrentChan
     # DAQmxCreateDIChan, DAQmxCreateDOChan
@@ -1277,15 +1211,15 @@ class Task(uInt32):
 
     def get_buffer_size (self, on_board=False):
         """
-        Specifies the number of samples the I/O buffer can hold for
-        each channel in the task. Zero indicates to allocate no
-        buffer. Use a buffer size of 0 to perform a hardware-timed
-        operation without using a buffer. Setting this property
-        overrides the automatic I/O buffer allocation that NI-DAQmx
-        performs.
+        Returns the number of samples the I/O buffer can hold for each
+        channel in the task.
 
         If on_board is True then specifies in samples per channel the
         size of the onboard I/O buffer of the device.
+
+        See also
+        --------
+        set_buffer_size, reset_buffer_size
         """
         d = uInt32(0)
         channel_io_type = self.channel_io_type
@@ -1296,15 +1230,39 @@ class Task(uInt32):
         return d.value
 
     def set_buffer_size(self, sz):
+        """
+        Specifies the number of samples the I/O buffer can hold for
+        each channel in the task. Zero indicates to allocate no
+        buffer. Use a buffer size of 0 to perform a hardware-timed
+        operation without using a buffer. Setting this property
+        overrides the automatic I/O buffer allocation that NI-DAQmx
+        performs.
+
+        See also
+        --------
+        get_buffer_size, reset_buffer_size
+        """
         channel_io_type = self.channel_io_type
         return CALL('SetBuf%sBufSize' % (channel_io_type.title()), self, uInt32 (sz)) == 0
 
     def reset_buffer_size(self):
+        """
+        Resets buffer size.
+
+        See also
+        --------
+        set_buffer_size, get_buffer_size
+        """
         channel_io_type = self.channel_io_type
         return CALL('ResetBuf%sBufSize' % (channel_io_type.title()), self) == 0
 
     def get_sample_clock_rate(self):
-        """ See :meth:`set_sample_clock_rate` documentation.
+        """
+        Returns sample clock rate.
+
+        See also
+        --------
+        set_sample_clock_rate, reset_sample_clock_rate
         """
         d = float64(0)
         CALL ('GetSampClkRate', self, ctypes.byref(d))
@@ -1315,16 +1273,30 @@ class Task(uInt32):
         Specifies the sampling rate in samples per channel per
         second. If you use an external source for the Sample Clock,
         set this input to the maximum expected rate of that clock.
+
+        See also
+        --------
+        get_sample_clock_rate, reset_sample_clock_rate
         """
         return CALL ('SetSampClkRate', self, float64 (value))==0
 
     def reset_sample_clock_rate(self):
-        """ See set_sample_clock_rate documentation.
+        """
+        Resets sample clock rate.
+
+        See also
+        --------
+        set_sample_clock_rate, get_sample_clock_rate
         """
         return CALL ('ResetSampClkRate', self)==0
 
     def get_convert_clock_rate(self):
-        """ See set_convert_clock_rate documentation.
+        """ 
+        Returns convert clock rate.
+
+        See also
+        --------
+        set_convert_clock_rate, reset_convert_clock_rate
         """
         d = float64(0)
         CALL ('GetAIConvRate', self, ctypes.byref(d))
@@ -1348,32 +1320,22 @@ class Task(uInt32):
         settling requirements for the slowest module sampled. Refer to
         the device documentation for the signal conditioning accessory
         for more information.
+
+        See also
+        --------
+        get_convert_clock_rate, reset_convert_clock_rate
         """
         return CALL ('SetAIConvRate', self, float64 (value))==0
 
     def reset_convert_clock_rate(self):
-        """ See set_convert_clock_rate documentation.
+        """
+        Resets convert clock rate.
+
+        See also
+        --------
+        set_convert_clock_rate, get_convert_clock_rate
         """
         return CALL ('ResetAIConvRate', self)==0
-
-    def get_ai_convert_max_rate(self):
-        """
-        Indicates the maximum convert rate supported by the task,
-        given the current devices and channel count.
-
-        This rate is generally faster than the default AI Convert
-        Clock rate selected by NI-DAQmx, because NI-DAQmx adds in an
-        additional 10 microseconds per channel settling time to
-        compensate for most potential system settling constraints.
-
-        For single channel tasks, the maximum AI Convert Clock rate is
-        the maximum rate of the ADC. For multiple channel tasks, the
-        maximum AI Convert Clock rate is the maximum convert rate of
-        the analog front end. Sig
-        """
-        d = float64(0)
-        CALL ('GetAIConvMaxRate', self, ctypes.byref(d))
-        return d.value
 
     def get_sample_clock_max_rate (self):
         """
@@ -1402,7 +1364,11 @@ class Task(uInt32):
 
     def get_max(self, channel_name):
         """
-        Specifies the maximum value you expect to measure or generate.
+        Returns max value.
+
+        See also
+        --------
+        set_max, reset_max
         """
         channel_name = str(channel_name)
         d = float64(0)
@@ -1411,18 +1377,36 @@ class Task(uInt32):
         return d.value
 
     def set_max(self, channel_name, value):
+        """
+        Specifies the maximum value you expect to measure or generate.
+
+        See also
+        --------
+        get_max, reset_max
+        """
         channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Set%sMax' % (channel_type), self, channel_name, float64 (value))==0
 
     def reset_max(self, channel_name):
+        """
+        Resets max value.
+
+        See also
+        --------
+        set_max, reset_max
+        """
         channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Reset%sMax' % (channel_type), self, channel_name)==0
 
     def get_min(self, channel_name):
         """
-        Specifies the minimum value you expect to measure or generate.
+        Returns min value.
+
+        See also
+        --------
+        set_min, reset_min
         """
         channel_name = str(channel_name)
         d = float64(0)
@@ -1431,16 +1415,40 @@ class Task(uInt32):
         return d.value
 
     def set_min(self, channel_name, value):
+        """
+        Specifies the minimum value you expect to measure or generate.
+
+        See also
+        --------
+        get_min, reset_min
+        """
+
         channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Set%sMin' % (channel_type), self, channel_name, float64 (value))==0
 
     def reset_min(self, channel_name):
+        """
+        Resets min value.
+
+        See also
+        --------
+        get_min, set_min
+        """
         channel_name = str(channel_name)
         channel_type = self.channel_type
         return CALL ('Reset%sMin' % (channel_type), self, channel_name)==0
 
     def get_high(self, channel_name):
+        """
+        Specifies the upper limit of the input range of the
+        device. This value is in the native units of the device. On E
+        Series devices, for example, the native units is volts.
+
+        See also
+        --------
+        set_high, reset_high
+        """
         channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
@@ -1448,6 +1456,15 @@ class Task(uInt32):
         return d.value
 
     def get_low(self, channel_name):
+        """
+        Specifies the lower limit of the input range of the
+        device. This value is in the native units of the device. On E
+        Series devices, for example, the native units is volts.
+
+        See also
+        --------
+        set_low, reset_low
+        """
         channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
@@ -1455,6 +1472,14 @@ class Task(uInt32):
         return d.value
 
     def get_gain (self, channel_name):
+        """
+        Specifies a gain factor to apply to the channel.
+
+        See also
+        --------
+
+        set_gain, reset_gain
+        """
         channel_name = str(channel_name)
         d = float64(0)
         channel_type = self.channel_type
@@ -1462,6 +1487,13 @@ class Task(uInt32):
         return d.value
 
     def get_measurment_type(self, channel_name):
+        """
+        Indicates the measurement to take with the analog input
+        channel and in some cases, such as for temperature
+        measurements, the sensor to use.
+
+        Indicates whether the channel generates voltage or current.
+        """
         channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
@@ -1490,6 +1522,17 @@ class Task(uInt32):
         return measurment_type_map[d.value]
 
     def get_units (self, channel_name):
+        """
+        Specifies in what units to generate voltage on the
+        channel. Write data to the channel in the units you select.
+
+        Specifies in what units to generate current on the
+        channel. Write data to the channel is in the units you select.
+
+        See also
+        --------
+        set_units, reset_units
+        """
         channel_name = str(channel_name)
         mt = self.get_measurment_type(channel_name)
         channel_type = self.channel_type
@@ -1504,6 +1547,14 @@ class Task(uInt32):
         raise NotImplementedError(`channel_name, mt`)
 
     def get_auto_zero_mode (self, channel_name):
+        """
+        Specifies when to measure ground. NI-DAQmx subtracts the
+        measured ground voltage from every sample.
+
+        See also
+        --------
+        set_auto_zero_mode, reset_auto_zero_mode
+        """
         channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
@@ -1514,6 +1565,13 @@ class Task(uInt32):
         return auto_zero_mode_map[d.value]
 
     def get_data_transfer_mechanism(self, channel_name):
+        """
+        Specifies the data transfer mode for the device.
+
+        See also
+        --------
+        set_data_transfer_mechanism, reset_data_transfer_mechanism
+        """
         channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
@@ -1528,6 +1586,10 @@ class Task(uInt32):
         """
         Return True if regeneration (generating the same data more
         than once) is allowed.
+
+        See also
+        --------
+        set_regeneration, reset_regeneration
         """
         d = int32(0)
         CALL('GetWriteRegenMode', self, ctypes.byref (d))
@@ -1538,11 +1600,30 @@ class Task(uInt32):
         assert 0,`d.value`
 
     def set_regeneration(self, allow = True):
+        """
+        Specifies whether to allow NI-DAQmx to generate the same data
+        multiple times.
+
+        If you enable regeneration and write new data to the buffer,
+        NI-DAQmx can generate a combination of old and new data, a
+        phenomenon called glitching.
+
+        See also
+        --------
+        get_regeneration, reset_regeneration
+        """
         if allow:
             return CALL('SetWriteRegenMode', self, DAQmx_Val_AllowRegen)==0
         return CALL('SetWriteRegenMode', self, DAQmx_Val_DoNotAllowRegen)==0
 
     def reset_regeneration(self):
+        """
+        Resets regeneration.
+
+        See also
+        --------
+        get_regeneration, set_regeneration
+        """
         return CALL('ResetWriteRegenMode', self)==0
 
     def set_arm_start_trigger(self, trigger_type='digital_edge'):
@@ -1552,12 +1633,17 @@ class Task(uInt32):
         does not respond to a Start Trigger until the device receives
         the Arm Start Trigger.
 
-        Parameters:
+        Parameters
+        ----------
 
         trigger_type:
         
           'digital_edge' - Trigger on a rising or falling edge of a digital signal.
           None - Disable the trigger.
+
+        See also
+        --------
+        get_arm_start_trigger, reset_arm_start_trigger
         """
         if trigger_type=='digital_edge':
             trigger_type_val = DAQmx_Val_DigEdge
@@ -1568,6 +1654,13 @@ class Task(uInt32):
         return CALL('SetArmStartTrigType', self, trigger_type_val)==0
 
     def get_arm_start_trigger(self):
+        """
+        Returns arm start trigger.
+
+        See also
+        --------
+        set_arm_start_trigger, reset_arm_start_trigger
+        """
         d = int32(0)
         CALL ('GetArmStartTrigType', self, ctypes.byref (d))
         if d.value==DAQmx_Val_DigEdge:
@@ -1577,12 +1670,23 @@ class Task(uInt32):
         assert 0, `d.value`
 
     def reset_arm_start_trigger(self):
+        '''
+        Resets arm start trigger.
+
+        See also
+        --------
+        get_arm_start_trigger, set_arm_start_trigger
+        '''
         return CALL ('ResetArmStartTrigType', self)==0
 
     def set_arm_start_trigger_source (self, source):
         """
         Specifies the name of a terminal where there is a digital
         signal to use as the source of the Arm Start Trigger.
+
+        See also
+        --------
+        get_arm_start_trigger_source, reset_arm_start_trigger_source
         """
         source = str (source)
         return CALL ('SetDigEdgeArmStartTrigSrc', self, source)==0
@@ -1591,6 +1695,10 @@ class Task(uInt32):
         """
         Specifies on which edge of a digital signal to arm the task
         for a Start Trigger.
+
+        See also
+        --------
+        get_arm_start_trigger_edge, reset_arm_start_trigger_edge
         """
         edge_map = dict (rising=DAQmx_Val_Rising,
                          falling=DAQmx_Val_Falling)
@@ -1599,6 +1707,13 @@ class Task(uInt32):
 
     _pause_trigger_type = None
     def set_pause_trigger(self, trigger_type = None):
+        """
+        Specifies the type of trigger to use to pause a task.
+
+        See also
+        --------
+        get_pause_trigger, reset_pause_trigger
+        """
         trigger_type_map = dict(digital_level = DAQmx_Val_DigLvl,
                                 analog_level = DAQmx_Val_AnlgLvl,
                                 analog_window = DAQmx_Val_AnlgWin,
@@ -1616,6 +1731,10 @@ class Task(uInt32):
         For E Series devices, if you use a channel name, the channel
         must be the only channel in the task. The only terminal you
         can use for E Series devices is PFI0.
+
+        See also
+        --------
+        get_pause_trigger_source, reset_pause_trigger_source
         """
         source = str(source)
         if self._pause_trigger_type is None:
@@ -1636,6 +1755,10 @@ class Task(uInt32):
 
         Specifies whether the task pauses while the signal is high or
         low.
+        
+        See also
+        --------
+        get_pause_trigger_when, reset_pause_trigger_when
         """
         if self._pause_trigger_type is None:
             raise TypeError('pause trigger type is not specified')
@@ -1651,6 +1774,16 @@ class Task(uInt32):
         return CALL (routine, self, when_val)
 
     def get_info_str(self, global_info=False):
+        """
+        Return verbose information string about the task and its
+        properties.
+
+        Parameters
+        ----------
+
+        global_info: bool
+          If True then include global information.
+        """
         lines = []
         tab = ''
         if global_info:
@@ -1765,6 +1898,25 @@ class AnalogInputTask(Task):
 
     channel_type = 'AI'
 
+    def get_convert_max_rate(self):
+        """
+        Indicates the maximum convert rate supported by the task,
+        given the current devices and channel count.
+
+        This rate is generally faster than the default AI Convert
+        Clock rate selected by NI-DAQmx, because NI-DAQmx adds in an
+        additional 10 microseconds per channel settling time to
+        compensate for most potential system settling constraints.
+
+        For single channel tasks, the maximum AI Convert Clock rate is
+        the maximum rate of the ADC. For multiple channel tasks, the
+        maximum AI Convert Clock rate is the maximum convert rate of
+        the analog front end. Sig
+        """
+        d = float64(0)
+        CALL ('GetAIConvMaxRate', self, ctypes.byref(d))
+        return d.value
+
     def create_voltage_channel(self, phys_channel, channel_name="", terminal='default',
                                min_val = -1, max_val = 1, 
                                units = 'volts', custom_scale_name = None):
@@ -1859,7 +2011,7 @@ class AnalogInputTask(Task):
 
         r = CALL('CreateAIVoltageChan', self, phys_channel, channel_name, terminal_val,
                  float64(min_val), float64(max_val), units_val, custom_scale_name)
-        self.set_channel_type(self.get_channel_type(channel_name))
+        self._set_channel_type(self.get_channel_type(channel_name))
         return r==0
 
     def read(self, samples_per_channel=None, timeout=10.0,
@@ -1909,22 +2061,20 @@ class AnalogInputTask(Task):
           Specifies whether or not the samples are interleaved:
 
             'group_by_channel'
-              Group by channel (non-interleaved).
+              Group by channel (non-interleaved)::
+
+                ch0:s1, ch0:s2, ..., ch1:s1, ch1:s2,..., ch2:s1,..
 
             'group_by_scan_number'
-              Group by scan number (interleaved).
+              Group by scan number (interleaved)::
+              
+                ch0:s1, ch1:s1, ch2:s1, ch0:s2, ch1:s2, ch2:s2,...
 
         Returns
         -------
         
         data :
           The array to read samples into, organized according to `fill_mode`.
-
-        Note on data storage order
-        --------------------------
-
-        In non-interleaved mode: ch0:s1, ch0:s2, ..., ch1:s1, ch1:s2,..., ch2:s1,..
-        In interleaved mode: ch0:s1, ch1:s1, ch2:s1, ch0:s2, ch1:s2, ch2:s2,...
         """
         fill_mode_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
                              group_by_scan_number = DAQmx_Val_GroupByScanNumber)
@@ -1971,7 +2121,7 @@ class AnalogOutputTask (Task):
         channel_name = str(channel_name)
         if custom_scale_name is not None:
             custom_scale_name = str(custom_scale_name)
-        self.set_channel_type('AO')
+        self._set_channel_type('AO')
         units_map = dict (volts = DAQmx_Val_Volts,
                           custom = DAQmx_Val_FromCustomScale)
 
@@ -1983,7 +2133,7 @@ class AnalogOutputTask (Task):
 
         r = CALL('CreateAOVoltageChan', self, phys_channel, channel_name,
                  float64(min_val), float64(max_val), units_val, custom_scale_name)
-        self.set_channel_type(self.get_channel_type(channel_name))
+        self._set_channel_type(self.get_channel_type(channel_name))
         return r==0    
 
     def write(self, data,

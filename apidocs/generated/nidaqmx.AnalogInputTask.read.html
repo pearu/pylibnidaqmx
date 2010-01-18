@@ -88,10 +88,14 @@ error and returns the samples that were actually read.</p>
 <blockquote>
 <dl class="docutils">
 <dt>&#8216;group_by_channel&#8217;</dt>
-<dd><p class="first last">Group by channel (non-interleaved).</p>
+<dd><p class="first">Group by channel (non-interleaved):</p>
+<div class="last highlight-python"><pre>ch0:s1, ch0:s2, ..., ch1:s1, ch1:s2,..., ch2:s1,..</pre>
+</div>
 </dd>
 <dt>&#8216;group_by_scan_number&#8217;</dt>
-<dd><p class="first last">Group by scan number (interleaved).</p>
+<dd><p class="first">Group by scan number (interleaved):</p>
+<div class="last highlight-python"><pre>ch0:s1, ch1:s1, ch2:s1, ch0:s2, ch1:s2, ch2:s2,...</pre>
+</div>
 </dd>
 </dl>
 </blockquote>
@@ -144,7 +148,7 @@ error and returns the samples that were actually read.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 15, 2010.
+      Last updated on Jan 18, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

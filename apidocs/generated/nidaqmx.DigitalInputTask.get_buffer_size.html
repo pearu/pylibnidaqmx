@@ -44,14 +44,14 @@
 <dl class="method">
 <dt id="nidaqmx.DigitalInputTask.get_buffer_size">
 <tt class="descclassname">DigitalInputTask.</tt><tt class="descname">get_buffer_size</tt><big>(</big><em>on_board=False</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalInputTask.get_buffer_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Specifies the number of samples the I/O buffer can hold for
-each channel in the task. Zero indicates to allocate no
-buffer. Use a buffer size of 0 to perform a hardware-timed
-operation without using a buffer. Setting this property
-overrides the automatic I/O buffer allocation that NI-DAQmx
-performs.</p>
+<dd><p>Returns the number of samples the I/O buffer can hold for each
+channel in the task.</p>
 <p>If on_board is True then specifies in samples per channel the
 size of the onboard I/O buffer of the device.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a title="nidaqmx.DigitalInputTask.set_buffer_size" class="reference" href="nidaqmx.DigitalInputTask.set_buffer_size.html#nidaqmx.DigitalInputTask.set_buffer_size"><tt class="xref docutils literal"><span class="pre">set_buffer_size</span></tt></a>, <a title="nidaqmx.DigitalInputTask.reset_buffer_size" class="reference" href="nidaqmx.DigitalInputTask.reset_buffer_size.html#nidaqmx.DigitalInputTask.reset_buffer_size"><tt class="xref docutils literal"><span class="pre">reset_buffer_size</span></tt></a></p>
+</div>
 </dd></dl>
 
 </div>
@@ -90,7 +90,7 @@ size of the onboard I/O buffer of the device.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 15, 2010.
+      Last updated on Jan 18, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

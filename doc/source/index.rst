@@ -13,12 +13,16 @@ __ http://docs.python.org/library/ctypes.html
 
 The package is tested with NI-DAQwx library version 8.0 using
 `PCI-6602`__ and `PCIe-6259`__ cards on openSUSE 11.0 Linux. There is
-also Windows support implemented but not tested by us. Please report
-any issues to `PyLibNIDAQmx Issue Tracker`__.
+also Windows support implemented but not tested by us. 
+
+Please report any issues to `PyLibNIDAQmx Issue Tracker`__.
+
+See also `NI-DAQmx C Reference Help`__ (local availability only).
 
 __ http://sine.ni.com/nips/cds/view/p/lang/en/nid/1123
 __ http://sine.ni.com/nips/cds/view/p/lang/en/nid/201814
 __ http://code.google.com/p/pylibnidaqmx/issues/list
+__ file:///usr/local/natinst/nidaqmx/docs/cdaqmx.chm/_main.html
 
 .. currentmodule:: nidaqmx
 
