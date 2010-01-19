@@ -46,20 +46,34 @@
 <tt class="descclassname">AnalogOutputTask.</tt><tt class="descname">configure_trigger_digital_pattern_start</tt><big>(</big><em>source</em>, <em>pattern</em>, <em>when='matches'</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogOutputTask.configure_trigger_digital_pattern_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures a task to start acquiring or generating samples
 when a digital pattern is matched.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>source - Specifies the physical channels to use for pattern</dt>
-<dd>matching. The order of the physical channels determines the
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>source</strong> : str</p>
+<blockquote>
+<p>Specifies the physical channels to use for pattern
+matching. The order of the physical channels determines the
 order of the pattern. If a port is included, the order of
-the physical channels within the port is in ascending order.</dd>
-<dt>pattern - Specifies the digital pattern that must be met for</dt>
-<dd>the trigger to occur.</dd>
-<dt>when - Specifies the conditions under which the trigger</dt>
-<dd><p class="first">occurs:</p>
-<p class="last">&#8216;matches&#8217; - Pattern matches.
-&#8216;does_not_match&#8217; - Pattern does not match.</p>
-</dd>
-</dl>
+the physical channels within the port is in ascending order.</p>
+</blockquote>
+<p><strong>pattern</strong> : str</p>
+<blockquote>
+<p>Specifies the digital pattern that must be met for the
+trigger to occur.</p>
+</blockquote>
+<p><strong>when</strong> : {&#8216;matches&#8217;, &#8216;does_not_match&#8217;}</p>
+<blockquote>
+<p>Specifies the conditions under which the trigger
+occurs: pattern matches or not.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -98,7 +112,7 @@ the physical channels within the port is in ascending order.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

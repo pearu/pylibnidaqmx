@@ -44,11 +44,20 @@
 <dl class="method">
 <dt id="nidaqmx.DigitalOutputTask.configure_timing_implicit">
 <tt class="descclassname">DigitalOutputTask.</tt><tt class="descname">configure_timing_implicit</tt><big>(</big><em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalOutputTask.configure_timing_implicit" title="Permalink to this definition">¶</a></dt>
-<dd>Sets only the number of samples to acquire or generate without
+<dd><p>Sets only the number of samples to acquire or generate without
 specifying timing. Typically, you should use this function
 when the task does not require sample timing, such as tasks
 that use counters for buffered frequency measurement, buffered
-period measurement, or pulse train generation.</dd></dl>
+period measurement, or pulse train generation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><strong>success_status</strong> : bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
@@ -86,7 +95,7 @@ period measurement, or pulse train generation.</dd></dl>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

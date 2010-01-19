@@ -252,6 +252,10 @@ def _test_make_pattern():
 
 class Device(str):
 
+    """
+    Exposes NI-DACmx device to Python.
+    """
+
     def get_product_type (self):
         """
         Indicates the product name of the device.
@@ -423,40 +427,49 @@ class Device(str):
             return '%s (chassis=%s, slot=%s)' % (t, self.get_pxi_chassis_number (), self.get_pxi_slot_number())
         return t
 
-class Task(uInt32):
+class System(object):
+    """
+    Exposes NI-DACmx system properties to Python.
 
-    """ Base class to task classes.
+    Attributes
+    ----------
+    major_version
+    minor_version
+    version
+    devices
+    tasks
+    global_channels
     """
 
-    @classmethod
-    def get_major_version(cls):
+    @property
+    def major_version(self):
         """
-        Indicates the major portion of the installed version of
-        NI-DAQ, such as 7 for version 7.0.
+        Indicates the major portion of the installed version of NI-DAQ,
+        such as 7 for version 7.0.
         """
         d = uInt32 (0)
         CALL ('GetSysNIDAQMajorVersion', ctypes.byref (d))
         return d.value
 
-    @classmethod
-    def get_minor_version(cls):
+    @property
+    def minor_version(self):
         """
-        Indicates the minor portion of the installed version of
-        NI-DAQ, such as 0 for version 7.0.
+        Indicates the minor portion of the installed version of NI-DAQ,
+        such as 0 for version 7.0.
         """
         d = uInt32 (0)
         CALL ('GetSysNIDAQMinorVersion', ctypes.byref (d))
         return d.value
 
-    @classmethod
-    def get_version (cls):
+    @property
+    def version (self):
         """
         Return NI-DAQ driver software version string.
         """
-        return '%s.%s' % (cls.get_major_version (), cls.get_minor_version ())
+        return '%s.%s' % (self.major_version, self.minor_version)
 
-    @classmethod
-    def get_system_devices(cls):
+    @property
+    def devices(self):
         """
         Indicates the names of all devices installed in the system.
         """
@@ -466,8 +479,8 @@ class Task(uInt32):
         names = [Device(n.strip()) for n in buf.value.split(',') if n.strip()]
         return names
 
-    @classmethod
-    def get_system_tasks(cls):
+    @property
+    def tasks(self):
         """
         Indicates an array that contains the names of all tasks saved
         on the system.
@@ -478,8 +491,8 @@ class Task(uInt32):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
 
-    @classmethod
-    def get_system_global_channels(cls):
+    @property
+    def global_channels(self):
         """
         Indicates an array that contains the names of all global
         channels saved on the system.
@@ -490,7 +503,44 @@ class Task(uInt32):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
 
-    channel_type = None # AI, AO, DI, DO, CI, CO
+class Task(uInt32):
+
+    """
+    Base class to NI-DAQmx task classes.
+
+    Attributes
+    ----------
+    system
+    channel_type : str
+      Holds channel type.
+
+    """
+
+    #: Exposes NI-DACmx system properties, see `System`.
+    _system = System()
+    @property
+    def system(self):
+        """
+        NI-DACmx system properties holder.
+
+        See also
+        --------
+        nidaqmx.libnidaqmx.System
+        """
+        return self._system
+    
+    channel_type = None
+    """
+    Holds channel type.
+
+    Returns
+    -------
+    channel_type : {'AI', 'AO', 'DI', 'DO', 'CI', 'CO'}
+
+    See also
+    --------
+    channel_io_type
+    """
 
     def __init__(self, name = ""):
         """
@@ -522,6 +572,10 @@ class Task(uInt32):
     @property
     def channel_io_type (self):
         """ Return channel IO type: 'input' or 'output'.
+
+        See also
+        --------
+        channel_type
         """
         t = self.channel_type
         if t is None:
@@ -584,7 +638,10 @@ class Task(uInt32):
         repeatedly. Starting and stopping a task repeatedly reduces
         the performance of the application.
 
-        Returns True on success.
+        Returns
+        -------
+
+          success_status : bool
         """
         return CALL('StartTask', self) == 0
 
@@ -600,7 +657,10 @@ class Task(uInt32):
         repeatedly. Starting and stopping a task repeatedly reduces
         the performance of the application.
 
-        Returns True on success.
+        Returns
+        -------
+
+          success_status : bool
         """
         return CALL('StopTask', self) == 0
 
@@ -652,30 +712,36 @@ class Task(uInt32):
         example, DAQmxTaskControl can commit the task prior to
         starting.
 
-        Actions:
+        Parameters
+        ----------
 
-        'start' - Starts execution of the task.
+        state : {'start', 'stop', 'verify', 'commit', 'reserve', 'unreserve', 'abort'}
 
-        'stop' - Stops execution of the task.
+          'start' - Starts execution of the task.
 
-        'verify' - Verifies that all task parameters are valid for the
+          'stop' - Stops execution of the task.
+
+          'verify' - Verifies that all task parameters are valid for the
           hardware.
 
-        'commit' - Programs the hardware as much as possible according
+          'commit' - Programs the hardware as much as possible according
           to the task configuration.
 
-        'reserve' - Reserves the hardware resources needed for the
+          'reserve' - Reserves the hardware resources needed for the
           task. No other tasks can reserve these same resources.
 
-        'unreserve' - Releases all previously reserved resources.
+          'unreserve' - Releases all previously reserved resources.
 
-        'abort' - Abort is used to stop an operation, such as Read or
+          'abort' - Abort is used to stop an operation, such as Read or
           Write, that is currently active. Abort puts the task into an
           unstable but recoverable state. To recover the task, call
           Start to restart the task or call Stop to reset the task
           without starting it.
 
-        Returns True on success.
+        Returns
+        -------
+
+          success_status : bool
         """
         state_map = dict(start = DAQmx_Val_Task_Start,
                          stop = DAQmx_Val_Task_Stop,
@@ -707,14 +773,18 @@ class Task(uInt32):
         discarded. For example, if you call DAQmxStopTask then you do
         not receive any pending events.
 
-        Parameters:
+        Parameters
+        ----------
 
-        func - The function that you want DAQmx to call when the event
+        func : function
+
+          The function that you want DAQmx to call when the event
           occurs. The function you pass in this parameter must have
-          the following prototype:
+          the following prototype::
 
-          def func(task, event_type, samples, cb_data):
-              return 0
+            def func(task, event_type, samples, cb_data):
+                ...
+                return 0
 
           Upon entry to the callback, the task parameter contains the
           handle to the task on which the event occurred. The
@@ -724,10 +794,23 @@ class Task(uInt32):
           this function. The cb_data parameter contains the value you
           passed in the cb_data parameter of this function.
 
-        samples - The number of samples after which each event should
-          occur.
+        samples : int
 
-        options, cb_data - see register_done_event documentation.
+          The number of samples after which each event should occur.
+
+        options, cb_data :
+
+          see `register_done_event` documentation.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+        register_signal_event, register_done_event
         """
         event_type_map = dict(input=DAQmx_Val_Acquired_Into_Buffer, 
                               output=DAQmx_Val_Transferred_From_Buffer)
@@ -760,14 +843,18 @@ class Task(uInt32):
         not occur when a task is stopped explicitly, such as by
         calling DAQmxStopTask.
 
-        Parameters:
+        Parameters
+        ----------
 
-        func - The function that you want DAQmx to call when the event
+        func : function
+        
+          The function that you want DAQmx to call when the event
           occurs.  The function you pass in this parameter must have
-          the following prototype:
+          the following prototype::
 
-          def func(task, status, cb_data = None):
-              return 0
+            def func(task, status, cb_data = None):
+                ...
+                return 0
 
           Upon entry to the callback, the taskHandle parameter
           contains the handle to the task on which the event
@@ -779,25 +866,39 @@ class Task(uInt32):
           contains the value you passed in the callbackData parameter
           of this function.
 
-        options - Use this parameter to set certain options. You can
+        options : {int, 'sync'}
+
+          Use this parameter to set certain options. You can
           combine flags with the bitwise-OR operator ('|') to set
           multiple options. Pass a value of zero if no options need to
           be set.
           
           'sync' - The callback function is called in the thread which
-            registered the event. In order for the callback to occur,
-            you must be processing messages. If you do not set this
-            flag, the callback function is called in a DAQmx thread by
-            default.
+          registered the event. In order for the callback to occur,
+          you must be processing messages. If you do not set this
+          flag, the callback function is called in a DAQmx thread by
+          default.
             
           Note: If you are receiving synchronous events faster than
           you are processing them, then the user interface of your
           application might become unresponsive.
 
-        cb_data - A value that you want DAQmx to pass to the callback
-          function as the function data parameter. Do not pass the
-          address of a local variable or any other variable that might
-          not be valid when the function is executed.
+        cb_data :
+
+          A value that you want DAQmx to pass to the callback function
+          as the function data parameter. Do not pass the address of a
+          local variable or any other variable that might not be valid
+          when the function is executed.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+        register_signal_event, register_every_n_samples_event
         """
         if options=='sync':
             options = DAQmx_Val_SynchronousEventCallbacks
@@ -824,14 +925,18 @@ class Task(uInt32):
         discarded. For example, if you call DAQmxStopTask then you do
         not receive any pending events.
 
-        Parameters:
+        Parameters
+        ----------
 
-        func - The function that you want DAQmx to call when the event
+        func : function
+
+          The function that you want DAQmx to call when the event
           occurs. The function you pass in this parameter must have the
-          following prototype:
+          following prototype::
 
-          def func(task, signalID, cb_data):
-            return 0
+            def func(task, signalID, cb_data):
+              ...
+              return 0
 
           Upon entry to the callback, the task parameter contains the
           handle to the task on which the event occurred. The signalID
@@ -840,14 +945,28 @@ class Task(uInt32):
           the value you passed in the cb_data parameter of this
           function.
 
-        signal - The signal for which you want to receive results:
+        signal : {'sample_clock', 'sample_complete', 'change_detection', 'counter_output'}
+
+          The signal for which you want to receive results:
         
           'sample_clock' - Sample clock
           'sample_complete' - Sample complete event
           'change_detection' - Change detection event
           'counter_output' - Counter output event
 
-        options, cb_data - see register_done_event documentation.        
+        options, cb_data :
+
+          See `register_done_event` documentation.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+        register_done_event, register_every_n_samples_event
         """
         signalID_map = dict (
             sample_clock = DAQmx_Val_SampleClock,
@@ -891,6 +1010,11 @@ class Task(uInt32):
         """
         Configures the task to acquire samples on the rising and/or
         falling edges of the lines or ports you specify.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
                                 continuous = DAQmx_Val_ContSamps,
@@ -910,6 +1034,11 @@ class Task(uInt32):
         Determines the number of digital samples to acquire or
         generate using digital handshaking between the device and a
         peripheral device.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
                                 continuous = DAQmx_Val_ContSamps,
@@ -929,6 +1058,11 @@ class Task(uInt32):
         when the task does not require sample timing, such as tasks
         that use counters for buffered frequency measurement, buffered
         period measurement, or pulse train generation.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
                                 continuous = DAQmx_Val_ContSamps,
@@ -949,41 +1083,58 @@ class Task(uInt32):
         Sets the source of the Sample Clock, the rate of the Sample
         Clock, and the number of samples to acquire or generate.
 
-        Parameters:
+        Parameters
+        ----------
 
-          source - The source terminal of the Sample Clock. To use the
-            internal clock of the device, use None or use 'OnboardClock'.
+          source : str
 
-          rate - The sampling rate in samples per second. If you use
-            an external source for the Sample Clock, set this value to
+            The source terminal of the Sample Clock. To use the
+            internal clock of the device, use None or use
+            'OnboardClock'.
+
+          rate : float
+
+            The sampling rate in samples per second. If you use an
+            external source for the Sample Clock, set this value to
             the maximum expected rate of that clock.
 
-          active_edge - Specifies on which edge of the clock to
+          active_edge : {'rising', 'falling'}
+
+            Specifies on which edge of the clock to
             acquire or generate samples:
 
-            'rising' - Acquire or generate samples on the rising edges
+              'rising' - Acquire or generate samples on the rising edges
               of the Sample Clock.
 
-            'falling' - Acquire or generate samples on the falling
+              'falling' - Acquire or generate samples on the falling
               edges of the Sample Clock.
   
-          sample_mode - Specifies whether the task acquires or
+          sample_mode : {'finite', 'continuous', 'hwtimed'}
+
+            Specifies whether the task acquires or
             generates samples continuously or if it acquires or
             generates a finite number of samples:
             
-            'finite' - Acquire or generate a finite number of samples.
+              'finite' - Acquire or generate a finite number of samples.
             
-            'continuous' - Acquire or generate samples until you stop the task.
+              'continuous' - Acquire or generate samples until you stop the task.
 
-            'hwtimed' - Acquire or generate samples continuously using
-              hardware timing without a buffer. Hardware timed single
-              point sample mode is supported only for the sample clock
-              and change detection timing types.
+              'hwtimed' - Acquire or generate samples continuously
+              using hardware timing without a buffer. Hardware timed
+              single point sample mode is supported only for the
+              sample clock and change detection timing types.
 
-          samples_per_channel - The number of samples to acquire or
-            generate for each channel in the task if sample_mode is
-            'finite'.  If sample_mode is 'continuous', NI-DAQmx uses
-            this value to determine the buffer size.
+          samples_per_channel : int
+
+            The number of samples to acquire or generate for each
+            channel in the task if `sample_mode` is 'finite'.  If
+            sample_mode is 'continuous', NI-DAQmx uses this value to
+            determine the buffer size.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         source = str(source)
         active_edge_map = dict (rising = DAQmx_Val_Rising,
@@ -1020,25 +1171,37 @@ class Task(uInt32):
         Configures the task to start acquiring or generating samples
         when an analog signal crosses the level you specify.
 
-        Parameters:
+        Parameters
+        ----------
 
-        source - The name of a channel or terminal where there is an
-          analog signal to use as the source of the trigger. For E
-          Series devices, if you use a channel name, the channel must
-          be the first channel in the task. The only terminal you can
-          use for E Series devices is PFI0.
+        source : str
 
-        slope - Specifies on which slope of the signal to start
-          acquiring or generating samples when the signal crosses
-          trigger level:
+          The name of a channel or terminal where there is an analog
+          signal to use as the source of the trigger. For E Series
+          devices, if you use a channel name, the channel must be the
+          first channel in the task. The only terminal you can use for
+          E Series devices is PFI0.
 
-          'rising' - Trigger on the rising slope of the signal.
-          'falling' - Trigger on the falling slope of the signal.
+        slope : {'rising', 'falling'}
+        
+          Specifies on which slope of the signal to start acquiring or
+          generating samples when the signal crosses trigger level:
 
-        level - The threshold at which to start acquiring or
-          generating samples. Specify this value in the units of the
-          measurement or generation. Use trigger slope to specify on
-          which slope to trigger at this threshold.
+            'rising' - Trigger on the rising slope of the signal.
+ 
+            'falling' - Trigger on the falling slope of the signal.
+
+        level : float
+
+          The threshold at which to start acquiring or generating
+          samples. Specify this value in the units of the measurement
+          or generation. Use trigger slope to specify on which slope
+          to trigger at this threshold.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         slope_map = dict (rising=DAQmx_Val_RisingSlope,
                           falling=DAQmx_Val_FallingSlope)
@@ -1050,28 +1213,39 @@ class Task(uInt32):
         Configures the task to start acquiring or generating samples
         when an analog signal enters or leaves a range you specify.
 
-        Parameters:
+        Parameters
+        ----------
 
-        source - The name of a virtual channel or terminal where there
+        source : str
+
+          The name of a virtual channel or terminal where there
           is an analog signal to use as the source of the trigger.
 
           For E Series devices, if you use a virtual channel, it must
           be the first channel in the task. The only terminal you can
           use for E Series devices is PFI0.
 
-        when - Specifies whether the task starts measuring or
-          generating samples when the signal enters the window or when
-          it leaves the window. Use windowBottom and windowTop to
-          specify the limits of the window.
+        when : {'entering', 'leaving'}
 
-          'entering' - Trigger when the signal enters the window.
-          'leaving' - Trigger when the signal leaves the window.
+          Specifies whether the task starts measuring or generating
+          samples when the signal enters the window or when it leaves
+          the window. Use `bottom` and `top` to specify the limits of
+          the window.
 
-        top - The upper limit of the window. Specify this value in the
+        top : float
+
+          The upper limit of the window. Specify this value in the
           units of the measurement or generation.
 
-        bottom - The lower limit of the window. Specify this value in
-          the units of the measurement or generation.
+        bottom : float
+
+          The lower limit of the window. Specify this value in the
+          units of the measurement or generation.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         source = str(source)
         when_map = dict (entering=DAQmx_Val_EnteringWin,
@@ -1084,69 +1258,97 @@ class Task(uInt32):
         Configures the task to start acquiring or generating samples
         on a rising or falling edge of a digital signal.
 
-        Parameters:
+        Parameters
+        ----------
 
-        source - The name of a terminal where there is a digital
-          signal to use as the source of the trigger.
+        source : str
 
-        edge - Specifies on which edge of a digital signal to start
-          acquiring or generating samples:
+          The name of a terminal where there is a digital signal to
+          use as the source of the trigger.
 
-          'rising' - Rising edge(s).
-          'falling' - Falling edge(s).
+        edge : {'rising', 'falling'}
 
+          Specifies on which edge of a digital signal to start
+          acquiring or generating samples: rising or falling edge(s).
+
+        Returns
+        -------
+
+          success_status : bool
         """
         source = str(source)
         edge_map = dict (rising=DAQmx_Val_Rising,
                          falling=DAQmx_Val_Falling)
         edge_val = self._get_map_value ('edge', edge_map, edge)
-        return CALL('CfgDigEdgeStartTrig', self, source, edge_val)
+        return CALL('CfgDigEdgeStartTrig', self, source, edge_val) == 0
 
     def configure_trigger_digital_pattern_start(self, source, pattern, when='matches'):
         """
         Configures a task to start acquiring or generating samples
         when a digital pattern is matched.
 
-        Parameters:
+        Parameters
+        ----------
 
-        source - Specifies the physical channels to use for pattern
+        source : str
+
+          Specifies the physical channels to use for pattern
           matching. The order of the physical channels determines the
           order of the pattern. If a port is included, the order of
           the physical channels within the port is in ascending order.
 
-        pattern - Specifies the digital pattern that must be met for
-          the trigger to occur.
+        pattern : str
 
-        when - Specifies the conditions under which the trigger
-          occurs:
+          Specifies the digital pattern that must be met for the
+          trigger to occur.
 
-          'matches' - Pattern matches.
-          'does_not_match' - Pattern does not match.
+        when : {'matches', 'does_not_match'}
+
+          Specifies the conditions under which the trigger
+          occurs: pattern matches or not.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         source = str(source)
         pattern = str(pattern)
         when_map = dict(matches = DAQmx_Val_PatternMatches,
                         does_not_match = DAQmx_Val_PatternDoesNotMatch)
         when_val = self._get_map_value('when', when_map, when)
-        return CALL('CfgDigPatternStartTrig', self, source, pattern, when_val)
+        return CALL('CfgDigPatternStartTrig', self, source, pattern, when_val) == 0
 
     def configure_trigger_disable_start(self):
         """
         Configures the task to start acquiring or generating samples
         immediately upon starting the task.
+
+        Returns
+        -------
+
+          success_status : bool
         """
-        return CALL ('DisableStartTrig', self)
+        return CALL ('DisableStartTrig', self) == 0
 
     def set_buffer (self, samples_per_channel):
         """
         Overrides the automatic I/O buffer allocation that NI-DAQmx performs.
 
-        Parameters:
+        Parameters
+        ----------
 
-        samples_per_channel - The number of samples the buffer can
-          hold for each channel in the task. Zero indicates no buffer
-          should be allocated. Use a buffer size of 0 to perform a
+        samples_per_channel : int
+
+          The number of samples the buffer can hold for each channel
+          in the task. Zero indicates no buffer should be
+          allocated. Use a buffer size of 0 to perform a
           hardware-timed operation without using a buffer.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         channel_io_type = self.channel_io_type
         return CALL('Cfg%sBuffer' % (channel_io_type.title()), self, uInt32(samples_per_channel)) == 0
@@ -1160,7 +1362,7 @@ class Task(uInt32):
     # DAQmxWrite*
     # DAQmxExportSignal
     # DAQmxCalculateReversePolyCoeff, DAQmxCreateLinScale
-    # DAQmxWaitForNextSampleClock, DAQmxWaitUntilTaskDone
+    # DAQmxWaitForNextSampleClock
     # DAQmxSwitch*
     # DAQmxConnectTerms, DAQmxDisconnectTerms, DAQmxTristateOutputTerm
     # DAQmxResetDevice
@@ -1188,6 +1390,11 @@ class Task(uInt32):
     def get_channel_type(self, channel_name):
         """
         Indicates the type of the virtual channel.
+
+        Returns
+        -------
+
+        channel_type : {'AI', 'AO', 'DI', 'DO', 'CI', 'CO'}
         """
         channel_name = str (channel_name)
         t = int32(0)
@@ -1238,6 +1445,11 @@ class Task(uInt32):
         overrides the automatic I/O buffer allocation that NI-DAQmx
         performs.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_buffer_size, reset_buffer_size
@@ -1248,6 +1460,11 @@ class Task(uInt32):
     def reset_buffer_size(self):
         """
         Resets buffer size.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1274,6 +1491,11 @@ class Task(uInt32):
         second. If you use an external source for the Sample Clock,
         set this input to the maximum expected rate of that clock.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_sample_clock_rate, reset_sample_clock_rate
@@ -1283,6 +1505,11 @@ class Task(uInt32):
     def reset_sample_clock_rate(self):
         """
         Resets sample clock rate.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1321,6 +1548,11 @@ class Task(uInt32):
         the device documentation for the signal conditioning accessory
         for more information.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_convert_clock_rate, reset_convert_clock_rate
@@ -1330,6 +1562,11 @@ class Task(uInt32):
     def reset_convert_clock_rate(self):
         """
         Resets convert clock rate.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1380,6 +1617,11 @@ class Task(uInt32):
         """
         Specifies the maximum value you expect to measure or generate.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_max, reset_max
@@ -1418,6 +1660,11 @@ class Task(uInt32):
         """
         Specifies the minimum value you expect to measure or generate.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_min, reset_min
@@ -1430,6 +1677,11 @@ class Task(uInt32):
     def reset_min(self, channel_name):
         """
         Resets min value.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1477,7 +1729,6 @@ class Task(uInt32):
 
         See also
         --------
-
         set_gain, reset_gain
         """
         channel_name = str(channel_name)
@@ -1608,6 +1859,11 @@ class Task(uInt32):
         NI-DAQmx can generate a combination of old and new data, a
         phenomenon called glitching.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_regeneration, reset_regeneration
@@ -1619,6 +1875,11 @@ class Task(uInt32):
     def reset_regeneration(self):
         """
         Resets regeneration.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1640,6 +1901,11 @@ class Task(uInt32):
         
           'digital_edge' - Trigger on a rising or falling edge of a digital signal.
           None - Disable the trigger.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1673,6 +1939,11 @@ class Task(uInt32):
         '''
         Resets arm start trigger.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_arm_start_trigger, set_arm_start_trigger
@@ -1683,6 +1954,11 @@ class Task(uInt32):
         """
         Specifies the name of a terminal where there is a digital
         signal to use as the source of the Arm Start Trigger.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1696,6 +1972,11 @@ class Task(uInt32):
         Specifies on which edge of a digital signal to arm the task
         for a Start Trigger.
 
+        Returns
+        -------
+
+          success_status : bool
+
         See also
         --------
         get_arm_start_trigger_edge, reset_arm_start_trigger_edge
@@ -1703,12 +1984,17 @@ class Task(uInt32):
         edge_map = dict (rising=DAQmx_Val_Rising,
                          falling=DAQmx_Val_Falling)
         edge_val = self._get_map_value ('edge', edge_map, edge)
-        return CALL ('SetDigEdgeArmStartTrigEdge', self, edge_val)
+        return CALL ('SetDigEdgeArmStartTrigEdge', self, edge_val)==0
 
     _pause_trigger_type = None
     def set_pause_trigger(self, trigger_type = None):
         """
         Specifies the type of trigger to use to pause a task.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1731,6 +2017,11 @@ class Task(uInt32):
         For E Series devices, if you use a channel name, the channel
         must be the only channel in the task. The only terminal you
         can use for E Series devices is PFI0.
+
+        Returns
+        -------
+
+          success_status : bool
 
         See also
         --------
@@ -1787,7 +2078,7 @@ class Task(uInt32):
         lines = []
         tab = ''
         if global_info:
-            lines.append(tab+'NIDAQwx version: %s' % (self.get_version()))
+            lines.append(tab+'NI-DAQwx version: %s' % (self.get_version()))
             lines.append(tab+'System devices: %s' % (', '.join(self.get_system_devices()) or None))
             lines.append(tab+'System global channels: %s' % (', '.join(self.get_system_global_channels()) or None))
             lines.append(tab+'System tasks: %s' % (', '.join(self.get_system_tasks()) or None))
@@ -1873,7 +2164,7 @@ class Task(uInt32):
         Parameters
         ----------
 
-        timeout : 
+        timeout : float
 
           The maximum amount of time, in seconds, to wait for the
           measurement or generation to complete. The function returns
@@ -1887,13 +2178,22 @@ class Task(uInt32):
           returns an error if the measurement or generation is not
           done.
 
+        Returns
+        -------
+
+          success_status : bool
+
         """
         return CALL('WaitUntilTaskDone', self, float64 (timeout))==0
 
 class AnalogInputTask(Task):
 
-    """Exposes NIDAQmx analog input task to Python.
+    """
+    Exposes NI-DAQmx analog input task to Python.
 
+    See also
+    --------
+    nidaqmx.libnidaqmx.Task
     """
 
     channel_type = 'AI'
@@ -1990,7 +2290,11 @@ class AnalogInputTask(Task):
           not set units to 'custom', you must set custom_scale_name to
           None.
 
-        Returns True on success.
+        Returns
+        -------
+
+          success_status : bool
+
         """
         phys_channel = str(phys_channel)
         channel_name = str(channel_name)
@@ -2103,7 +2407,7 @@ class AnalogInputTask(Task):
 
 class AnalogOutputTask (Task):
 
-    """Exposes NIDAQmx analog output task to Python.
+    """Exposes NI-DAQmx analog output task to Python.
     """
 
     channel_type = 'AO'
@@ -2115,7 +2419,15 @@ class AnalogOutputTask (Task):
         Creates channel(s) to generate voltage and adds the channel(s)
         to the task you specify with taskHandle.
 
-        See also AnalogInputTask.create_voltage_channel method.
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+          AnalogInputTask.create_voltage_channel
         """
         phys_channel = str(phys_channel)
         channel_name = str(channel_name)
@@ -2150,13 +2462,22 @@ class AnalogOutputTask (Task):
         attempt to write one sample for a buffered write without
         configuring the buffer, you will receive an error.
 
-        data - The array of 64-bit samples to write to the task
+        Parameters
+        ----------
+
+        data : array
+
+          The array of 64-bit samples to write to the task
           or a scalar.
 
-        auto_start - Specifies whether or not this function
-          automatically starts the task if you do not start it.
+        auto_start : bool
 
-        timeout - The amount of time, in seconds, to wait for this
+          Specifies whether or not this function automatically starts
+          the task if you do not start it.
+
+        timeout : float
+
+          The amount of time, in seconds, to wait for this
           function to write all the samples. The default value is 10.0
           seconds. To specify an infinite wait, pass -1
           (DAQmx_Val_WaitInfinitely). This function returns an error
@@ -2168,18 +2489,24 @@ class AnalogOutputTask (Task):
           function returns a timeout error and returns the number of
           samples actually written.
 
-        layout - Specifies how the samples are arranged, either
-          interleaved or noninterleaved:
+        layout : {'group_by_channel', 'group_by_scan_number'}
 
-          'group_by_channel' - Group by channel (non-interleaved).
-          'group_by_scan_number' - Group by scan number (interleaved).
+          Specifies how the samples are arranged, either interleaved
+          or noninterleaved:
 
-          [applies iff data is array]
+            'group_by_channel' - Group by channel (non-interleaved).
 
-        Output:
+            'group_by_scan_number' - Group by scan number (interleaved).
 
-        samples_written - The actual number of samples per channel
-          successfully written to the buffer. [applies iff data is array].
+          Applies iff data is array.
+
+        Returns
+        -------
+
+        samples_written : int
+        
+          The actual number of samples per channel successfully
+          written to the buffer. Applies iff data is array.
 
         """
         if np.isscalar(data):
@@ -2238,7 +2565,7 @@ class DigitalTask (Task):
 
 class DigitalInputTask(DigitalTask):
 
-    """Exposes NIDAQmx digital input task to Python.
+    """Exposes NI-DAQmx digital input task to Python.
     """
 
     channel_type = 'DI'
@@ -2254,25 +2581,38 @@ class DigitalInputTask(DigitalTask):
         separate ports into multiple channels, use this function
         multiple times with a different port each time.
 
-        Parameters:
+        Parameters
+        ----------
         
-        lines - The names of the digital lines used to create a
-          virtual channel. You can specify a list or range of lines.
+        lines : str
 
-        name - The name of the created virtual channel(s). If you
-          create multiple virtual channels with one call to this
-          function, you can specify a list of names separated by
-          commas. If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for name, you must use the names when
-          you refer to these channels in other NI-DAQmx functions.
+          The names of the digital lines used to create a virtual
+          channel. You can specify a list or range of lines.
 
-        grouping - Specifies whether to group digital lines into one
-        or more virtual channels. If you specify one or more entire
-        ports in lines, you must set grouping to 'for_all_lines':
+        name : str
 
-          'per_line' - One channel for each line
-          'for_all_lines' - One channel for all lines
+          The name of the created virtual channel(s). If you create
+          multiple virtual channels with one call to this function,
+          you can specify a list of names separated by commas. If you
+          do not specify a name, NI-DAQmx uses the physical channel
+          name as the virtual channel name. If you specify your own
+          names for name, you must use the names when you refer to
+          these channels in other NI-DAQmx functions.
+
+        grouping : {'per_line', 'for_all_lines'} 
+
+          Specifies whether to group digital lines into one or more
+          virtual channels. If you specify one or more entire ports in
+          lines, you must set grouping to 'for_all_lines':
+
+            'per_line' - One channel for each line
+
+            'for_all_lines' - One channel for all lines
+
+        Returns
+        -------
+
+          success_status : bool
         """
         lines = str (lines)
         grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
@@ -2286,9 +2626,12 @@ class DigitalInputTask(DigitalTask):
         Reads multiple samples from each digital line in a task. Each
         line in a channel gets one byte per sample.
 
-        Parameters:
+        Parameters
+        ----------
 
-        samples_per_channel - The number of samples, per channel, to
+        samples_per_channel : int or None
+
+          The number of samples, per channel, to
           read. The default value of -1 (DAQmx_Val_Auto) reads all
           available samples. If readArray does not contain enough
           space, this function returns as many samples as fit in
@@ -2310,9 +2653,11 @@ class DigitalInputTask(DigitalTask):
           and does not wait for the task to acquire all requested
           samples.
 
-        timeout - The amount of time, in seconds, to wait for the
-          function to read the sample(s). The default value is 10.0
-          seconds. To specify an infinite wait, pass -1
+        timeout : float
+
+          The amount of time, in seconds, to wait for the function to
+          read the sample(s). The default value is 10.0 seconds. To
+          specify an infinite wait, pass -1
           (DAQmx_Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
@@ -2321,23 +2666,30 @@ class DigitalInputTask(DigitalTask):
           is successful. Otherwise, the function returns a timeout
           error and returns the samples that were actually read.
 
-        fill_mode - Specifies whether or not the samples are
-          interleaved:
+        fill_mode : {'group_by_channel', 'group_by_scan_number'}
 
-          'group_by_channel' - Group by channel (non-interleaved).
-          'group_by_scan_number' - Group by scan number (interleaved).
+          Specifies whether or not the samples are interleaved:
 
-        Output:
+            'group_by_channel' - Group by channel (non-interleaved).
+  
+            'group_by_scan_number' - Group by scan number (interleaved).
 
-          data - The array to read samples into. Each numBytesPerSamp
+        Returns
+        -------
+
+          data : array
+
+            The array to read samples into. Each `bytes_per_sample`
             corresponds to one sample per channel, with each element
             in that grouping corresponding to a line in that channel,
             up to the number of lines contained in the channel.
 
-          bytes_per_sample - The number of elements in readArray that
-            constitutes a sample per channel. For each sample per
-            channel, numBytesPerSamp is the number of bytes that
-            channel consists of.
+          bytes_per_sample : int
+
+            The number of elements in returned `data` that constitutes
+            a sample per channel. For each sample per channel,
+            `bytes_per_sample` is the number of bytes that channel
+            consists of.
 
         """
         fill_mode_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
@@ -2380,7 +2732,7 @@ class DigitalInputTask(DigitalTask):
 
 class DigitalOutputTask(DigitalTask):
 
-    """Exposes NIDAQmx digital output task to Python.
+    """Exposes NI-DAQmx digital output task to Python.
     """
 
     channel_type = 'DO'
@@ -2396,25 +2748,38 @@ class DigitalOutputTask(DigitalTask):
         separate ports into multiple channels, use this function
         multiple times with a different port each time.
 
-        Parameters:
+        Parameters
+        ----------
         
-        lines - The names of the digital lines used to create a
-          virtual channel. You can specify a list or range of lines.
+        lines : str
 
-        name - The name of the created virtual channel(s). If you
-          create multiple virtual channels with one call to this
-          function, you can specify a list of names separated by
-          commas. If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for name, you must use the names when
-          you refer to these channels in other NI-DAQmx functions.
+          The names of the digital lines used to create a virtual
+          channel. You can specify a list or range of lines.
 
-        grouping - Specifies whether to group digital lines into one
-        or more virtual channels. If you specify one or more entire
-        ports in lines, you must set grouping to 'for_all_lines':
+        name : str
 
-          'per_line' - One channel for each line
-          'for_all_lines' - One channel for all lines
+          The name of the created virtual channel(s). If you create
+          multiple virtual channels with one call to this function,
+          you can specify a list of names separated by commas. If you
+          do not specify a name, NI-DAQmx uses the physical channel
+          name as the virtual channel name. If you specify your own
+          names for name, you must use the names when you refer to
+          these channels in other NI-DAQmx functions.
+
+        grouping : {'per_line', 'for_all_lines'}
+
+          Specifies whether to group digital lines into one or more
+          virtual channels. If you specify one or more entire ports in
+          lines, you must set grouping to 'for_all_lines':
+
+            'per_line' - One channel for each line
+
+            'for_all_lines' - One channel for all lines
+
+        Returns
+        -------
+
+          success_status : bool
         """
         lines = str (lines)
         grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
@@ -2440,16 +2805,23 @@ class DigitalOutputTask(DigitalTask):
 	attempt to write one sample for a buffered write without
 	configuring the buffer, you will receive an error.
 
-        Parameters:
+        Parameters
+        ----------
         
-        data - The samples to write to the task.
+        data : array
 
-        auto_start - Specifies whether or not this function
-          automatically starts the task if you do not start it.
+          The samples to write to the task.
 
-        timeout - The amount of time, in seconds, to wait for this
-          function to write all the samples. The default value is 10.0
-          seconds. To specify an infinite wait, pass -1
+        auto_start : bool
+
+          Specifies whether or not this function automatically starts
+          the task if you do not start it.
+
+        timeout : float
+
+          The amount of time, in seconds, to wait for this function to
+          write all the samples. The default value is 10.0 seconds. To
+          specify an infinite wait, pass -1
           (DAQmx_Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
@@ -2459,11 +2831,14 @@ class DigitalOutputTask(DigitalTask):
           function returns a timeout error and returns the number of
           samples actually written.
 
-        layout - Specifies how the samples are arranged, either
-          interleaved or noninterleaved:
+        layout : {'group_by_channel', 'group_by_scan_number'}
 
-          'group_by_channel' - Group by channel (non-interleaved).
-          'group_by_scan_number' - Group by scan number (interleaved).
+          Specifies how the samples are arranged, either interleaved
+          or noninterleaved:
+
+            'group_by_channel' - Group by channel (non-interleaved).
+
+            'group_by_scan_number' - Group by scan number (interleaved).
         """
         layout_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
                           group_by_scan_number = DAQmx_Val_GroupByScanNumber)
@@ -2510,7 +2885,7 @@ class DigitalOutputTask(DigitalTask):
 
 class CounterInputTask(Task):
 
-    """Exposes NIDAQmx counter input task to Python.
+    """Exposes NI-DAQmx counter input task to Python.
     """
 
     channel_type = 'CI'
@@ -2528,17 +2903,21 @@ class CounterInputTask(Task):
         terminal of the counter unless you select a different input
         terminal.
 
-        Parameters:
+        Parameters
+        ----------
 
-        counter - The name of the counter to use to create virtual
-          channels.
+        counter : str
 
-        name - The name(s) to assign to the created virtual
-          channel(s). If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for nameToAssignToChannel, you must
-          use the names when you refer to these channels in other
-          NI-DAQmx functions.
+          The name of the counter to use to create virtual channels.
+
+        name : str
+
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
 
           If you create multiple virtual channels with one call to
           this function, you can specify a list of names separated by
@@ -2546,25 +2925,32 @@ class CounterInputTask(Task):
           virtual channels you create, NI-DAQmx automatically assigns
           names to the virtual channels.
 
-        edge - Specifies on which edges of the input signal to
-          increment or decrement the count:
+        edge : {'rising', 'falling'} 
 
-          'rising' - Rising edge(s).
-          'falling' - Falling edge(s).
+          Specifies on which edges of the input signal to increment or
+          decrement the count, rising or falling edge(s).
 
-        init - The value from which to start counting.
+        init : int
 
-        direction - Specifies whether to increment or decrement the
+          The value from which to start counting.
+
+        direction : {'up', 'down', 'ext'}
+
+          Specifies whether to increment or decrement the
           counter on each edge:
 
-          'up' - Increment the count register on each edge.
+            'up' - Increment the count register on each edge.
 
-          'down' - Decrement the count register on each edge.
+            'down' - Decrement the count register on each edge.
 
-          'ext' - The state of a digital line controls the count
+            'ext' - The state of a digital line controls the count
             direction. Each counter has a default count direction
             terminal.
 
+        Returns
+        -------
+
+          success_status : bool
         """
         counter = str(counter)
         name = str(name)
@@ -2578,11 +2964,21 @@ class CounterInputTask(Task):
     def set_terminal_count_edges(self, channel, terminal):
         """
         Specifies the input terminal of the signal to measure.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         return CALL('SetCICountEdgesTerm', self, channel, terminal)==0
 
     def get_duplicate_count_prevention(self, channel):
-        """ See set_duplicate_count_prevention documentation.
+        """ Returns duplicate count prevention state.
+
+        See also
+        --------
+
+        set_duplicate_count_prevention, reset_duplicate_count_prevention
         """
         b = bool32(0)
         r = CALL('GetCIDupCountPrevent', self, channel, ctypes.byref(b))
@@ -2593,17 +2989,41 @@ class CounterInputTask(Task):
         """
         Specifies whether to enable duplicate count prevention for the
         channel.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+        get_duplicate_count_prevention, reset_duplicate_count_prevention
         """
         b = bool32(enable)
         return CALL('SetCIDupCountPrevent', self, channel, b)==0
 
     def reset_duplicate_count_prevention(self, channel):
-        """ See set_duplicate_count_prevention documentation.
+        """ Reset duplicate count prevention.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+        set_duplicate_count_prevention, get_duplicate_count_prevention
         """
         return CALL('ResetCIDupCountPrevent', self, channel)==0
 
     def get_timebase_rate(self, channel):
-        """ See set_timebase_rate documnetation.
+        """ Returns the frequency of the counter timebase.
+
+        See also
+        --------
+        set_timebase_rate, reset_timebase_rate
         """
         data = float64(0)
         r = CALL('GetCICtrTimebaseRate', self, channel, ctypes.byref(data))
@@ -2618,19 +3038,38 @@ class CounterInputTask(Task):
         in ticks of the timebase. If you use an external timebase and
         do not specify the rate, you can take measurements only in
         terms of ticks of the timebase.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+        get_timebase_rate, reset_timebase_rate
         """
         data = float64(rate)
         return CALL('SetCICtrTimebaseRate', self, channel, data)==0
 
     def reset_timebase_rate(self, channel, rate):
-        """ See set_timebase_rate documnetation.
+        """
+        Resets the frequency of the counter timebase.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+        set_timebase_rate, get_timebase_rate
         """
         return CALL('ResetCICtrTimebaseRate', self, channel)==0
 
 
 class CounterOutputTask(Task):
 
-    """Exposes NIDAQmx counter output task to Python.
+    """Exposes NI-DAQmx counter output task to Python.
     """
     
     channel_type = 'CO'
@@ -2643,18 +3082,23 @@ class CounterOutputTask(Task):
         pulses appear on the default output terminal of the counter
         unless you select a different output terminal.
 
-        Parameters:
+        Parameters
+        ----------
 
-        counter - The name of the counter to use to create virtual
+        counter : str
+
+          The name of the counter to use to create virtual
           channels. You can specify a list or range of physical
           channels.
 
-        name - The name(s) to assign to the created virtual
-          channel(s). If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for nameToAssignToChannel, you must
-          use the names when you refer to these channels in other
-          NI-DAQmx functions.
+        name : str 
+
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
 
           If you create multiple virtual channels with one call to
           this function, you can specify a list of names separated by
@@ -2662,24 +3106,35 @@ class CounterOutputTask(Task):
           virtual channels you create, NI-DAQmx automatically assigns
           names to the virtual channels.
 
-        units - The units in which to specify freq:
+        units : {'hertz'} 
 
-          'hertz' - hertz
+          The units in which to specify freq:
 
-        idle_state - The resting state of the output terminal:
+            'hertz' - hertz
 
-          'low' - Low state.
-          'high' - High state.
+        idle_state : {'low', 'high'}
 
-        delay - The amount of time in seconds to wait before
-          generating the first pulse.
+          The resting state of the output terminal.
 
-        freq - The frequency at which to generate pulses.
+        delay : float
 
-        duty_cycle - The width of the pulse divided by the pulse
-          period. NI-DAQmx uses this ratio, combined with frequency,
-          to determine pulse width and the interval between pulses.
+          The amount of time in seconds to wait before generating the
+          first pulse.
 
+        freq : float
+
+          The frequency at which to generate pulses.
+
+        duty_cycle : float
+
+          The width of the pulse divided by the pulse period. NI-DAQmx
+          uses this ratio, combined with frequency, to determine pulse
+          width and the interval between pulses.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         counter = str(counter)
         name = str(name)
@@ -2700,18 +3155,23 @@ class CounterOutputTask(Task):
         the default output terminal of the counter unless you select a
         different output terminal.
 
-        Parameters:
+        Parameters
+        ----------
 
-        counter - The name of the counter to use to create virtual
+        counter : str
+
+          The name of the counter to use to create virtual
           channels. You can specify a list or range of physical
           channels.
 
-        name - The name(s) to assign to the created virtual
-          channel(s). If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for nameToAssignToChannel, you must
-          use the names when you refer to these channels in other
-          NI-DAQmx functions.
+        name : str
+
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
 
           If you create multiple virtual channels with one call to
           this function, you can specify a list of names separated by
@@ -2719,24 +3179,32 @@ class CounterOutputTask(Task):
           virtual channels you create, NI-DAQmx automatically assigns
           names to the virtual channels.
 
-        source - The terminal to which you connect an external
-          timebase. You also can specify a source terminal by using a
-          terminal name.
+        source : str
 
-        idle_state - The resting state of the output terminal:
+          The terminal to which you connect an external timebase. You
+          also can specify a source terminal by using a terminal name.
 
-          'low' - Low state.
-          'high' - High state.
+        idle_state : {'low', 'high'} 
 
+          The resting state of the output terminal.
 
-        delay - The number of timebase ticks to wait before generating
-          the first pulse.
+        delay : int
 
-        low_ticks - The number of timebase ticks that the pulse is
-          low.
+          The number of timebase ticks to wait before generating the
+          first pulse.
 
-        high_ticks - The number of timebase ticks that the pulse is
-          high.
+        low_ticks : int 
+
+          The number of timebase ticks that the pulse is low.
+
+        high_ticks : int
+
+          The number of timebase ticks that the pulse is high.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         counter = str(counter)
         name = str(name)
@@ -2755,18 +3223,23 @@ class CounterOutputTask(Task):
         the default output terminal of the counter unless you select a
         different output terminal.
 
-        Parameters:
+        Parameters
+        ----------
 
-        counter - The name of the counter to use to create virtual
+        counter : str
+
+          The name of the counter to use to create virtual
           channels. You can specify a list or range of physical
           channels.
 
-        name - The name(s) to assign to the created virtual
-          channel(s). If you do not specify a name, NI-DAQmx uses the
-          physical channel name as the virtual channel name. If you
-          specify your own names for nameToAssignToChannel, you must
-          use the names when you refer to these channels in other
-          NI-DAQmx functions.
+        name : str
+
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
 
           If you create multiple virtual channels with one call to
           this function, you can specify a list of names separated by
@@ -2774,22 +3247,31 @@ class CounterOutputTask(Task):
           virtual channels you create, NI-DAQmx automatically assigns
           names to the virtual channels.
 
-        units - The units in which to specify high and low time:
+        units : {'seconds'}
 
-          'seconds' - seconds
+          The units in which to specify high and low time.
 
-        idle_state - The resting state of the output terminal:
+        idle_state : {'low', 'high'}
 
-          'low' - Low state.
-          'high' - High state.
+          The resting state of the output terminal.
 
+        delay : float
 
-        delay - The amount of time in seconds to wait before
-          generating the first pulse.
+          The amount of time in seconds to wait before generating the
+          first pulse.
 
-        low_time - The amount of time the pulse is low, in seconds.
+        low_time : float
 
-        high_time - The amount of time the pulse is high, in seconds.
+          The amount of time the pulse is low, in seconds.
+
+        high_time : float
+
+          The amount of time the pulse is high, in seconds.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         counter = str(counter)
         name = str(name)
@@ -2803,6 +3285,11 @@ class CounterOutputTask(Task):
     def set_terminal_pulse (self, channel, terminal):
         """
         Specifies on which terminal to generate pulses.
+
+        Returns
+        -------
+
+          success_status : bool
         """
         channel = str(channel)
         terminal = str(terminal)

@@ -46,41 +46,63 @@
 <tt class="descclassname">CounterInputTask.</tt><tt class="descname">configure_timing_sample_clock</tt><big>(</big><em>source='OnboardClock'</em>, <em>rate=1</em>, <em>active_edge='rising'</em>, <em>sample_mode='continuous'</em>, <em>samples_per_channel=1000</em><big>)</big><a class="headerlink" href="#nidaqmx.CounterInputTask.configure_timing_sample_clock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the source of the Sample Clock, the rate of the Sample
 Clock, and the number of samples to acquire or generate.</p>
-<p>Parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>source</strong> : str</p>
 <blockquote>
-<dl class="docutils">
-<dt>source - The source terminal of the Sample Clock. To use the</dt>
-<dd>internal clock of the device, use None or use &#8216;OnboardClock&#8217;.</dd>
-<dt>rate - The sampling rate in samples per second. If you use</dt>
-<dd>an external source for the Sample Clock, set this value to
-the maximum expected rate of that clock.</dd>
-<dt>active_edge - Specifies on which edge of the clock to</dt>
-<dd><p class="first">acquire or generate samples:</p>
-<dl class="last docutils">
-<dt>&#8216;rising&#8217; - Acquire or generate samples on the rising edges</dt>
-<dd>of the Sample Clock.</dd>
-<dt>&#8216;falling&#8217; - Acquire or generate samples on the falling</dt>
-<dd>edges of the Sample Clock.</dd>
-</dl>
-</dd>
-<dt>sample_mode - Specifies whether the task acquires or</dt>
-<dd><p class="first">generates samples continuously or if it acquires or
+<blockquote>
+<p>The source terminal of the Sample Clock. To use the
+internal clock of the device, use None or use
+&#8216;OnboardClock&#8217;.</p>
+</blockquote>
+<p>rate : float</p>
+<blockquote>
+<p>The sampling rate in samples per second. If you use an
+external source for the Sample Clock, set this value to
+the maximum expected rate of that clock.</p>
+</blockquote>
+<p>active_edge : {&#8216;rising&#8217;, &#8216;falling&#8217;}</p>
+<blockquote>
+<p>Specifies on which edge of the clock to
+acquire or generate samples:</p>
+<blockquote>
+<p>&#8216;rising&#8217; - Acquire or generate samples on the rising edges
+of the Sample Clock.</p>
+<p>&#8216;falling&#8217; - Acquire or generate samples on the falling
+edges of the Sample Clock.</p>
+</blockquote>
+</blockquote>
+<p>sample_mode : {&#8216;finite&#8217;, &#8216;continuous&#8217;, &#8216;hwtimed&#8217;}</p>
+<blockquote>
+<p>Specifies whether the task acquires or
+generates samples continuously or if it acquires or
 generates a finite number of samples:</p>
+<blockquote>
 <p>&#8216;finite&#8217; - Acquire or generate a finite number of samples.</p>
 <p>&#8216;continuous&#8217; - Acquire or generate samples until you stop the task.</p>
-<dl class="last docutils">
-<dt>&#8216;hwtimed&#8217; - Acquire or generate samples continuously using</dt>
-<dd>hardware timing without a buffer. Hardware timed single
-point sample mode is supported only for the sample clock
-and change detection timing types.</dd>
-</dl>
-</dd>
-<dt>samples_per_channel - The number of samples to acquire or</dt>
-<dd>generate for each channel in the task if sample_mode is
-&#8216;finite&#8217;.  If sample_mode is &#8216;continuous&#8217;, NI-DAQmx uses
-this value to determine the buffer size.</dd>
-</dl>
+<p>&#8216;hwtimed&#8217; - Acquire or generate samples continuously
+using hardware timing without a buffer. Hardware timed
+single point sample mode is supported only for the
+sample clock and change detection timing types.</p>
 </blockquote>
+</blockquote>
+<p>samples_per_channel : int</p>
+<blockquote>
+<p>The number of samples to acquire or generate for each
+channel in the task if <em>sample_mode</em> is &#8216;finite&#8217;.  If
+sample_mode is &#8216;continuous&#8217;, NI-DAQmx uses this value to
+determine the buffer size.</p>
+</blockquote>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -119,7 +141,7 @@ this value to determine the buffer size.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

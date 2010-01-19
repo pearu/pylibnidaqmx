@@ -44,7 +44,7 @@
 <dl class="class">
 <dt id="nidaqmx.AnalogOutputTask">
 <em class="property">class </em><tt class="descclassname">nidaqmx.</tt><tt class="descname">AnalogOutputTask</tt><big>(</big><em>name=''</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogOutputTask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exposes NIDAQmx analog output task to Python.</p>
+<dd><p>Exposes NI-DAQmx analog output task to Python.</p>
 <p class="rubric">Methods</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -62,10 +62,10 @@
 <td>Configures when the DAQ device transfers data to a peripheral</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.configure_timing_change_detection" class="reference" href="nidaqmx.AnalogOutputTask.configure_timing_change_detection.html#nidaqmx.AnalogOutputTask.configure_timing_change_detection"><tt class="xref docutils literal"><span class="pre">configure_timing_change_detection</span></tt></a>([...])</td>
-<td>Configures the task to acquire samples on the rising and/or</td>
+<td>Configures the task to acquire samples on the rising and/or falling edges of the lines or ports you specify.</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.configure_timing_handshaking" class="reference" href="nidaqmx.AnalogOutputTask.configure_timing_handshaking.html#nidaqmx.AnalogOutputTask.configure_timing_handshaking"><tt class="xref docutils literal"><span class="pre">configure_timing_handshaking</span></tt></a>([sample_mode,&nbsp;...])</td>
-<td>Determines the number of digital samples to acquire or</td>
+<td>Determines the number of digital samples to acquire or generate using digital handshaking between the device and a peripheral device.</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.configure_timing_implicit" class="reference" href="nidaqmx.AnalogOutputTask.configure_timing_implicit.html#nidaqmx.AnalogOutputTask.configure_timing_implicit"><tt class="xref docutils literal"><span class="pre">configure_timing_implicit</span></tt></a>([sample_mode,&nbsp;...])</td>
 <td>Sets only the number of samples to acquire or generate without specifying timing.</td>
@@ -86,7 +86,7 @@
 <td>Configures a task to start acquiring or generating samples when a digital pattern is matched.</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.configure_trigger_disable_start" class="reference" href="nidaqmx.AnalogOutputTask.configure_trigger_disable_start.html#nidaqmx.AnalogOutputTask.configure_trigger_disable_start"><tt class="xref docutils literal"><span class="pre">configure_trigger_disable_start</span></tt></a>()</td>
-<td>Configures the task to start acquiring or generating samples</td>
+<td>Configures the task to start acquiring or generating samples immediately upon starting the task.</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.create_voltage_channel" class="reference" href="nidaqmx.AnalogOutputTask.create_voltage_channel.html#nidaqmx.AnalogOutputTask.create_voltage_channel"><tt class="xref docutils literal"><span class="pre">create_voltage_channel</span></tt></a>(phys_channel[,&nbsp;...])</td>
 <td>Creates channel(s) to generate voltage and adds the channel(s)</td>
@@ -124,9 +124,6 @@
 <tr><td><a title="nidaqmx.AnalogOutputTask.get_low" class="reference" href="nidaqmx.AnalogOutputTask.get_low.html#nidaqmx.AnalogOutputTask.get_low"><tt class="xref docutils literal"><span class="pre">get_low</span></tt></a>(channel_name)</td>
 <td>Specifies the lower limit of the input range of the device.</td>
 </tr>
-<tr><td><a title="nidaqmx.AnalogOutputTask.get_major_version" class="reference" href="nidaqmx.AnalogOutputTask.get_major_version.html#nidaqmx.AnalogOutputTask.get_major_version"><tt class="xref docutils literal"><span class="pre">get_major_version</span></tt></a>()</td>
-<td>Indicates the major portion of the installed version of</td>
-</tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.get_max" class="reference" href="nidaqmx.AnalogOutputTask.get_max.html#nidaqmx.AnalogOutputTask.get_max"><tt class="xref docutils literal"><span class="pre">get_max</span></tt></a>(channel_name)</td>
 <td>Returns max value.</td>
 </tr>
@@ -135,9 +132,6 @@
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.get_min" class="reference" href="nidaqmx.AnalogOutputTask.get_min.html#nidaqmx.AnalogOutputTask.get_min"><tt class="xref docutils literal"><span class="pre">get_min</span></tt></a>(channel_name)</td>
 <td>Returns min value.</td>
-</tr>
-<tr><td><a title="nidaqmx.AnalogOutputTask.get_minor_version" class="reference" href="nidaqmx.AnalogOutputTask.get_minor_version.html#nidaqmx.AnalogOutputTask.get_minor_version"><tt class="xref docutils literal"><span class="pre">get_minor_version</span></tt></a>()</td>
-<td>Indicates the minor portion of the installed version of</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.get_names_of_channels" class="reference" href="nidaqmx.AnalogOutputTask.get_names_of_channels.html#nidaqmx.AnalogOutputTask.get_names_of_channels"><tt class="xref docutils literal"><span class="pre">get_names_of_channels</span></tt></a>()</td>
 <td>Indicates the names of all virtual channels in the task.</td>
@@ -166,20 +160,8 @@
 <tr><td><a title="nidaqmx.AnalogOutputTask.get_samples_per_channel_available" class="reference" href="nidaqmx.AnalogOutputTask.get_samples_per_channel_available.html#nidaqmx.AnalogOutputTask.get_samples_per_channel_available"><tt class="xref docutils literal"><span class="pre">get_samples_per_channel_available</span></tt></a>()</td>
 <td>Indicates the number of samples available to read per channel.</td>
 </tr>
-<tr><td><a title="nidaqmx.AnalogOutputTask.get_system_devices" class="reference" href="nidaqmx.AnalogOutputTask.get_system_devices.html#nidaqmx.AnalogOutputTask.get_system_devices"><tt class="xref docutils literal"><span class="pre">get_system_devices</span></tt></a>()</td>
-<td>Indicates the names of all devices installed in the system.</td>
-</tr>
-<tr><td><a title="nidaqmx.AnalogOutputTask.get_system_global_channels" class="reference" href="nidaqmx.AnalogOutputTask.get_system_global_channels.html#nidaqmx.AnalogOutputTask.get_system_global_channels"><tt class="xref docutils literal"><span class="pre">get_system_global_channels</span></tt></a>()</td>
-<td>Indicates an array that contains the names of all global</td>
-</tr>
-<tr><td><a title="nidaqmx.AnalogOutputTask.get_system_tasks" class="reference" href="nidaqmx.AnalogOutputTask.get_system_tasks.html#nidaqmx.AnalogOutputTask.get_system_tasks"><tt class="xref docutils literal"><span class="pre">get_system_tasks</span></tt></a>()</td>
-<td>Indicates an array that contains the names of all tasks saved</td>
-</tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.get_units" class="reference" href="nidaqmx.AnalogOutputTask.get_units.html#nidaqmx.AnalogOutputTask.get_units"><tt class="xref docutils literal"><span class="pre">get_units</span></tt></a>(channel_name)</td>
 <td>Specifies in what units to generate voltage on the channel.</td>
-</tr>
-<tr><td><a title="nidaqmx.AnalogOutputTask.get_version" class="reference" href="nidaqmx.AnalogOutputTask.get_version.html#nidaqmx.AnalogOutputTask.get_version"><tt class="xref docutils literal"><span class="pre">get_version</span></tt></a>()</td>
-<td>Return NI-DAQ driver software version string.</td>
 </tr>
 <tr><td><a title="nidaqmx.AnalogOutputTask.is_channel_global" class="reference" href="nidaqmx.AnalogOutputTask.is_channel_global.html#nidaqmx.AnalogOutputTask.is_channel_global"><tt class="xref docutils literal"><span class="pre">is_channel_global</span></tt></a>(channel_name)</td>
 <td>Indicates whether the channel is a global channel.</td>
@@ -308,7 +290,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

@@ -46,24 +46,41 @@
 <tt class="descclassname">AnalogInputTask.</tt><tt class="descname">configure_trigger_analog_edge_start</tt><big>(</big><em>source</em>, <em>slope='rising'</em>, <em>level=1.0</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogInputTask.configure_trigger_analog_edge_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures the task to start acquiring or generating samples
 when an analog signal crosses the level you specify.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>source - The name of a channel or terminal where there is an</dt>
-<dd>analog signal to use as the source of the trigger. For E
-Series devices, if you use a channel name, the channel must
-be the first channel in the task. The only terminal you can
-use for E Series devices is PFI0.</dd>
-<dt>slope - Specifies on which slope of the signal to start</dt>
-<dd><p class="first">acquiring or generating samples when the signal crosses
-trigger level:</p>
-<p class="last">&#8216;rising&#8217; - Trigger on the rising slope of the signal.
-&#8216;falling&#8217; - Trigger on the falling slope of the signal.</p>
-</dd>
-<dt>level - The threshold at which to start acquiring or</dt>
-<dd>generating samples. Specify this value in the units of the
-measurement or generation. Use trigger slope to specify on
-which slope to trigger at this threshold.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>source</strong> : str</p>
+<blockquote>
+<p>The name of a channel or terminal where there is an analog
+signal to use as the source of the trigger. For E Series
+devices, if you use a channel name, the channel must be the
+first channel in the task. The only terminal you can use for
+E Series devices is PFI0.</p>
+</blockquote>
+<p><strong>slope</strong> : {&#8216;rising&#8217;, &#8216;falling&#8217;}</p>
+<blockquote>
+<p>Specifies on which slope of the signal to start acquiring or
+generating samples when the signal crosses trigger level:</p>
+<blockquote>
+<p>&#8216;rising&#8217; - Trigger on the rising slope of the signal.</p>
+<p>&#8216;falling&#8217; - Trigger on the falling slope of the signal.</p>
+</blockquote>
+</blockquote>
+<p><strong>level</strong> : float</p>
+<blockquote>
+<p>The threshold at which to start acquiring or generating
+samples. Specify this value in the units of the measurement
+or generation. Use trigger slope to specify on which slope
+to trigger at this threshold.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -102,7 +119,7 @@ which slope to trigger at this threshold.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

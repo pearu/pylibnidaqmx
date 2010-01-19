@@ -55,28 +55,45 @@ size using DAQmxCfgOutputBuffer, NI-DAQmx automatically
 configures the buffer when you configure sample timing. If you
 attempt to write one sample for a buffered write without
 configuring the buffer, you will receive an error.</p>
-<p>Parameters:</p>
-<p>data - The samples to write to the task.</p>
-<dl class="docutils">
-<dt>auto_start - Specifies whether or not this function</dt>
-<dd>automatically starts the task if you do not start it.</dd>
-<dt>timeout - The amount of time, in seconds, to wait for this</dt>
-<dd><p class="first">function to write all the samples. The default value is 10.0
-seconds. To specify an infinite wait, pass -1
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : array</p>
+<blockquote>
+<p>The samples to write to the task.</p>
+</blockquote>
+<p><strong>auto_start</strong> : bool</p>
+<blockquote>
+<p>Specifies whether or not this function automatically starts
+the task if you do not start it.</p>
+</blockquote>
+<p><strong>timeout</strong> : float</p>
+<blockquote>
+<p>The amount of time, in seconds, to wait for this function to
+write all the samples. The default value is 10.0 seconds. To
+specify an infinite wait, pass -1
 (DAQmx_Val_WaitInfinitely). This function returns an error
 if the timeout elapses.</p>
-<p class="last">A value of 0 indicates to try once to write the submitted
+<p>A value of 0 indicates to try once to write the submitted
 samples. If this function successfully writes all submitted
 samples, it does not return an error. Otherwise, the
 function returns a timeout error and returns the number of
 samples actually written.</p>
-</dd>
-<dt>layout - Specifies how the samples are arranged, either</dt>
-<dd><p class="first">interleaved or noninterleaved:</p>
-<p class="last">&#8216;group_by_channel&#8217; - Group by channel (non-interleaved).
-&#8216;group_by_scan_number&#8217; - Group by scan number (interleaved).</p>
-</dd>
-</dl>
+</blockquote>
+<p><strong>layout</strong> : {&#8216;group_by_channel&#8217;, &#8216;group_by_scan_number&#8217;}</p>
+<blockquote class="last">
+<p>Specifies how the samples are arranged, either interleaved
+or noninterleaved:</p>
+<blockquote>
+<p>&#8216;group_by_channel&#8217; - Group by channel (non-interleaved).</p>
+<p>&#8216;group_by_scan_number&#8217; - Group by scan number (interleaved).</p>
+</blockquote>
+</blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -115,7 +132,7 @@ samples actually written.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

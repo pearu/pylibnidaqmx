@@ -49,16 +49,21 @@ stops due to an error or when a finite acquisition task or
 finite generation task completes execution. A Done event does
 not occur when a task is stopped explicitly, such as by
 calling DAQmxStopTask.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>func - The function that you want DAQmx to call when the event</dt>
-<dd><p class="first">occurs.  The function you pass in this parameter must have
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>func</strong> : function</p>
+<blockquote>
+<p>The function that you want DAQmx to call when the event
+occurs.  The function you pass in this parameter must have
 the following prototype:</p>
-<dl class="docutils">
-<dt>def func(task, status, cb_data = None):</dt>
-<dd>return 0</dd>
-</dl>
-<p class="last">Upon entry to the callback, the taskHandle parameter
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">cb_data</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="mf">0</span>
+</pre></div>
+</div>
+<p>Upon entry to the callback, the taskHandle parameter
 contains the handle to the task on which the event
 occurred. The status parameter contains the status of the
 task when the event occurred. If the status value is
@@ -67,27 +72,40 @@ zero, it indicates no error. If the status value is
 positive, it indicates a warning. The callbackData parameter
 contains the value you passed in the callbackData parameter
 of this function.</p>
-</dd>
-<dt>options - Use this parameter to set certain options. You can</dt>
-<dd><p class="first">combine flags with the bitwise-OR operator (&#8216;|&#8217;) to set
+</blockquote>
+<p><strong>options</strong> : {int, &#8216;sync&#8217;}</p>
+<blockquote>
+<p>Use this parameter to set certain options. You can
+combine flags with the bitwise-OR operator (&#8216;|&#8217;) to set
 multiple options. Pass a value of zero if no options need to
 be set.</p>
-<dl class="docutils">
-<dt>&#8216;sync&#8217; - The callback function is called in the thread which</dt>
-<dd>registered the event. In order for the callback to occur,
+<p>&#8216;sync&#8217; - The callback function is called in the thread which
+registered the event. In order for the callback to occur,
 you must be processing messages. If you do not set this
 flag, the callback function is called in a DAQmx thread by
-default.</dd>
-</dl>
-<p class="last">Note: If you are receiving synchronous events faster than
+default.</p>
+<p>Note: If you are receiving synchronous events faster than
 you are processing them, then the user interface of your
 application might become unresponsive.</p>
-</dd>
-<dt>cb_data - A value that you want DAQmx to pass to the callback</dt>
-<dd>function as the function data parameter. Do not pass the
-address of a local variable or any other variable that might
-not be valid when the function is executed.</dd>
-</dl>
+</blockquote>
+<p><strong>cb_data :</strong> :</p>
+<blockquote>
+<p>A value that you want DAQmx to pass to the callback function
+as the function data parameter. Do not pass the address of a
+local variable or any other variable that might not be valid
+when the function is executed.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a title="nidaqmx.DigitalOutputTask.register_signal_event" class="reference" href="nidaqmx.DigitalOutputTask.register_signal_event.html#nidaqmx.DigitalOutputTask.register_signal_event"><tt class="xref docutils literal"><span class="pre">register_signal_event</span></tt></a>, <a title="nidaqmx.DigitalOutputTask.register_every_n_samples_event" class="reference" href="nidaqmx.DigitalOutputTask.register_every_n_samples_event.html#nidaqmx.DigitalOutputTask.register_every_n_samples_event"><tt class="xref docutils literal"><span class="pre">register_every_n_samples_event</span></tt></a></p>
+</div>
 </dd></dl>
 
 </div>
@@ -126,7 +144,7 @@ not be valid when the function is executed.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

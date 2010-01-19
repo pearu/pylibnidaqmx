@@ -46,10 +46,14 @@
 <tt class="descclassname">DigitalInputTask.</tt><tt class="descname">read</tt><big>(</big><em>samples_per_channel=None</em>, <em>timeout=10.0</em>, <em>fill_mode='group_by_scan_number'</em><big>)</big><a class="headerlink" href="#nidaqmx.DigitalInputTask.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads multiple samples from each digital line in a task. Each
 line in a channel gets one byte per sample.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>samples_per_channel - The number of samples, per channel, to</dt>
-<dd><p class="first">read. The default value of -1 (DAQmx_Val_Auto) reads all
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>samples_per_channel</strong> : int or None</p>
+<blockquote>
+<p>The number of samples, per channel, to
+read. The default value of -1 (DAQmx_Val_Auto) reads all
 available samples. If readArray does not contain enough
 space, this function returns as many samples as fit in
 readArray.</p>
@@ -59,43 +63,56 @@ finite number of samples.</p>
 <p>If the task acquires samples continuously and you set this
 parameter to -1, this function reads all the samples
 currently available in the buffer.</p>
-<p class="last">If the task acquires a finite number of samples and you set
+<p>If the task acquires a finite number of samples and you set
 this parameter to -1, the function waits for the task to
 acquire all requested samples, then reads those samples. If
 you set the Read All Available Data property to TRUE, the
 function reads the samples currently available in the buffer
 and does not wait for the task to acquire all requested
 samples.</p>
-</dd>
-<dt>timeout - The amount of time, in seconds, to wait for the</dt>
-<dd><p class="first">function to read the sample(s). The default value is 10.0
-seconds. To specify an infinite wait, pass -1
+</blockquote>
+<p><strong>timeout</strong> : float</p>
+<blockquote>
+<p>The amount of time, in seconds, to wait for the function to
+read the sample(s). The default value is 10.0 seconds. To
+specify an infinite wait, pass -1
 (DAQmx_Val_WaitInfinitely). This function returns an error
 if the timeout elapses.</p>
-<p class="last">A value of 0 indicates to try once to read the requested
+<p>A value of 0 indicates to try once to read the requested
 samples. If all the requested samples are read, the function
 is successful. Otherwise, the function returns a timeout
 error and returns the samples that were actually read.</p>
-</dd>
-<dt>fill_mode - Specifies whether or not the samples are</dt>
-<dd><p class="first">interleaved:</p>
-<p class="last">&#8216;group_by_channel&#8217; - Group by channel (non-interleaved).
-&#8216;group_by_scan_number&#8217; - Group by scan number (interleaved).</p>
-</dd>
-</dl>
-<p>Output:</p>
-<blockquote>
-<dl class="docutils">
-<dt>data - The array to read samples into. Each numBytesPerSamp</dt>
-<dd>corresponds to one sample per channel, with each element
-in that grouping corresponding to a line in that channel,
-up to the number of lines contained in the channel.</dd>
-<dt>bytes_per_sample - The number of elements in readArray that</dt>
-<dd>constitutes a sample per channel. For each sample per
-channel, numBytesPerSamp is the number of bytes that
-channel consists of.</dd>
-</dl>
 </blockquote>
+<p><strong>fill_mode</strong> : {&#8216;group_by_channel&#8217;, &#8216;group_by_scan_number&#8217;}</p>
+<blockquote>
+<p>Specifies whether or not the samples are interleaved:</p>
+<blockquote>
+<p>&#8216;group_by_channel&#8217; - Group by channel (non-interleaved).</p>
+<p>&#8216;group_by_scan_number&#8217; - Group by scan number (interleaved).</p>
+</blockquote>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>data</strong> : array</p>
+<blockquote class="last">
+<blockquote>
+<p>The array to read samples into. Each <em>bytes_per_sample</em>
+corresponds to one sample per channel, with each element
+in that grouping corresponding to a line in that channel,
+up to the number of lines contained in the channel.</p>
+</blockquote>
+<p>bytes_per_sample : int</p>
+<blockquote>
+<p>The number of elements in returned <em>data</em> that constitutes
+a sample per channel. For each sample per channel,
+<em>bytes_per_sample</em> is the number of bytes that channel
+consists of.</p>
+</blockquote>
+</blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -134,7 +151,7 @@ channel consists of.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

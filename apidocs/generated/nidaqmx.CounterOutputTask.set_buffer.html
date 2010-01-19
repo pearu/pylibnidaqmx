@@ -45,13 +45,24 @@
 <dt id="nidaqmx.CounterOutputTask.set_buffer">
 <tt class="descclassname">CounterOutputTask.</tt><tt class="descname">set_buffer</tt><big>(</big><em>samples_per_channel</em><big>)</big><a class="headerlink" href="#nidaqmx.CounterOutputTask.set_buffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overrides the automatic I/O buffer allocation that NI-DAQmx performs.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>samples_per_channel - The number of samples the buffer can</dt>
-<dd>hold for each channel in the task. Zero indicates no buffer
-should be allocated. Use a buffer size of 0 to perform a
-hardware-timed operation without using a buffer.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>samples_per_channel</strong> : int</p>
+<blockquote>
+<p>The number of samples the buffer can hold for each channel
+in the task. Zero indicates no buffer should be
+allocated. Use a buffer size of 0 to perform a
+hardware-timed operation without using a buffer.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -90,7 +101,7 @@ hardware-timed operation without using a buffer.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

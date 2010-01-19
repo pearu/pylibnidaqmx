@@ -53,41 +53,56 @@ counters simultaneously, use a separate task for each
 counter. Connect the input signal to the default input
 terminal of the counter unless you select a different input
 terminal.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>counter - The name of the counter to use to create virtual</dt>
-<dd>channels.</dd>
-<dt>name - The name(s) to assign to the created virtual</dt>
-<dd><p class="first">channel(s). If you do not specify a name, NI-DAQmx uses the
-physical channel name as the virtual channel name. If you
-specify your own names for nameToAssignToChannel, you must
-use the names when you refer to these channels in other
-NI-DAQmx functions.</p>
-<p class="last">If you create multiple virtual channels with one call to
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>counter</strong> : str</p>
+<blockquote>
+<p>The name of the counter to use to create virtual channels.</p>
+</blockquote>
+<p><strong>name</strong> : str</p>
+<blockquote>
+<p>The name(s) to assign to the created virtual channel(s). If
+you do not specify a name, NI-DAQmx uses the physical
+channel name as the virtual channel name. If you specify
+your own names for nameToAssignToChannel, you must use the
+names when you refer to these channels in other NI-DAQmx
+functions.</p>
+<p>If you create multiple virtual channels with one call to
 this function, you can specify a list of names separated by
 commas. If you provide fewer names than the number of
 virtual channels you create, NI-DAQmx automatically assigns
 names to the virtual channels.</p>
-</dd>
-<dt>edge - Specifies on which edges of the input signal to</dt>
-<dd><p class="first">increment or decrement the count:</p>
-<p class="last">&#8216;rising&#8217; - Rising edge(s).
-&#8216;falling&#8217; - Falling edge(s).</p>
-</dd>
-</dl>
-<p>init - The value from which to start counting.</p>
-<dl class="docutils">
-<dt>direction - Specifies whether to increment or decrement the</dt>
-<dd><p class="first">counter on each edge:</p>
+</blockquote>
+<p><strong>edge</strong> : {&#8216;rising&#8217;, &#8216;falling&#8217;}</p>
+<blockquote>
+<p>Specifies on which edges of the input signal to increment or
+decrement the count, rising or falling edge(s).</p>
+</blockquote>
+<p><strong>init</strong> : int</p>
+<blockquote>
+<p>The value from which to start counting.</p>
+</blockquote>
+<p><strong>direction</strong> : {&#8216;up&#8217;, &#8216;down&#8217;, &#8216;ext&#8217;}</p>
+<blockquote>
+<p>Specifies whether to increment or decrement the
+counter on each edge:</p>
+<blockquote>
 <p>&#8216;up&#8217; - Increment the count register on each edge.</p>
 <p>&#8216;down&#8217; - Decrement the count register on each edge.</p>
-<dl class="last docutils">
-<dt>&#8216;ext&#8217; - The state of a digital line controls the count</dt>
-<dd>direction. Each counter has a default count direction
-terminal.</dd>
-</dl>
-</dd>
-</dl>
+<p>&#8216;ext&#8217; - The state of a digital line controls the count
+direction. Each counter has a default count direction
+terminal.</p>
+</blockquote>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -126,7 +141,7 @@ terminal.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

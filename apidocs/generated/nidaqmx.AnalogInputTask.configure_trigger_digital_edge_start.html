@@ -46,16 +46,27 @@
 <tt class="descclassname">AnalogInputTask.</tt><tt class="descname">configure_trigger_digital_edge_start</tt><big>(</big><em>source</em>, <em>edge='rising'</em><big>)</big><a class="headerlink" href="#nidaqmx.AnalogInputTask.configure_trigger_digital_edge_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures the task to start acquiring or generating samples
 on a rising or falling edge of a digital signal.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>source - The name of a terminal where there is a digital</dt>
-<dd>signal to use as the source of the trigger.</dd>
-<dt>edge - Specifies on which edge of a digital signal to start</dt>
-<dd><p class="first">acquiring or generating samples:</p>
-<p class="last">&#8216;rising&#8217; - Rising edge(s).
-&#8216;falling&#8217; - Falling edge(s).</p>
-</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>source</strong> : str</p>
+<blockquote>
+<p>The name of a terminal where there is a digital signal to
+use as the source of the trigger.</p>
+</blockquote>
+<p><strong>edge</strong> : {&#8216;rising&#8217;, &#8216;falling&#8217;}</p>
+<blockquote>
+<p>Specifies on which edge of a digital signal to start
+acquiring or generating samples: rising or falling edge(s).</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -94,7 +105,7 @@ on a rising or falling edge of a digital signal.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

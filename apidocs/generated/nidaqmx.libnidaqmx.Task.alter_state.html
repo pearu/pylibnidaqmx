@@ -48,26 +48,34 @@
 specify. To minimize the time required to start a task, for
 example, DAQmxTaskControl can commit the task prior to
 starting.</p>
-<p>Actions:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>state</strong> : {&#8216;start&#8217;, &#8216;stop&#8217;, &#8216;verify&#8217;, &#8216;commit&#8217;, &#8216;reserve&#8217;, &#8216;unreserve&#8217;, &#8216;abort&#8217;}</p>
+<blockquote>
 <p>&#8216;start&#8217; - Starts execution of the task.</p>
 <p>&#8216;stop&#8217; - Stops execution of the task.</p>
-<dl class="docutils">
-<dt>&#8216;verify&#8217; - Verifies that all task parameters are valid for the</dt>
-<dd>hardware.</dd>
-<dt>&#8216;commit&#8217; - Programs the hardware as much as possible according</dt>
-<dd>to the task configuration.</dd>
-<dt>&#8216;reserve&#8217; - Reserves the hardware resources needed for the</dt>
-<dd>task. No other tasks can reserve these same resources.</dd>
-</dl>
+<p>&#8216;verify&#8217; - Verifies that all task parameters are valid for the
+hardware.</p>
+<p>&#8216;commit&#8217; - Programs the hardware as much as possible according
+to the task configuration.</p>
+<p>&#8216;reserve&#8217; - Reserves the hardware resources needed for the
+task. No other tasks can reserve these same resources.</p>
 <p>&#8216;unreserve&#8217; - Releases all previously reserved resources.</p>
-<dl class="docutils">
-<dt>&#8216;abort&#8217; - Abort is used to stop an operation, such as Read or</dt>
-<dd>Write, that is currently active. Abort puts the task into an
+<p>&#8216;abort&#8217; - Abort is used to stop an operation, such as Read or
+Write, that is currently active. Abort puts the task into an
 unstable but recoverable state. To recover the task, call
 Start to restart the task or call Stop to reset the task
-without starting it.</dd>
-</dl>
-<p>Returns True on success.</p>
+without starting it.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -106,7 +114,7 @@ without starting it.</dd>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 14, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

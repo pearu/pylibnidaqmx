@@ -46,26 +46,42 @@
 <tt class="descclassname">Task.</tt><tt class="descname">configure_trigger_analog_window_start</tt><big>(</big><em>source</em>, <em>when='entering'</em>, <em>top=1.0</em>, <em>bottom=-1.0</em><big>)</big><a class="headerlink" href="#nidaqmx.libnidaqmx.Task.configure_trigger_analog_window_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures the task to start acquiring or generating samples
 when an analog signal enters or leaves a range you specify.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>source - The name of a virtual channel or terminal where there</dt>
-<dd><p class="first">is an analog signal to use as the source of the trigger.</p>
-<p class="last">For E Series devices, if you use a virtual channel, it must
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>source</strong> : str</p>
+<blockquote>
+<p>The name of a virtual channel or terminal where there
+is an analog signal to use as the source of the trigger.</p>
+<p>For E Series devices, if you use a virtual channel, it must
 be the first channel in the task. The only terminal you can
 use for E Series devices is PFI0.</p>
-</dd>
-<dt>when - Specifies whether the task starts measuring or</dt>
-<dd><p class="first">generating samples when the signal enters the window or when
-it leaves the window. Use windowBottom and windowTop to
-specify the limits of the window.</p>
-<p class="last">&#8216;entering&#8217; - Trigger when the signal enters the window.
-&#8216;leaving&#8217; - Trigger when the signal leaves the window.</p>
-</dd>
-<dt>top - The upper limit of the window. Specify this value in the</dt>
-<dd>units of the measurement or generation.</dd>
-<dt>bottom - The lower limit of the window. Specify this value in</dt>
-<dd>the units of the measurement or generation.</dd>
-</dl>
+</blockquote>
+<p><strong>when</strong> : {&#8216;entering&#8217;, &#8216;leaving&#8217;}</p>
+<blockquote>
+<p>Specifies whether the task starts measuring or generating
+samples when the signal enters the window or when it leaves
+the window. Use <em>bottom</em> and <em>top</em> to specify the limits of
+the window.</p>
+</blockquote>
+<p><strong>top</strong> : float</p>
+<blockquote>
+<p>The upper limit of the window. Specify this value in the
+units of the measurement or generation.</p>
+</blockquote>
+<p><strong>bottom</strong> : float</p>
+<blockquote>
+<p>The lower limit of the window. Specify this value in the
+units of the measurement or generation.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -104,7 +120,7 @@ specify the limits of the window.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 14, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>

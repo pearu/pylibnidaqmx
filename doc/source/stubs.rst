@@ -17,3 +17,8 @@
   :toctree: generated/
 
   make_pattern
+  Device
+  System
+  Task
+
+

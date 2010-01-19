@@ -50,37 +50,58 @@ the number of timebase ticks that the pulse is at a low state
 and also adds the channel to the task. The pulses appear on
 the default output terminal of the counter unless you select a
 different output terminal.</p>
-<p>Parameters:</p>
-<dl class="docutils">
-<dt>counter - The name of the counter to use to create virtual</dt>
-<dd>channels. You can specify a list or range of physical
-channels.</dd>
-<dt>name - The name(s) to assign to the created virtual</dt>
-<dd><p class="first">channel(s). If you do not specify a name, NI-DAQmx uses the
-physical channel name as the virtual channel name. If you
-specify your own names for nameToAssignToChannel, you must
-use the names when you refer to these channels in other
-NI-DAQmx functions.</p>
-<p class="last">If you create multiple virtual channels with one call to
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>counter</strong> : str</p>
+<blockquote>
+<p>The name of the counter to use to create virtual
+channels. You can specify a list or range of physical
+channels.</p>
+</blockquote>
+<p><strong>name</strong> : str</p>
+<blockquote>
+<p>The name(s) to assign to the created virtual channel(s). If
+you do not specify a name, NI-DAQmx uses the physical
+channel name as the virtual channel name. If you specify
+your own names for nameToAssignToChannel, you must use the
+names when you refer to these channels in other NI-DAQmx
+functions.</p>
+<p>If you create multiple virtual channels with one call to
 this function, you can specify a list of names separated by
 commas. If you provide fewer names than the number of
 virtual channels you create, NI-DAQmx automatically assigns
 names to the virtual channels.</p>
-</dd>
-</dl>
-<p>units - The units in which to specify high and low time:</p>
+</blockquote>
+<p><strong>units</strong> : {&#8216;seconds&#8217;}</p>
 <blockquote>
-&#8216;seconds&#8217; - seconds</blockquote>
-<p>idle_state - The resting state of the output terminal:</p>
+<p>The units in which to specify high and low time.</p>
+</blockquote>
+<p><strong>idle_state</strong> : {&#8216;low&#8217;, &#8216;high&#8217;}</p>
 <blockquote>
-&#8216;low&#8217; - Low state.
-&#8216;high&#8217; - High state.</blockquote>
-<dl class="docutils">
-<dt>delay - The amount of time in seconds to wait before</dt>
-<dd>generating the first pulse.</dd>
-</dl>
-<p>low_time - The amount of time the pulse is low, in seconds.</p>
-<p>high_time - The amount of time the pulse is high, in seconds.</p>
+<p>The resting state of the output terminal.</p>
+</blockquote>
+<p><strong>delay</strong> : float</p>
+<blockquote>
+<p>The amount of time in seconds to wait before generating the
+first pulse.</p>
+</blockquote>
+<p><strong>low_time</strong> : float</p>
+<blockquote>
+<p>The amount of time the pulse is low, in seconds.</p>
+</blockquote>
+<p><strong>high_time</strong> : float</p>
+<blockquote>
+<p>The amount of time the pulse is high, in seconds.</p>
+</blockquote>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>success_status</strong> : bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -119,7 +140,7 @@ names to the virtual channels.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2009-2010, Pearu Peterson.
-      Last updated on Jan 18, 2010.
+      Last updated on Jan 19, 2010.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.
     </div>
   </body>
