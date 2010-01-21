@@ -582,7 +582,7 @@ class Task(uInt32):
             raise TypeError('%s: cannot determine channel I/O type when no channels have been created.' % (self.__class__.__name__))
         return 'input' if t[1]=='I' else 'output'
 
-    def __del__ (self, libnidaqmx=libnidaqmx):
+    def clear(self, libnidaqmx=libnidaqmx):
         """
         Clears the task.
 
@@ -599,7 +599,9 @@ class Task(uInt32):
         if self.value:
             r = libnidaqmx.DAQmxClearTask(self)
             if r:
-                print "DAQmxClearTask failed with error code %s" % (r)
+                warnigs.warn("DAQmxClearTask failed with error code %s (%r)" % (r, error_map.get(r)))
+
+    __del__ = clear
 
 
     def __repr__(self):
