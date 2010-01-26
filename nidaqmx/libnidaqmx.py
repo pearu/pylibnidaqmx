@@ -802,7 +802,7 @@ class Task(uInt32):
 
         options, cb_data :
 
-          see `register_done_event` documentation.
+          See `register_done_event` documentation.
 
         Returns
         -------
