@@ -49,7 +49,10 @@ Failed to find NI-DAQmx library.
 Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.
 The functionality of libnidaqmx.py will be disabled.''' % (libname), ImportWarning)
 else:
-    libnidaqmx = ctypes.cdll.LoadLibrary(lib)
+    if os.name=='nt':
+        libnidaqmx = ctypes.windll.LoadLibrary(lib)
+    else:
+        libnidaqmx = ctypes.cdll.LoadLibrary(lib)
 
 int8 = ctypes.c_int8
 uInt8 = ctypes.c_uint8
