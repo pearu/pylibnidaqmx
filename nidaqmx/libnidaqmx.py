@@ -77,6 +77,10 @@ def get_nidaqmx_version ():
     minor = d.value
     return '%s.%s' % (major, minor)
 
+# Increase default_buf_size value when receiving RuntimeError
+# with "Buffer is too small to fit the string." message: 
+default_buf_size = 3000
+
 if libnidaqmx is not None:
 
     nidaqmx_version = get_nidaqmx_version()
@@ -131,12 +135,26 @@ if libnidaqmx is not None:
         exec '%s = %r' % (name, value)
 
 def CHK(return_code, funcname, *args):
+    """
+    Return ``return_code`` while handle any warnings and errors from
+    calling a libnidaqmx function ``funcname`` with arguments
+    ``args``.
+    """
     if return_code==0: # call was succesful
         pass
     else:
-        buf_size = 1000
-        buf = ctypes.create_string_buffer('\000' * buf_size)
-        r = libnidaqmx.DAQmxGetErrorString(return_code, ctypes.byref(buf), buf_size)
+        buf_size = default_buf_size
+        while buf_size < 1000000:
+            buf = ctypes.create_string_buffer('\000' * buf_size)
+            try:
+                r = libnidaqmx.DAQmxGetErrorString(return_code, ctypes.byref(buf), buf_size)
+            except RuntimeError, msg:
+                if 'Buffer is too small to fit the string' in str(msg):
+                    buf_size *= 2
+                else:
+                    raise
+            else:
+                break
         if r:
             if return_code < 0:
                 raise RuntimeError('%s%s failed with error %s=%d: %s'%\
@@ -153,6 +171,9 @@ def CHK(return_code, funcname, *args):
     return return_code
 
 def CALL(name, *args):
+    """
+    Calls libnidaqmx function ``name`` and arguments ``args``.
+    """
     funcname = 'DAQmx' + name
     func = getattr(libnidaqmx, funcname)
     new_args = []
@@ -263,12 +284,12 @@ class Device(str):
         """
         Indicates the product name of the device.
         """
-        buf_size = 1000
+        buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevProductType', self, ctypes.byref (buf), buf_size)
         return buf.value
 
-    def get_product_number (self):
+    def get_product_number(self):
         """
         Indicates the unique hardware identification number for the
         device.
@@ -286,89 +307,97 @@ class Device(str):
         CALL ('GetDevSerialNum', self, ctypes.byref(d))
         return d.value
 
-    def get_analog_input_channels(self):
+    def get_analog_input_channels(self, buf_size=None):
         """
         Indicates an array containing the names of the analog input
         physical channels available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevAIPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_analog_output_channels(self):
+    def get_analog_output_channels(self, buf_size=None):
         """
         Indicates an array containing the names of the analog output
         physical channels available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
-        CALL ('GetDevAOPhysicalChans', self, ctypes.byref (buf), buf_size)
+        CALL('GetDevAOPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_digital_input_lines(self):
+    def get_digital_input_lines(self, buf_size=None):
         """
         Indicates an array containing the names of the digital input
         lines available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevDILines', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_digital_input_ports(self):
+    def get_digital_input_ports(self, buf_size=None):
         """
         Indicates an array containing the names of the digital input
         ports available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevDIPorts', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_digital_output_lines(self):
+    def get_digital_output_lines(self, buf_size=None):
         """
         Indicates an array containing the names of the digital output
         lines available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevDOLines', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_digital_output_ports(self):
+    def get_digital_output_ports(self, buf_size=None):
         """
         Indicates an array containing the names of the digital output
         ports available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevDOPorts', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_counter_input_channels (self):
+    def get_counter_input_channels (self, buf_size=None):
         """
         Indicates an array containing the names of the counter input
         physical channels available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevCIPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
-    def get_counter_output_channels (self):
+    def get_counter_output_channels (self, buf_size=None):
         """
         Indicates an array containing the names of the counter output
         physical channels available on the device.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetDevCOPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
@@ -476,7 +505,7 @@ class System(object):
         """
         Indicates the names of all devices installed in the system.
         """
-        buf_size = 1000
+        buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetSysDevNames', ctypes.byref (buf), buf_size)
         names = [Device(n.strip()) for n in buf.value.split(',') if n.strip()]
@@ -488,7 +517,7 @@ class System(object):
         Indicates an array that contains the names of all tasks saved
         on the system.
         """
-        buf_size = 1000
+        buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetSysTasks', ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
@@ -500,7 +529,7 @@ class System(object):
         Indicates an array that contains the names of all global
         channels saved on the system.
         """
-        buf_size = 1000
+        buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL ('GetSysGlobalChans', ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
@@ -557,7 +586,7 @@ class Task(uInt32):
         name = str(name)
         uInt32.__init__(self, 0)
         CALL('CreateTask', name, ctypes.byref(self))
-        buf_size = 1000
+        buf_size = max(len(name)+1, default_buf_size)
         buf = ctypes.create_string_buffer('\000' * buf_size)
         r = CALL('GetTaskName', self, ctypes.byref(buf), buf_size)
         self.name = buf.value
@@ -687,11 +716,12 @@ class Task(uInt32):
         CALL('GetTaskNumChans', self, ctypes.byref(d))
         return d.value
         
-    def get_names_of_channels (self):
+    def get_names_of_channels (self, buf_size = None):
         """
         Indicates the names of all virtual channels in the task.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL('GetTaskChannels', self, ctypes.byref(buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
@@ -699,12 +729,13 @@ class Task(uInt32):
         assert len(names)==n,`names, n`
         return names
 
-    def get_devices (self):
+    def get_devices (self, buf_size = None):
         """
         Indicates an array containing the names of all devices in the
         task.
         """
-        buf_size = 1000
+        if buf_size is None:
+            buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         CALL('GetTaskDevices', self, ctypes.byref(buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
@@ -1387,7 +1418,7 @@ class Task(uInt32):
         virtual channel is based.
         """
         channel_name = str (channel_name)
-        buf_size = 1000
+        buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
         r = CALL('GetPhysicalChanName', self, channel_name, ctypes.byref(buf), uInt32(buf_size))
         return buf.value
