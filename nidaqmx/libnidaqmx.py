@@ -7,7 +7,7 @@
 # Created: July 2009
 
 """
-See http://pylibnidaqmx.googlecode.com/svn/trunk/apidocs/index.html
+See http://pylibnidaqmx.googlecode.com/
 """
 
 __all__ = ['AnalogInputTask', 'AnalogOutputTask',
@@ -193,8 +193,8 @@ def make_pattern(paths, _main=True):
 
     For example::
 
-    >>> make_pattern(['Dev1/ao1', 'Dev1/ao2','Dev1/ao3', 'Dev1/ao4'])
-    'Dev1/ao1:4'
+      >>> make_pattern(['Dev1/ao1', 'Dev1/ao2','Dev1/ao3', 'Dev1/ao4'])
+      'Dev1/ao1:4'
 
     """
     patterns = {}
@@ -311,6 +311,17 @@ class Device(str):
         """
         Indicates an array containing the names of the analog input
         physical channels available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -323,6 +334,17 @@ class Device(str):
         """
         Indicates an array containing the names of the analog output
         physical channels available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -335,6 +357,17 @@ class Device(str):
         """
         Indicates an array containing the names of the digital input
         lines available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -347,6 +380,17 @@ class Device(str):
         """
         Indicates an array containing the names of the digital input
         ports available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -359,6 +403,17 @@ class Device(str):
         """
         Indicates an array containing the names of the digital output
         lines available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -371,6 +426,17 @@ class Device(str):
         """
         Indicates an array containing the names of the digital output
         ports available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -383,6 +449,17 @@ class Device(str):
         """
         Indicates an array containing the names of the counter input
         physical channels available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -395,6 +472,17 @@ class Device(str):
         """
         Indicates an array containing the names of the counter output
         physical channels available on the device.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -716,9 +804,20 @@ class Task(uInt32):
         CALL('GetTaskNumChans', self, ctypes.byref(d))
         return d.value
         
-    def get_names_of_channels (self, buf_size = None):
+    def get_names_of_channels (self, buf_size=None):
         """
         Indicates the names of all virtual channels in the task.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size
@@ -729,10 +828,21 @@ class Task(uInt32):
         assert len(names)==n,`names, n`
         return names
 
-    def get_devices (self, buf_size = None):
+    def get_devices (self, buf_size=None):
         """
         Indicates an array containing the names of all devices in the
         task.
+
+        Parameters
+        ----------
+        buf_size : {int, None}
+          Size of the buffer for retrieving information. If ``buf_size``
+          is ``None`` then `nidaqmx.libnidaqmx.default_buf_size` will be
+          used.
+
+        Returns
+        -------
+        names : list
         """
         if buf_size is None:
             buf_size = default_buf_size

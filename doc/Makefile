@@ -1,6 +1,10 @@
 # Makefile for Sphinx documentation
 #
 
+HTML_TARGET = ../apidocs
+HTML_TARGET = /net/cens/home/www/sysbio/download/software/pylibnidaqmx
+#/net/cens/home/www/unsecure/projects/pylibnidaqmx
+
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
@@ -30,7 +34,7 @@ clean:
 	-rm -rf _build/*
 
 html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) ../apidocs
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(HTML_TARGET)
 	@echo
 	@echo "Build finished. The HTML pages are in ../apidocs."
 

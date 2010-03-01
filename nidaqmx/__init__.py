@@ -50,7 +50,34 @@ channels in the NI card::
 >>> show ()
 
 that should plot two sine waves.
+
+Learning about your NI card and software
+========================================
+
+The nidaqmx package allows you to make various queries about the NI
+card devices as well as software properties. For that, use
+`nidaqmx.System` instance as follows::
+
+  >>> from nidaqmx import System
+  >>> system = System()
+  >>> print 'libnidaqmx version:',system.version
+  libnidaqmx version: 8.0
+  >>> print 'NI-DAQ devives:',system.devices
+  NI-DAQ devives: ['Dev1', 'Dev2']
+  >>> dev1 = system.devices[0]
+  >>> print dev1.get_product_type()
+  PCIe-6259
+  >>> print dev1.get_bus()
+  PCIe (bus=7, device=0)
+  >>> print dev1.get_analog_input_channels()
+  ['Dev1/ai0', 'Dev1/ai1', ..., 'Dev1/ai31']
+
+Note that ``system.devices`` contains instances of
+`nidaqmx.Device`.
+
 """
 
 
-from .libnidaqmx import AnalogInputTask, AnalogOutputTask, DigitalInputTask, DigitalOutputTask, CounterInputTask, CounterOutputTask
+from .libnidaqmx import AnalogInputTask, AnalogOutputTask,\
+    DigitalInputTask, DigitalOutputTask, CounterInputTask,\
+    CounterOutputTask, Device, System

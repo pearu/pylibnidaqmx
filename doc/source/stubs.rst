@@ -10,6 +10,8 @@
   DigitalOutputTask
   CounterInputTask
   CounterOutputTask
+  Device
+  System
 
 .. currentmodule:: nidaqmx.libnidaqmx
 
@@ -17,8 +19,4 @@
   :toctree: generated/
 
   make_pattern
-  Device
-  System
   Task
-
-
