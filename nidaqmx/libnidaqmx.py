@@ -720,7 +720,7 @@ class Task(uInt32):
         if self.value:
             r = libnidaqmx.DAQmxClearTask(self)
             if r:
-                warnigs.warn("DAQmxClearTask failed with error code %s (%r)" % (r, error_map.get(r)))
+                warnings.warn("DAQmxClearTask failed with error code %s (%r)" % (r, error_map.get(r)))
 
     __del__ = clear
 
