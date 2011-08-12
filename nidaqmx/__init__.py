@@ -75,9 +75,11 @@ card devices as well as software properties. For that, use
 Note that ``system.devices`` contains instances of
 `nidaqmx.Device`.
 
+Module content
+==============
 """
 
 
 from .libnidaqmx import AnalogInputTask, AnalogOutputTask,\
     DigitalInputTask, DigitalOutputTask, CounterInputTask,\
-    CounterOutputTask, Device, System
+    CounterOutputTask, Device, System, get_nidaqmx_version

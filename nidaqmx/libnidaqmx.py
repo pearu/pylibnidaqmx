@@ -13,6 +13,7 @@ See http://pylibnidaqmx.googlecode.com/
 __all__ = ['AnalogInputTask', 'AnalogOutputTask',
            'DigitalInputTask', 'DigitalOutputTask',
            'CounterInputTask', 'CounterOutputTask',
+           'System','Device','get_nidaqmx_version',
            ]
 
 import os
