@@ -2657,7 +2657,7 @@ class AnalogOutputTask (Task):
 
         """
         if np.isscalar(data):
-            return CALL('WriteAnalogScalar64', self, bool32(auto_start),
+            return CALL('WriteAnalogScalarF64', self, bool32(auto_start),
                         float64(timeout), float64(data), None)==0
 
         layout_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
