@@ -3108,6 +3108,139 @@ class CounterInputTask(Task):
         direction_val = self._get_map_value ('direction', direction_map, direction)
         return CALL ('CreateCICountEdgesChan', self, counter, name, edge_val, direction_val)==0
 
+    def create_channel_linear_encoder(
+                self,
+                counter,
+                name="",
+                decodingType='X1',
+                ZidxEnable=False,
+                ZidxVal=0.0,
+                ZidxPhase='AHighBHigh',
+                units='Ticks',
+                distPerPulse=1.0,
+                init=0.0,
+                customScaleName=None
+                ):
+        """
+        Creates a channel that uses a linear encoder to measure linear position.
+        You can create only one counter input channel at a time with this function
+        because a task can include only one counter input channel. To read from
+        multiple counters simultaneously, use a separate task for each counter.
+        Connect the input signals to the default input terminals of the counter
+        unless you select different input terminals.
+
+        Parameters
+        ----------
+
+        counter : str
+
+          The name of the counter to use to create virtual channels.
+
+        name : str
+
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
+
+          If you create multiple virtual channels with one call to
+          this function, you can specify a list of names separated by
+          commas. If you provide fewer names than the number of
+          virtual channels you create, NI-DAQmx automatically assigns
+          names to the virtual channels.
+
+        decodingType : {'X1', 'X2', 'X4', 'TwoPulseCounting'} 
+
+          Specifies how to count and interpret the pulses that the encoder
+          generates on signal A and signal B. X1, X2, and X4 are valid for
+          quadrature encoders only. TwoPulseCounting is valid only for
+          two-pulse encoders.
+
+          X2 and X4 decoding are more sensitive to smaller changes in position
+          than X1 encoding, with X4 being the most sensitive. However, more
+          sensitive decoding is more likely to produce erroneous measurements
+          if there is vibration in the encoder or other noise in the signals.
+
+        ZidxEnable : bool
+
+          Specifies whether to enable z indexing for the measurement.
+
+        ZidxVal : float
+
+          The value, in units, to which to reset the measurement when signal Z
+          is high and signal A and signal B are at the states you specify with
+          ZidxPhase.
+
+        ZidxPhase : {'AHighBHigh', 'AHighBLow', 'ALowBHigh', 'ALowBLow'}
+
+          The states at which signal A and signal B must be while signal Z is high
+          for NI-DAQmx to reset the measurement. If signal Z is never high while
+          the signal A and signal B are high, for example, you must choose a phase
+          other than DAQmx_Val_AHighBHigh.
+
+          When signal Z goes high and how long it stays high varies from encoder to
+          encoder. Refer to the documentation for the encoder to determine the
+          timing of signal Z with respect to signal A and signal B.
+
+        units  : {'Meters', 'Inches', 'Ticks', 'FromCustomScale'}
+
+          The units to use to return linear position measurements from the channel.
+
+        distPerPulse : float
+
+          The distance measured for each pulse the encoder generates. Specify this
+          value in units.
+        
+        init : float
+
+          The position of the encoder when the measurement begins. This value is
+          in units.
+
+        customScaleName : str
+
+          The name of a custom scale to apply to the channel. To use this parameter,
+          you must set units to DAQmx_Val_FromCustomScale. If you do not set units
+          to FromCustomScale, you must set customScaleName to NULL.
+          
+        Returns
+        -------
+
+          success_status : bool
+        """
+        counter = str(counter)
+        name = str(name)
+
+        decodingType_map = dict(X1=DAQmx_Val_X1, X2=DAQmx_Val_X2, X4=DAQmx_Val_X4,
+                                TwoPulseCounting=DAQmx_Val_TwoPulseCounting)
+        ZidxPhase_map = dict(AHighBHigh=DAQmx_Val_AHighBHigh, AHighBLow=DAQmx_Val_AHighBLow,
+                            ALowBHigh=DAQmx_Val_ALowBHigh, ALowBLow=DAQmx_Val_ALowBLow)
+        units_map = dict(Meters=DAQmx_Val_Meters, Inches=DAQmx_Val_Inches,
+                        Ticks=DAQmx_Val_Ticks, FromCustomScale=DAQmx_Val_FromCustomScale)
+
+        decodingType_val = self._get_map_value ('decodingType', decodingType_map, decodingType)
+        ZidxPhase_val = self._get_map_value ('ZidxPhase', ZidxPhase_map, ZidxPhase)
+        units_val = self._get_map_value ('units', units_map, units)
+
+        if units_val != DAQmx_Val_FromCustomScale:
+            customScaleName = None
+
+        return CALL(
+                'CreateCILinEncoderChan',
+                self,
+                counter,
+                name,
+                decodingType_val,
+                bool32(ZidxEnable),
+                float64(ZidxVal),
+                ZidxPhase_val,
+                units_val,
+                float64(distPerPulse),
+                float64(init),
+                customScaleName
+                )==0
+
     def set_terminal_count_edges(self, channel, terminal):
         """
         Specifies the input terminal of the signal to measure.
@@ -3213,6 +3346,69 @@ class CounterInputTask(Task):
         """
         return CALL('ResetCICtrTimebaseRate', self, channel)==0
 
+
+    def read(self, samples_per_channel=None, timeout=10.0):
+        """
+        Reads multiple 32-bit integer samples from a counter task.
+        Use this function when counter samples are returned unscaled,
+        such as for edge counting.
+
+        Parameters
+        ----------
+
+        samples_per_channel : int
+          The number of samples, per channel, to read. The default
+          value of -1 (DAQmx_Val_Auto) reads all available samples. If
+          readArray does not contain enough space, this function
+          returns as many samples as fit in readArray.
+
+          NI-DAQmx determines how many samples to read based on
+          whether the task acquires samples continuously or acquires a
+          finite number of samples.
+
+          If the task acquires samples continuously and you set this
+          parameter to -1, this function reads all the samples
+          currently available in the buffer.
+
+          If the task acquires a finite number of samples and you set
+          this parameter to -1, the function waits for the task to
+          acquire all requested samples, then reads those samples. If
+          you set the Read All Available Samples property to TRUE, the
+          function reads the samples currently available in the buffer
+          and does not wait for the task to acquire all requested
+          samples.
+
+        timeout : float
+          The amount of time, in seconds, to wait for the function to
+          read the sample(s). The default value is 10.0 seconds. To
+          specify an infinite wait, pass -1
+          (DAQmx_Val_WaitInfinitely). This function returns an error
+          if the timeout elapses.
+
+          A value of 0 indicates to try once to read the requested
+          samples. If all the requested samples are read, the function
+          is successful. Otherwise, the function returns a timeout
+          error and returns the samples that were actually read.
+
+        Returns
+        -------
+        
+        data :
+          The array to read samples into, organized according to `fill_mode`.
+        """
+
+        if samples_per_channel is None:
+            samples_per_channel = self.get_samples_per_channel_available()
+
+        data = np.zeros((samples_per_channel,),dtype=np.int32)
+        samples_read = int32(0)
+
+        
+        r = CALL('ReadCounterU32', self, samples_per_channel, float64(timeout),
+                 data.ctypes.data, data.size, ctypes.byref(samples_read), None)
+
+        return data[:samples_read.value]
+    
 
 class CounterOutputTask(Task):
 
