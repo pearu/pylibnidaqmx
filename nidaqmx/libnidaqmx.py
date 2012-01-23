@@ -25,6 +25,9 @@ import ctypes
 import ctypes.util
 import warnings
 
+class NIDAQmxRuntimeError(RuntimeError):
+    pass
+
 # TODO: Find the location of the NIDAQmx.h automatically (eg by using the location of the library)
 if os.name=='nt':
     # UNTESTED: Please report results to http://code.google.com/p/pylibnidaqmx/issues
@@ -148,25 +151,27 @@ def CHK(return_code, funcname, *args):
         while buf_size < 1000000:
             buf = ctypes.create_string_buffer('\000' * buf_size)
             try:
-                r = libnidaqmx.DAQmxGetErrorString(return_code, ctypes.byref(buf), buf_size)
+                r = libnidaqmx.DAQmxGetExtendedErrorInfo(ctypes.byref(buf), buf_size)
+                if r != 0:
+                    r = libnidaqmx.DAQmxGetErrorString(return_code, ctypes.byref(buf), buf_size)
             except RuntimeError, msg:
                 if 'Buffer is too small to fit the string' in str(msg):
                     buf_size *= 2
                 else:
-                    raise
+                    raise NIDAQmxRuntimeError(msg)
             else:
                 break
         if r:
             if return_code < 0:
-                raise RuntimeError('%s%s failed with error %s=%d: %s'%\
-                                       (funcname, args, error_map[return_code], return_code, repr(buf.value)))
+                raise NIDAQmxRuntimeError('%s%s failed with error %s=%d: %s'%\
+                                          (funcname, args, error_map[return_code], return_code, repr(buf.value)))
             else:
                 warning = error_map.get(return_code, return_code)
                 sys.stderr.write('%s%s warning: %s\n' % (funcname, args, warning))                
         else:
             text = '\n  '.join(['']+textwrap.wrap(buf.value, 80)+['-'*10])
             if return_code < 0:
-                raise RuntimeError('%s%s:%s' % (funcname,args, text))
+                raise NIDAQmxRuntimeError('%s%s:%s' % (funcname,args, text))
             else:
                 sys.stderr.write('%s%s warning:%s\n' % (funcname, args, text))
     return return_code
