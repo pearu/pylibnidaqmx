@@ -20,7 +20,6 @@ import os
 import sys
 import textwrap
 import numpy as np
-from numpy import ctypeslib
 import ctypes
 import ctypes.util
 import warnings
@@ -1508,7 +1507,6 @@ class Task(uInt32):
 
 
     # Not implemented:
-    # DAQmxReadAnalogScalarF64
     # DAQmxReadBinary*, DAQmxReadCounter*, DAQmxReadDigital*
     # DAQmxGetNthTaskReadChannel, DAQmxReadRaw
     # DAQmxWrite*
@@ -2555,7 +2553,37 @@ class AnalogInputTask(Task):
             else:
                 return data[:,:samples_read.value]
         return data
-    
+
+    def read_scalar(self, timeout=10.0):
+        """
+        Reads a single floating-point sample from a task that
+        contains a single analog input channel.
+
+        Parameters
+        ----------
+        
+        timeout : float
+          The amount of time, in seconds, to wait for the function to
+          read the sample(s). The default value is 10.0 seconds. To
+          specify an infinite wait, pass -1 (DAQmx_Val_WaitInfinitely).
+          This function returns an error if the timeout elapses.
+
+          A value of 0 indicates to try once to read the requested
+          samples. If all the requested samples are read, the function
+          is successful. Otherwise, the function returns a timeout error
+          and returns the samples that were actually read.
+
+        Returns
+        -------
+
+        data : float
+          The sample read from the task.
+        """
+        
+        data = float64(0)
+        r = CALL('ReadAnalogScalarF64', self,
+                 float64(timeout), ctypes.byref(data), None)
+        return data.value
 
 class AnalogOutputTask (Task):
 
