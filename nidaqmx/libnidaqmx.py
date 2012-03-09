@@ -3274,6 +3274,132 @@ class CounterInputTask(Task):
                 customScaleName
                 )==0
 
+    def create_channel_freq(self, counter, name="", min_val=1e2, max_val=1e3,
+                            units="hertz", edge="rising", meas_method="low_freq1",
+                            meas_time=1.0, divisor=1, custom_scale_name=None):
+        """
+        Creates a channel to measure the frequency of a digital signal
+        and adds the channel to the task. You can create only one
+        counter input channel at a time with this function because a
+        task can include only one counter input channel. To read from
+        multiple counters simultaneously, use a separate task for each
+        counter. Connect the input signal to the default input
+        terminal of the counter unless you select a different input
+        terminal.
+
+        Parameters
+        ----------
+
+        counter : str
+          The name of the counter to use to create virtual channels.
+
+        name : str
+          The name(s) to assign to the created virtual channel(s). If
+          you do not specify a name, NI-DAQmx uses the physical
+          channel name as the virtual channel name. If you specify
+          your own names for nameToAssignToChannel, you must use the
+          names when you refer to these channels in other NI-DAQmx
+          functions.
+
+          If you create multiple virtual channels with one call to
+          this function, you can specify a list of names separated by
+          commas. If you provide fewer names than the number of
+          virtual channels you create, NI-DAQmx automatically assigns
+          names to the virtual channels.
+
+        min_val : float
+          The minimum value, in units, that you expect to measure.
+
+        max_val : float
+          The maximum value, in units, that you expect to measure.
+
+        units : {'hertz', 'ticks', 'custom'}
+          Units to use to return the measurement and to specify the
+          min/max expected value.
+
+          'hertz' - Hertz, cycles per second
+          'ticks' - timebase ticks
+          'custom' - use custom_scale_name to specify units
+          
+        edge : {'rising', 'falling'} 
+          Specifies which edges to measure the frequency or period of the signal.
+
+        meas_method : {'low_freq', 'high_freq', 'large_range'}
+          The method used to calculate the period or frequency of the
+          signal.  See the M series DAQ User Manual (371022K-01), page
+          7-9 for more information.
+
+            'low_freq'
+              Use one counter that uses a constant timebase to measure
+              the input signal.
+
+            'high_freq'
+              Use two counters, one of which counts pulses of the
+              signal to measure during the specified measurement time.
+
+            'large_range'
+              Use one counter to divide the frequency of the input
+              signal to create a lower frequency signal that the
+              second counter can more easily measure.
+
+        meas_time : float
+          The length of time to measure the frequency or period of the
+          signal, when meas_method is 'high_freq'.  Measurement accuracy
+          increases with increased meas_time and with increased signal
+          frequency.  Ensure that the meas_time is low enough to prevent
+          the counter register from overflowing.
+
+        divisor : int
+          The value by which to divide the input signal, when
+          meas_method is 'large_range'. The larger this value, the more
+          accurate the measurement, but too large a value can cause the
+          count register to roll over, resulting in an incorrect
+          measurement.
+
+        custom_scale_name : str
+          The name of a custom scale to apply to the channel. To use
+          this parameter, you must set units to 'custom'.  If you do
+          not set units to 'custom', you must set custom_scale_name to
+          None.
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+
+        self.data_type = float
+
+        counter = str(counter)
+        name = str(name)
+        assert min_val <= max_val
+        min_val = float64(min_val)
+        max_val = float64(max_val)
+        units_map = dict(hertz=DAQmx_Val_Hz,
+                         ticks=DAQmx_Val_Ticks,
+                         custom=DAQmx_Val_FromCustomScale)
+        units_val = self._get_map_value('units', units_map, units)
+        edge_map = dict(rising=DAQmx_Val_Rising, falling=DAQmx_Val_Falling)
+        edge_val = self._get_map_value('edge', edge_map, edge)
+        meas_meth_map = dict(low_freq=DAQmx_Val_LowFreq1Ctr,
+                             high_freq=DAQmx_Val_HighFreq2Ctr,
+                             large_range=DAQmx_Val_LargeRng2Ctr)
+        meas_meth_val = self._get_map_value('meas_method', meas_meth_map,
+                                            meas_method)
+        meas_time = float64(meas_time)
+        divisor = uInt32(divisor)
+        assert divisor > 0
+        if (units_val == DAQmx_Val_FromCustomScale
+            and custom_scale_name is None):
+            raise ValueError('Must specify custom_scale_name for custom scale.')
+        if custom_scale_name is not None:
+            custom_scale_name = str(custom_scale_name)
+        
+        return CALL('CreateCIFreqChan', self, counter, name,
+                    min_val, max_val,
+                    units_val, edge_val, meas_meth_val,
+                    meas_time, divisor, custom_scale_name) == 0 
+    
     def set_terminal_count_edges(self, channel, terminal):
         """
         Specifies the input terminal of the signal to measure.
@@ -3441,8 +3567,40 @@ class CounterInputTask(Task):
                  data.ctypes.data, data.size, ctypes.byref(samples_read), None)
 
         return data[:samples_read.value]
-    
 
+    def read_scalar(self, timeout=10.0):
+        """
+        Reads a single floating-point sample from a counter task. Use
+        this function when the counter sample is scaled to a
+        floating-point value, such as for frequency and period
+        measurement.
+
+        timeout : float
+          The amount of time, in seconds, to wait for the function to
+          read the sample(s). The default value is 10.0 seconds. To
+          specify an infinite wait, pass -1
+          (DAQmx_Val_WaitInfinitely). This function returns an error if
+          the timeout elapses.
+
+          A value of 0 indicates to try once to read the requested
+          samples. If all the requested samples are read, the function
+          is successful. Otherwise, the function returns a timeout error
+          and returns the samples that were actually read.
+
+        Returns
+        -------
+
+        data :
+          The sample read from the task.
+        """
+
+        timeout = float64(timeout)
+        data = float64(0)
+        ret = CALL("ReadCounterScalarF64", self,
+                   timeout, ctypes.byref(data), None)
+        #assert ret == 0
+        return data.value
+        
 class CounterOutputTask(Task):
 
     """Exposes NI-DAQmx counter output task to Python.
