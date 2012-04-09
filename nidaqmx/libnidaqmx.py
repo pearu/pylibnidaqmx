@@ -2743,64 +2743,6 @@ class DigitalTask (Task):
         CALL('Get%sNumLines' % (channel_type), self, channel, ctypes.byref(d))
         return d.value
 
-class DigitalInputTask(DigitalTask):
-
-    """Exposes NI-DAQmx digital input task to Python.
-    """
-
-    channel_type = 'DI'
-
-    def create_channel(self, lines, name='', grouping='per_line'):
-        """
-        Creates channel(s) to measure digital signals and adds the
-        channel(s) to the task you specify with taskHandle. You can
-        group digital lines into one digital channel or separate them
-        into multiple digital channels. If you specify one or more
-        entire ports in lines by using port physical channel names,
-        you cannot separate the ports into multiple channels. To
-        separate ports into multiple channels, use this function
-        multiple times with a different port each time.
-
-        Parameters
-        ----------
-        
-        lines : str
-
-          The names of the digital lines used to create a virtual
-          channel. You can specify a list or range of lines.
-
-        name : str
-
-          The name of the created virtual channel(s). If you create
-          multiple virtual channels with one call to this function,
-          you can specify a list of names separated by commas. If you
-          do not specify a name, NI-DAQmx uses the physical channel
-          name as the virtual channel name. If you specify your own
-          names for name, you must use the names when you refer to
-          these channels in other NI-DAQmx functions.
-
-        grouping : {'per_line', 'for_all_lines'} 
-
-          Specifies whether to group digital lines into one or more
-          virtual channels. If you specify one or more entire ports in
-          lines, you must set grouping to 'for_all_lines':
-
-            'per_line' - One channel for each line
-
-            'for_all_lines' - One channel for all lines
-
-        Returns
-        -------
-
-          success_status : bool
-        """
-        lines = str (lines)
-        grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
-                            for_all_lines = DAQmx_Val_ChanForAllLines)
-        grouping_val = self._get_map_value('grouping', grouping_map, grouping)
-        self.one_channel_for_all_lines =  grouping_val==DAQmx_Val_ChanForAllLines
-        return CALL('CreateDIChan', self, lines, name, grouping_val)==0
-
     def read(self, samples_per_channel=None, timeout=10.0, fill_mode='group_by_scan_number'):
         """
         Reads multiple samples from each digital line in a task. Each
@@ -2909,6 +2851,63 @@ class DigitalInputTask(DigitalTask):
                 return data[:,:samples_read.value], bytes_per_sample.value
         return data, bytes_per_sample.value
 
+class DigitalInputTask(DigitalTask):
+
+    """Exposes NI-DAQmx digital input task to Python.
+    """
+
+    channel_type = 'DI'
+
+    def create_channel(self, lines, name='', grouping='per_line'):
+        """
+        Creates channel(s) to measure digital signals and adds the
+        channel(s) to the task you specify with taskHandle. You can
+        group digital lines into one digital channel or separate them
+        into multiple digital channels. If you specify one or more
+        entire ports in lines by using port physical channel names,
+        you cannot separate the ports into multiple channels. To
+        separate ports into multiple channels, use this function
+        multiple times with a different port each time.
+
+        Parameters
+        ----------
+        
+        lines : str
+
+          The names of the digital lines used to create a virtual
+          channel. You can specify a list or range of lines.
+
+        name : str
+
+          The name of the created virtual channel(s). If you create
+          multiple virtual channels with one call to this function,
+          you can specify a list of names separated by commas. If you
+          do not specify a name, NI-DAQmx uses the physical channel
+          name as the virtual channel name. If you specify your own
+          names for name, you must use the names when you refer to
+          these channels in other NI-DAQmx functions.
+
+        grouping : {'per_line', 'for_all_lines'} 
+
+          Specifies whether to group digital lines into one or more
+          virtual channels. If you specify one or more entire ports in
+          lines, you must set grouping to 'for_all_lines':
+
+            'per_line' - One channel for each line
+
+            'for_all_lines' - One channel for all lines
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+        lines = str (lines)
+        grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
+                            for_all_lines = DAQmx_Val_ChanForAllLines)
+        grouping_val = self._get_map_value('grouping', grouping_map, grouping)
+        self.one_channel_for_all_lines =  grouping_val==DAQmx_Val_ChanForAllLines
+        return CALL('CreateDIChan', self, lines, name, grouping_val)==0
 
 class DigitalOutputTask(DigitalTask):
 
