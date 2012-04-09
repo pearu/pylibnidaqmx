@@ -10,6 +10,8 @@
 See http://pylibnidaqmx.googlecode.com/
 """
 
+from __future__ import print_function
+
 __all__ = ['AnalogInputTask', 'AnalogOutputTask',
            'DigitalInputTask', 'DigitalOutputTask',
            'CounterInputTask', 'CounterOutputTask',
@@ -37,7 +39,8 @@ if os.name=='nt':
         # try default installation path:
         lib = r'C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\nicaiu.dll'
         if os.path.isfile(lib):
-            print 'You should add %r to PATH environment variable and reboot.' % (os.path.dirname (lib))
+            print('You should add %r to PATH environment variable and reboot.'
+                  % (os.path.dirname (lib)), file=sys.stderr)
         else:
             lib = None
 else:
@@ -120,16 +123,17 @@ if libnidaqmx is not None:
                 d[name] = eval(value)
                 l.append('%s = %s' % (name, value))
             else:
-                print name, value
+                print(name, value, file=sys.stderr)
                 pass
         l.append('error_map = %r' % (error_map))
 
         fn = os.path.join (os.path.dirname(os.path.abspath (__file__)), nidaqmx_h_name+'.py')
-        print 'Generating %r' % (fn)
+        print('Generating %r' % (fn), file=sys.stderr)
         f = open(fn, 'w')
         f.write ('\n'.join(l) + '\n')
         f.close()
-        print 'Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues' % (fn)
+        print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
+              % (fn), file=sys.stderr)
     else:
         d = nidaqmx_h.__dict__
 
@@ -184,7 +188,7 @@ def CALL(name, *args):
     new_args = []
     for a in args:
         if isinstance (a, unicode):
-            print name, 'argument',a, 'is unicode'
+            print(name, 'argument',a, 'is unicode', file=sys.stderr)
             new_args.append (str (a))
         else:
             new_args.append (a)
@@ -3864,5 +3868,5 @@ if 0:
     g.create_voltage_channel('Dev1/ao2', 'generate')
 
 
-    print t.get_info_str(True)
-    print g.get_info_str()
+    print(t.get_info_str(True))
+    print(g.get_info_str())
