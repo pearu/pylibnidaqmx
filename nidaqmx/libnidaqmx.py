@@ -29,21 +29,36 @@ import warnings
 class NIDAQmxRuntimeError(RuntimeError):
     pass
 
-# TODO: Find the location of the NIDAQmx.h automatically (eg by using the location of the library)
 if os.name=='nt':
-    # UNTESTED: Please report results to http://code.google.com/p/pylibnidaqmx/issues
+    import _winreg as winreg
+    regpath = r'SOFTWARE\National Instruments\NI-DAQmx\CurrentVersion'
+    reg6432path = r'SOFTWARE\Wow6432Node\National Instruments\NI-DAQmx\CurrentVersion'
     libname = 'nicaiu'
-    include_nidaqmx_h = r'C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h'
+
+    try:
+        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, regpath)
+    except WindowsError:
+        try:
+            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg6432path)
+        except WindowsError:
+            print('You need to install NI DAQmx first.', file=sys.stderr)
+    nidaqmx_install = winreg.QueryValueEx(regkey, 'Path')[0]
+    include_nidaqmx_h = os.path.join(nidaqmx_install, r'include\NIDAQmx.h')
+    ansi_c_dev = os.path.join(nidaqmx_install,
+            r'National Instruments\NI-DAQ\DAQmx ANSI C Dev')
+    regkey.Close()
+
     lib = ctypes.util.find_library(libname)
     if lib is None:
         # try default installation path:
-        lib = r'C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\nicaiu.dll'
+        lib = os.path.join(ansi_c_dev, r'lib\nicaiu.dll')
         if os.path.isfile(lib):
             print('You should add %r to PATH environment variable and reboot.'
                   % (os.path.dirname (lib)), file=sys.stderr)
         else:
             lib = None
 else:
+# TODO: Find the location of the NIDAQmx.h automatically (eg by using the location of the library)
     include_nidaqmx_h = '/usr/local/include/NIDAQmx.h'
     libname = 'nidaqmx'
     lib = ctypes.util.find_library(libname)
