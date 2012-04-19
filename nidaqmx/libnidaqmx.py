@@ -44,8 +44,14 @@ if os.name=='nt':
             print('You need to install NI DAQmx first.', file=sys.stderr)
     nidaqmx_install = winreg.QueryValueEx(regkey, 'Path')[0]
     include_nidaqmx_h = os.path.join(nidaqmx_install, r'include\NIDAQmx.h')
+    if not os.path.isfile(include_nidaqmx_h): # from Issue 23
+        include_nidaqmx_h = os.path.join(nidaqmx_install, 
+                                         r'DAQmx ANSI C Dev\include\NIDAQmx.h')        
+
     ansi_c_dev = os.path.join(nidaqmx_install,
             r'National Instruments\NI-DAQ\DAQmx ANSI C Dev')
+    if not os.path.isdir(ansi_c_dev): # from Issue 23
+        ansi_c_dev = os.path.join(nidaqmx_install, r'DAQmx ANSI C Dev')
     regkey.Close()
 
     lib = ctypes.util.find_library(libname)
