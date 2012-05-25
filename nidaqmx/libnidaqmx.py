@@ -367,7 +367,7 @@ def _test_make_pattern():
 class Device(str):
 
     """
-    Exposes NI-DACmx device to Python.
+    Exposes NI-DAQmx device to Python.
     """
 
     def get_product_type (self):
@@ -647,7 +647,7 @@ class Device(str):
 
 class System(object):
     """
-    Exposes NI-DACmx system properties to Python.
+    Exposes NI-DAQmx system properties to Python.
 
     Attributes
     ----------
@@ -734,12 +734,12 @@ class Task(TaskHandle):
 
     """
 
-    #: Exposes NI-DACmx system properties, see `System`.
+    #: Exposes NI-DAQmx system properties, see `System`.
     _system = System()
     @property
     def system(self):
         """
-        NI-DACmx system properties holder.
+        NI-DAQmx system properties holder.
 
         See also
         --------
@@ -2561,7 +2561,7 @@ class Task(TaskHandle):
         lines = []
         tab = ''
         if global_info:
-            lines.append(tab+'NI-DAQwx version: %s' % (self.get_version()))
+            lines.append(tab+'NI-DAQmx version: %s' % (self.get_version()))
             lines.append(tab+'System devices: %s' % (', '.join(self.get_system_devices()) or None))
             lines.append(tab+'System global channels: %s' % (', '.join(self.get_system_global_channels()) or None))
             lines.append(tab+'System tasks: %s' % (', '.join(self.get_system_tasks()) or None))
