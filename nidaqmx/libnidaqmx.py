@@ -839,7 +839,7 @@ class Task(TaskHandle):
         """
         b = bool32(0)
         CALL('IsTaskDone', self, ctypes.byref(b))
-        return b.value != 0
+        return bool(b.value)
 
     # NotImplemented: DAQmxGetTaskComplete
 
@@ -4032,7 +4032,7 @@ class CounterInputTask(Task):
         b = bool32(0)
         r = CALL('GetCIDupCountPrevent', self, channel, ctypes.byref(b))
         assert r==0,repr((r, channel, b))
-        return b != 0
+        return bool(b.value)
 
     def set_duplicate_count_prevention(self, channel, enable=True):
         """
