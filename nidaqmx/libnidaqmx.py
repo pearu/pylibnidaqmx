@@ -721,6 +721,31 @@ class System(object):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
 
+    def connect_terminals(self, source, destination, invert=False):
+        """
+        Connect two terminals.  Implicit intermediate connections _may_
+        automatically be connected.
+        """
+        inversion = {
+          True  : DAQmx_Val_InvertPolarity,
+          False : DAQmx_Val_DoNotInvertPolarity,
+        }
+        CALL ('ConnectTerms', source, destination, inversion[invert])
+
+    def disconnect_terminals(self, source, destination):
+        """
+        Disconnect two terminals.  Implicit intermediate connections _may_
+        automatically be disconnected.
+        """
+        CALL ('DisconnectTerms', source, destination)
+
+    def tristate_terminal(self, terminal):
+        """
+        Tristate the specified output terminal.
+        """
+        CALL ('TristateOutputTerm', terminal)
+
+
 class Task(TaskHandle):
 
     """
@@ -1847,8 +1872,6 @@ class Task(TaskHandle):
     # DAQmxCalculateReversePolyCoeff, DAQmxCreateLinScale
     # DAQmxWaitForNextSampleClock
     # DAQmxSwitch*
-    # DAQmxConnectTerms, DAQmxDisconnectTerms, DAQmxTristateOutputTerm
-    # DAQmxResetDevice
     # DAQmxControlWatchdog*
 
     # DAQmxAOSeriesCalAdjust, DAQmxESeriesCalAdjust, DAQmxGet*,
