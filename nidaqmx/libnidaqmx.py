@@ -827,8 +827,7 @@ class Task(TaskHandle):
             raise TypeError('%s: cannot determine channel I/O type when no channels have been created.' % (self.__class__.__name__))
         return 'input' if t[1]=='I' else 'output'
 
-    # FIXME: why do we need this argument?
-    def clear(self, libnidaqmx=libnidaqmx):
+    def clear(self):
         """
         Clears the task.
 
@@ -843,10 +842,8 @@ class Task(TaskHandle):
         allocating unnecessary memory.
         """
         if self.value:
-            r = libnidaqmx.DAQmxClearTask(self)
+            CALL('ClearTask', self)
             self.value = 0
-            if r:
-                warnings.warn("DAQmxClearTask failed with error code %s (%r)" % (r, error_map.get(r)))
 
     __del__ = clear
 
