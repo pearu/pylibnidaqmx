@@ -83,3 +83,5 @@ Module content
 from .libnidaqmx import AnalogInputTask, AnalogOutputTask,\
     DigitalInputTask, DigitalOutputTask, CounterInputTask,\
     CounterOutputTask, Device, System, get_nidaqmx_version
+
+from . import physical
