@@ -581,6 +581,19 @@ class Device(str):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
+    def get_analog_output_sample_clock_supported (self):
+        """
+        Indicates that the updates of the analog channels provided by
+        this device can be hardware-timed.
+
+        Returns
+        -------
+        supported : bool
+        """
+        supported = bool32(0)
+        CALL ('GetDevAOSampClkSupported', self, ctypes.byref (supported))
+        return bool( supported )
+
     def get_bus_type(self):
         """
         Indicates the bus type of the device.
