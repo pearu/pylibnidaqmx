@@ -818,6 +818,39 @@ class Task(TaskHandle):
         self.sample_mode = None
         self.samples_per_channel = None
 
+
+        # Following Initializes some class variables that are used in several
+        # functions.
+
+        # Initializing these class variables via a function allows for the
+        # nidaqmx_h file to be loaded later.  This eases the implementation of a
+        # simulated low-level library.
+        self.sample_mode_map = dict(finite = DAQmx.Val_FiniteSamps,
+                                    continuous = DAQmx.Val_ContSamps,
+                                    hwtimed = DAQmx.Val_HWTimedSinglePoint)
+        self.sample_mode_rmap = { v:k for k,v in self.sample_mode_map.items() }
+
+        self.edge_map = dict (rising = DAQmx.Val_Rising,
+                              falling = DAQmx.Val_Falling)
+        self.edge_rmap = { v:k for k,v in self.edge_map.items() }
+
+        self.sample_timing_type_map = {
+            'sample_clock'          : DAQmx.Val_SampClk,
+            'burst_handshake'       : DAQmx.Val_BurstHandshake,
+            'handshake'             : DAQmx.Val_Handshake,
+            'implicit'              : DAQmx.Val_Implicit,
+            'on_demand'             : DAQmx.Val_OnDemand,
+            'change_detection'      : DAQmx.Val_ChangeDetection,
+        }
+        if float(get_nidaqmx_version()) > 8.0:
+          # TODO:  find out for which version this became available
+          self.sample_timing_type_map['pipelined_sample_clock'] = DAQmx.Val_PipelinedSampClk
+        self.sample_timing_type_rmap = {
+          v:k for k,v in self.sample_timing_type_map.items()
+        }
+
+
+
     def _set_channel_type(self, t):
         """ Sets channel type for the task.
         """
@@ -1323,15 +1356,6 @@ class Task(TaskHandle):
     # DAQmxCreateCI*, DAQmxCreateCO*
 
 
-    sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
-                            continuous = DAQmx.Val_ContSamps,
-                            hwtimed = DAQmx.Val_HWTimedSinglePoint)
-    sample_mode_rmap = { i[1]:i[0] for i in sample_mode_map.items() }
-
-    edge_map = dict (rising = DAQmx.Val_Rising,
-                     falling = DAQmx.Val_Falling)
-    edge_rmap = { i[1]:i[0] for i in edge_map.items() }
-
     def configure_timing_change_detection(self,
                                           rising_edge_channel = '',
                                           falling_edge_channel = '',
@@ -1485,19 +1509,6 @@ class Task(TaskHandle):
 
 
     # Lower-level timing access/control
-    sample_timing_type_map = {
-        'sample_clock'          : DAQmx.Val_SampClk,
-        'burst_handshake'       : DAQmx.Val_BurstHandshake,
-        'handshake'             : DAQmx.Val_Handshake,
-        'implicit'              : DAQmx.Val_Implicit,
-        'on_demand'             : DAQmx.Val_OnDemand,
-        'change_detection'      : DAQmx.Val_ChangeDetection,
-        'pipelined_sample_clock': DAQmx.Val_PipelinedSampClk,
-    }
-    sample_timing_type_rmap = {
-      i[1]:i[0] for i in sample_timing_type_map.items()
-    }
-
     def get_sample_timing_type(self):
         """
         LOWER LEVEL ACCESS TO TIMING INFORMATION:
