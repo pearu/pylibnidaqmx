@@ -577,6 +577,14 @@ class Device(str):
             return '%s (chassis=%s, slot=%s)' % (t, self.get_pxi_chassis_number (), self.get_pxi_slot_number())
         return t
 
+    def reset(self):
+        """
+        Stops and deletes all tasks on a device and rests outputs to their defaults
+        calls  int32 DAQmxResetDevice (const char deviceName[]);
+        """
+        return CALL('ResetDevice',self)
+
+
 class System(object):
     """
     Exposes NI-DACmx system properties to Python.
