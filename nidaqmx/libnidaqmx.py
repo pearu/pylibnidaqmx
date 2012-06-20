@@ -1507,6 +1507,225 @@ class Task(uInt32):
         """
         return CALL ('DisableStartTrig', self) == 0
 
+    def configure_analog_edge_reference_trigger(self, source, slope='rising',level=1.0, pre_trigger_samps=0):
+        """
+        Configures the task to stop the acquisition when the device
+        acquires all pretrigger samples, an analog signal reaches the
+        level you specify, and the device acquires all post-trigger samples.
+
+
+        source : str
+
+          The name of a channel or terminal where there is an analog
+          signal to use as the source of the trigger. For E Series
+          devices, if you use a channel name, the channel must be the
+          first channel in the task. The only terminal you can use for
+          E Series devices is PFI0.
+
+        slope : {'rising', 'falling'}
+
+          Specifies on which slope of the signal to start acquiring or
+          generating samples when the signal crosses trigger level:
+
+            'rising' - Trigger on the rising slope of the signal.
+
+            'falling' - Trigger on the falling slope of the signal.
+
+        level : float
+
+          The threshold at which to start acquiring or generating
+          samples. Specify this value in the units of the measurement
+          or generation. Use trigger slope to specify on which slope
+          to trigger at this threshold.
+
+        pre_trigger_samps : uint32
+
+          The minimum number of samples per channel to acquire before
+          recognizing the Reference Trigger. The number of posttrigger
+          samples per channel is equal to number of samples per channel
+          in the NI-DAQmx Timing functions minus pretriggerSamples.
+
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+        source = str(source)
+        if not source.startswith('/'): # source needs to start with a '/'
+            source = '/'+source
+
+        slope_map = dict (rising=DAQmx_Val_RisingSlope,
+                          falling=DAQmx_Val_FallingSlope)
+        slope_val = self._get_map_value('slope', slope_map, slope)
+        return CALL ('CfgAnlgEdgeRefTrig', self, source, slope_val, float64(level), uInt32(pre_trigger_samps))==0
+
+
+    def configure_analog_window_reference_trigger(self, source, when='entering',top=1.0, bottom=1.0, pre_trigger_samps=0):
+        """
+        Configures the task to stop the acquisition when the device
+        acquires all pretrigger samples, an analog signal enters or
+        leaves a range you specify, and the device acquires all
+        post-trigger samples.
+
+
+        source : str
+
+          The name of a channel or terminal where there is an analog
+          signal to use as the source of the trigger. For E Series
+          devices, if you use a channel name, the channel must be the
+          first channel in the task. The only terminal you can use for
+          E Series devices is PFI0.
+
+        when : {'entering', 'leaving'}
+
+          Specifies whether the Reference Trigger occurs when the signal
+          enters the window or when it leaves the window. Use
+          bottom and top to specify the limits of the window.
+
+            'entering' - Trigger when the signal enters the window.
+
+            'leaving' - Trigger when the signal leaves the window.
+
+        top : float
+
+          The upper limit of the window. Specify this value in the
+          units of the measurement or generation.
+
+        bottom : float
+
+          The lower limit of the window. Specify this value in the
+          units of the measurement or generation.
+
+        pre_trigger_samps : uint32
+
+          The minimum number of samples per channel to acquire before
+          recognizing the Reference Trigger. The number of posttrigger
+          samples per channel is equal to number of samples per channel
+          in the NI-DAQmx Timing functions minus pretriggerSamples.
+
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+        source = str(source)
+        if not source.startswith('/'): # source needs to start with a '/'
+            source = '/'+source
+        when_map = dict (entering=DAQmx_Val_EnteringWin,
+                          leaving=DAQmx_Val_LeavingWin)
+        when_val = self._get_map_value('when', when_map, when)
+        return CALL ('CfgAnlgWindowRefTrig', self, source, when_val, float64(top), float64(bottom), uInt32(pre_trigger_samps))==0
+
+
+    def configure_digital_edge_reference_trigger(self, source, slope='rising', pre_trigger_samps=0):
+        """
+        Configures the task to stop the acquisition when the device
+        acquires all pretrigger samples, detects a rising or falling
+        edge of a digital signal, and acquires all posttrigger samples.
+
+
+        source : str
+
+          The name of a channel or terminal where there is an analog
+          signal to use as the source of the trigger. For E Series
+          devices, if you use a channel name, the channel must be the
+          first channel in the task. The only terminal you can use for
+          E Series devices is PFI0.
+
+        slope : {'rising', 'falling'}
+
+          Specifies on which slope of the signal to start acquiring or
+          generating samples when the signal crosses trigger level:
+
+            'rising' - Trigger on the rising slope of the signal.
+
+            'falling' - Trigger on the falling slope of the signal.
+
+        pre_trigger_samps : uint32
+
+          The minimum number of samples per channel to acquire before
+          recognizing the Reference Trigger. The number of posttrigger
+          samples per channel is equal to number of samples per channel
+          in the NI-DAQmx Timing functions minus pretriggerSamples.
+
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+        source = str(source)
+        if not source.startswith('/'): # source needs to start with a '/'
+            source = '/'+source
+        slope_map = dict (rising=DAQmx_Val_RisingSlope,
+                          falling=DAQmx_Val_FallingSlope)
+        slope_val = self._get_map_value('slope', slope_map, slope)
+        return CALL ('CfgDigEdgeRefTrig', self, source, slope_val, uInt32(pre_trigger_samps))==0
+
+
+    def configure_digital_pattern_reference_trigger(self, source, pattern, when='match', pre_trigger_samps=0):
+        """
+        Configures the task to stop the acquisition when the device
+        acquires all pretrigger samples, matches or does not match
+        a digital pattern, and acquires all posttrigger samples.
+
+
+        source : str
+
+          The name of a channel or terminal where there is an analog
+          signal to use as the source of the trigger. For E Series
+          devices, if you use a channel name, the channel must be the
+          first channel in the task. The only terminal you can use for
+          E Series devices is PFI0.
+
+        pattern : str
+
+          Specifies the digital pattern that must be met for the trigger to occur.
+
+        when : {'entering', 'leaving'}
+
+          Specifies the conditions under which the trigger occurs
+
+            'match' - Trigger when the signal matches the pattern
+
+            'nomatch' - Trigger when the signal does NOT match the pattern
+
+        pre_trigger_samps : uint32
+
+          The minimum number of samples per channel to acquire before
+          recognizing the Reference Trigger. The number of posttrigger
+          samples per channel is equal to number of samples per channel
+          in the NI-DAQmx Timing functions minus pretriggerSamples.
+
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+        source = str(source)
+        if not source.startswith('/'): # source needs to start with a '/'
+            source = '/'+source
+        when_map = dict (match=DAQmx_Val_PatternMatches,
+                          nomatch=DAQmx_Val_PatternDoesNotMatch)
+        when_val = self._get_map_value('when', when_map, when)
+        return CALL ('CfgDigPatternRefTrig', self, source, pattern, when_val, uInt32(pre_trigger_samps))==0
+
+
+    def disable_reference_trigger(self):
+        """
+        Disables reference triggering for the measurement or generation.
+
+        Returns
+        -------
+
+          success_status : bool
+        """
+        return CALL ('DisableRefTrig', self) == 0
+
+
     def set_buffer (self, samples_per_channel):
         """
         Overrides the automatic I/O buffer allocation that NI-DAQmx performs.
