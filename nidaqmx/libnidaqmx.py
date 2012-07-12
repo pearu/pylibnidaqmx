@@ -1560,8 +1560,6 @@ class Task(uInt32):
           success_status : bool
         """
         source = str(source)
-        if not source.startswith('/'): # source needs to start with a '/'
-            source = '/'+source
 
         slope_map = dict (rising=DAQmx_Val_RisingSlope,
                           falling=DAQmx_Val_FallingSlope)
@@ -1619,8 +1617,6 @@ class Task(uInt32):
           success_status : bool
         """
         source = str(source)
-        if not source.startswith('/'): # source needs to start with a '/'
-            source = '/'+source
         when_map = dict (entering=DAQmx_Val_EnteringWin,
                           leaving=DAQmx_Val_LeavingWin)
         when_val = self._get_map_value('when', when_map, when)
