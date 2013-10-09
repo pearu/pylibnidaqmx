@@ -47,6 +47,9 @@ if os.name=='nt':
     if not os.path.isfile(include_nidaqmx_h): # from Issue 23
         include_nidaqmx_h = os.path.join(nidaqmx_install, 
                                          r'DAQmx ANSI C Dev\include\NIDAQmx.h')        
+    if not os.path.isfile(include_nidaqmx_h): # from Issue 32
+        include_nidaqmx_h = os.path.join(nidaqmx_install, 
+                                         r'National Instruments\Shared\CVI\Include\NIDAQmx.h')        
 
     ansi_c_dev = os.path.join(nidaqmx_install,
             r'National Instruments\NI-DAQ\DAQmx ANSI C Dev')
