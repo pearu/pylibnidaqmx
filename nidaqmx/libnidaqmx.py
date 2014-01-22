@@ -3389,7 +3389,7 @@ class CounterInputTask(Task):
                               ext=DAQmx_Val_ExtControlled)
         edge_val = self._get_map_value ('edge', edge_map, edge)
         direction_val = self._get_map_value ('direction', direction_map, direction)
-        return CALL ('CreateCICountEdgesChan', self, counter, name, edge_val, direction_val)==0
+        return CALL ('CreateCICountEdgesChan', self, counter, name, edge_val, init, direction_val)==0
 
     def create_channel_linear_encoder(
                 self,
