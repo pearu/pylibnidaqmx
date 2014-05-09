@@ -2587,6 +2587,257 @@ class Task(uInt32):
         """
         return CALL('WaitUntilTaskDone', self, float64 (timeout))==0
 
+    def get_read_relative_to(self):
+        """
+        Returns the point in the buffer relative to which a read operation
+        begins.
+
+        Returns
+        -------
+
+          relative_mode : str
+            The current read relative mode setting configured for the task
+
+        See also
+        --------
+
+          set_read_relative_to
+          reset_read_relative_to
+
+        """
+
+        d = uInt32(0)
+        CALL('GetReadRelativeTo', self, ctypes.byref(d))
+        relative_mode_map = { DAQmx_Val_FirstSample : 'first_sample',
+                              DAQmx_Val_CurrReadPos : 'current_read_position',
+                              DAQmx_Val_RefTrig : 'ref_trigger',
+                              DAQmx_Val_FirstPretrigSamp : 'first_pretrigger_sample',
+                              DAQmx_Val_MostRecentSamp : 'most_recent' }
+        return relative_mode_map[d.value]
+
+    def set_read_relative_to(self, relative_mode):
+        """
+        Sets the point in the buffer at which a read operation begins. If an offset is
+        also specified, the read operation begins at that offset relative to the point
+        selected with this property. The default value is 'current_read_position' unless a
+        reference trigger has been specified for the task; if a reference trigger has been
+        configured for the task, the default is 'first_pretrigger_sample'.
+
+        Parameters
+        ----------
+
+          relative_mode : {'first_sample', 'current_read_position', 'ref_trigger', \
+                           'first_pretrigger_sample', 'most_recent'}
+
+            Specifies the point in the buffer at which to begin a read operation.
+
+              'first_sample' - start reading samples relative to the first sample
+              acquired in the buffer
+
+              'current_read_position' - start reading samples relative to the last
+              sample returned by the previous read. For the first read, this position
+              is the first sample acquired, or if a reference trigger has been configured
+              for the task, the first pretrigger sample
+
+              'ref_trigger' - start reading samples relative to the first sample
+              after the reference trigger occurred
+
+              'first_pretrigger_sample' - start reading samples relative to the first
+              pretrigger sample (the number of pretrigger samples is specified when
+              configuring a reference trigger)
+
+              'most_recent' - start reading samples relative to the next sample
+              acquired; for example, use this value and set the offset to -1 to read
+              the last sample acquired
+
+        See also
+        --------
+
+          get_read_relative_to
+          reset_read_relative_to
+
+        """
+        relative_mode_map = { 'first_sample' : DAQmx_Val_FirstSample,
+                              'current_read_position' : DAQmx_Val_CurrReadPos,
+                              'ref_trigger' : DAQmx_Val_RefTrig,
+                              'first_pretrigger_sample' : DAQmx_Val_FirstPretrigSamp,
+                              'most_recent' : DAQmx_Val_MostRecentSamp }
+        relative_mode = self._get_map_value('relative_mode', relative_mode_map,
+                                            relative_mode.lower())
+        r = CALL('SetReadRelativeTo', self, relative_mode)
+        return r == 0
+
+    def reset_read_relative_to(self):
+        """
+        Resets the point at which data is read from the buffer to its default value of
+        'current_read_position', or in cases where a reference trigger has been set up
+        for the task, to 'first_pretrigger_sample'.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+          get_read_relative_to
+          set_read_relative_to
+
+        """
+        r = CALL('ResetReadRelativeTo', self)
+        return r == 0
+
+    def get_read_overwrite(self):
+        """
+        Returns the current OverWrite mode setting configured for the task.
+
+        Returns
+        -------
+
+          overwite_mode : str
+            The current OverWrite mode setting configured for the task
+
+        See also
+        --------
+
+          set_read_overwrite
+          reset_read_overwrite
+
+        """
+        d = uInt32(0)
+        CALL('GetReadOverWrite', self, ctypes.byref(d))
+        overwrite_mode_map = {
+            DAQmx_Val_OverwriteUnreadSamps : 'overwrite',
+            DAQmx_Val_DoNotOverwriteUnreadSamps : 'no_overwrite' }
+        return overwrite_mode_map[d.value]
+
+    def set_read_overwrite(self, overwrite_mode):
+        """
+        Sets whether unread samples in the buffer should be overwritten.
+
+        Parameters
+        ----------
+
+        overwrite_mode : {'overwrite', 'no_overwrite'}
+
+          'overwrite' - unread samples are overwritten as the device's buffer
+          fills during an acquisition. To read only the newest samples in the
+          buffer, configure set_read_relative_to() to 'most_recent' and
+          set_offset() to the appropriate number of samples
+
+          'no_overwrite' - acquisition stops when the buffer encounters the first
+          unread sample
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+          get_read_overwrite
+          reset_read_overwrite
+
+        """
+        overwrite_map = { 'overwrite' : DAQmx_Val_OverwriteUnreadSamps,
+                          'no_overwrite' : DAQmx_Val_DoNotOverwriteUnreadSamps }
+        overwrite_mode = self._get_map_value('overwrite_mode', overwrite_map,
+                                             overwrite_mode.lower())
+        r = CALL('SetReadOverWrite', self, overwrite_mode)
+        return r == 0
+
+    def reset_read_overwrite(self):
+        """
+        Resets the read overwrite mode to the default value of 'no_overwrite'.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+        set_read_overwrite
+        get_read_overwrite
+
+        """
+
+        r = CALL('ResetReadOverWrite', self)
+        return r == 0
+
+    def get_read_offset(self):
+        """
+        Gets the current read offset set for the task.
+
+        Returns
+        -------
+
+          offset : int
+            The current read offset value, in number of samples, programmed
+            into the task. The offset is relative to the position specified
+            using set_read_relative_to().
+
+        See also
+        --------
+
+          set_read_offset
+          reset_read_offset
+          set_read_relative_to
+
+        """
+        d = uInt32(0)
+        CALL('GetReadOffset', self, ctypes.byref(d))
+        return d.value
+
+    def set_read_offset(self, offset):
+        """
+        Sets the read offset for the current task.
+
+        Parameters
+        ----------
+
+          offset : int
+            The offset, in number of samples, from which samples will be read
+            from the buffer. The offset is relative to the position specified
+            using set_read_relative_to().
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+          get_read_offset
+          reset_read_offset
+          set_read_relative_to
+
+        """
+        r = CALL('SetReadOffset', self, uInt32(offset))
+        return r == 0
+
+    def reset_read_offset(self):
+        """
+        Resets the read offset for the current task to its default value.
+
+        Returns
+        -------
+
+          success_status : bool
+
+        See also
+        --------
+
+          set_read_offset
+          get_read_offset
+
+        """
+        r = CALL('ResetReadOffset', self)
+        return r == 0
+
 class AnalogInputTask(Task):
 
     """
