@@ -6,17 +6,14 @@
 # Author: Pearu Peterson
 # Created: July 2009
 
+# pylint: disable=C,R
+# pylint: disable=undefined-variable,redefined-outer-name
+
 """
 See http://pylibnidaqmx.googlecode.com/
 """
 
 from __future__ import print_function
-
-__all__ = ['AnalogInputTask', 'AnalogOutputTask',
-           'DigitalInputTask', 'DigitalOutputTask',
-           'CounterInputTask', 'CounterOutputTask',
-           'System','Device','get_nidaqmx_version',
-           ]
 
 import os
 import sys
@@ -26,64 +23,17 @@ import ctypes
 import ctypes.util
 import warnings
 
+########################################################################
+
+__all__ = [
+    'AnalogInputTask', 'AnalogOutputTask',
+    'DigitalInputTask', 'DigitalOutputTask',
+    'CounterInputTask', 'CounterOutputTask',
+    'System', 'Device', 'get_nidaqmx_version',
+]
+
 class NIDAQmxRuntimeError(RuntimeError):
     pass
-
-if os.name=='nt':
-    import _winreg as winreg
-    regpath = r'SOFTWARE\National Instruments\NI-DAQmx\CurrentVersion'
-    reg6432path = r'SOFTWARE\Wow6432Node\National Instruments\NI-DAQmx\CurrentVersion'
-    libname = 'nicaiu'
-
-    try:
-        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, regpath)
-    except WindowsError:
-        try:
-            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg6432path)
-        except WindowsError:
-            print('You need to install NI DAQmx first.', file=sys.stderr)
-    nidaqmx_install = winreg.QueryValueEx(regkey, 'Path')[0]
-    include_nidaqmx_h = os.path.join(nidaqmx_install, r'include\NIDAQmx.h')
-    if not os.path.isfile(include_nidaqmx_h): # from Issue 23
-        include_nidaqmx_h = os.path.join(nidaqmx_install, 
-                                         r'DAQmx ANSI C Dev\include\NIDAQmx.h')        
-    if not os.path.isfile(include_nidaqmx_h): # from Issue 32
-        include_nidaqmx_h = os.path.join(nidaqmx_install, 
-                                         r'National Instruments\Shared\CVI\Include\NIDAQmx.h')        
-
-    ansi_c_dev = os.path.join(nidaqmx_install,
-            r'National Instruments\NI-DAQ\DAQmx ANSI C Dev')
-    if not os.path.isdir(ansi_c_dev): # from Issue 23
-        ansi_c_dev = os.path.join(nidaqmx_install, r'DAQmx ANSI C Dev')
-    regkey.Close()
-
-    lib = ctypes.util.find_library(libname)
-    if lib is None:
-        # try default installation path:
-        lib = os.path.join(ansi_c_dev, r'lib\nicaiu.dll')
-        if os.path.isfile(lib):
-            print('You should add %r to PATH environment variable and reboot.'
-                  % (os.path.dirname (lib)), file=sys.stderr)
-        else:
-            lib = None
-else:
-# TODO: Find the location of the NIDAQmx.h automatically (eg by using the location of the library)
-    include_nidaqmx_h = '/usr/local/include/NIDAQmx.h'
-    libname = 'nidaqmx'
-    lib = ctypes.util.find_library(libname)
-
-libnidaqmx = None
-if lib is None:
-    warnings.warn(
-        'Failed to find NI-DAQmx library.\n'
-        'Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.\n'
-        'The functionality of libnidaqmx.py will be disabled.'
-        % (libname), ImportWarning)
-else:
-    if os.name=='nt':
-        libnidaqmx = ctypes.windll.LoadLibrary(lib)
-    else:
-        libnidaqmx = ctypes.cdll.LoadLibrary(lib)
 
 int8 = ctypes.c_int8
 uInt8 = ctypes.c_uint8
@@ -98,6 +48,83 @@ float32 = ctypes.c_float
 float64 = ctypes.c_double
 void_p = ctypes.c_void_p
 
+# Increase default_buf_size value when receiving RuntimeError
+# with "Buffer is too small to fit the string." message.
+default_buf_size = 3000
+
+########################################################################
+
+def _find_library_linux():
+    # TODO: Find the location of the NIDAQmx.h automatically (e.g. by
+    # using the location of the library).
+    header_name = '/usr/local/include/NIDAQmx.h'
+    libname = 'nidaqmx'
+    lib = ctypes.util.find_library(libname)
+    return header_name, libname, lib
+        
+def _find_library_nt():
+    import _winreg as winreg # pylint: disable=import-error
+    regpath = r'SOFTWARE\National Instruments\NI-DAQmx\CurrentVersion'
+    reg6432path = r'SOFTWARE\Wow6432Node\National Instruments\NI-DAQmx\CurrentVersion'
+    libname = 'nicaiu'
+
+    try:
+        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, regpath)
+    except WindowsError: # pylint: disable=undefined-variable
+        try:
+            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg6432path)
+        except WindowsError: # pylint: disable=undefined-variable
+            print('You need to install NI DAQmx first.', file=sys.stderr)
+    nidaqmx_install = winreg.QueryValueEx(regkey, 'Path')[0]
+    header_name = os.path.join(nidaqmx_install, r'include\NIDAQmx.h')
+    if not os.path.isfile(header_name): # from Issue 23
+        header_name = os.path.join(nidaqmx_install, 
+                                   r'DAQmx ANSI C Dev\include\NIDAQmx.h')        
+    if not os.path.isfile(header_name): # from Issue 32
+        header_name = os.path.join(nidaqmx_install, 
+                                   r'National Instruments\Shared\CVI\Include\NIDAQmx.h')
+
+    ansi_c_dev = os.path.join(nidaqmx_install,
+                              r'National Instruments\NI-DAQ\DAQmx ANSI C Dev')
+    if not os.path.isdir(ansi_c_dev): # from Issue 23
+        ansi_c_dev = os.path.join(nidaqmx_install, r'DAQmx ANSI C Dev')
+    regkey.Close()
+
+    lib = ctypes.util.find_library(libname)
+    if lib is None:
+        # try default installation path:
+        lib = os.path.join(ansi_c_dev, r'lib\nicaiu.dll')
+        if os.path.isfile(lib):
+            print('You should add %r to PATH environment variable and reboot.'
+                  % (os.path.dirname (lib)), file=sys.stderr)
+        else:
+            lib = None
+
+    return header_name, libname, lib
+
+def _find_library():
+    if os.name == "nt":
+        header_name, libname, lib = _find_library_nt()
+    else:
+        header_name, libname, lib = _find_library_linux()
+    
+    if lib is None:
+        warnings.warn(
+            'Failed to find NI-DAQmx library.\n'
+            'Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.\n'
+            'The functionality of libnidaqmx.py will be disabled.'
+            % (libname), ImportWarning)
+    else:
+        if os.name == 'nt':
+            lib = ctypes.windll.LoadLibrary(lib)
+        else:
+            lib = ctypes.cdll.LoadLibrary(lib)
+
+    # FIXME if lib is None
+    return header_name, lib
+
+header_name, libnidaqmx = _find_library()
+
 def get_nidaqmx_version ():
     if libnidaqmx is None:
         return None
@@ -108,61 +135,72 @@ def get_nidaqmx_version ():
     minor = d.value
     return '%s.%s' % (major, minor)
 
-# Increase default_buf_size value when receiving RuntimeError
-# with "Buffer is too small to fit the string." message: 
-default_buf_size = 3000
+def _convert_header(header_name, header_module_name):
+    import pprint
+    assert os.path.isfile(header_name), repr(header_name)
+    d = {}
+    l = ['# This file is auto-generated. Do not edit!']
+    error_map = {}
+    with open (header_name, 'r') as f:
+        for line in f.readlines():
+            if not line.startswith('#define'): continue
+            i = line.find('//')
+            words = line[7:i].strip().split(None, 2)
+            if len (words) != 2: continue
+            name, value = words
+            if not name.startswith('DAQmx') or name.endswith(')'):
+                continue
+            if value.startswith('0x'):
+                # Example: ^#define DAQmx_Buf_Input_BufSize                                          0x186C // Specifies the number of samples the input buffer can hold for each channel in the task. Zero indicates to allocate no buffer. Use a buffer size of 0 to perform a hardware-timed operation without using a buffer. Setting this property overrides the automatic input buffer allocation that NI-DAQmx performs.$
+                d[name] = int(value, 16)
+                l.append('%s = %s' % (name, value))
+            elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
+                # Example: ^#define DAQmxErrorCOCannotKeepUpInHWTimedSinglePoint                                    (-209805)$
+                assert value[0]=='(' and value[-1]==')', repr((name, value))
+                value = int(value[1:-1])
+                error_map[value] = name[10:]
+            elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
+                # Examples:
+                # ^#define DAQmx_Val_SynchronousEventCallbacks				     (1<<0)	// Synchronous callbacks$
+                # ^#define DAQmxSuccess					 (0)$
+                # ^#define DAQmx_ReadWaitMode	DAQmx_Read_WaitMode$
+                d[name] = eval(value, {}, d)
+                l.append('%s = %s' % (name, d[name]))
+            else:
+                print(name, value, file=sys.stderr)
+        l.append('error_map = %s' % pprint.pformat(error_map))
 
-if libnidaqmx is not None:
+    try:
+        path = os.path.dirname(os.path.abspath (__file__))
+    except NameError:
+        path = os.getcwd()
+    fn = os.path.join(path, header_module_name+'.py')
+    print('Generating %r' % (fn), file=sys.stderr)
+    with open(fn, 'w') as f: 
+        f.write('\n'.join(l) + '\n')
+    print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
+          % (fn), file=sys.stderr)
 
+def _load_header(header_name):
+    if libnidaqmx is None:
+        return {}
+        
     nidaqmx_version = get_nidaqmx_version()
     nidaqmx_h_name = 'nidaqmx_h_%s' % (nidaqmx_version.replace ('.', '_'))
 
     try:
-        exec 'import %s as nidaqmx_h' % (nidaqmx_h_name)
+        nidaqmx_h = __import__(nidaqmx_h_name)
     except ImportError:
-        nidaqmx_h = None
+        _convert_header(header_name, nidaqmx_h_name)
+        nidaqmx_h = __import__(nidaqmx_h_name)
 
-    if nidaqmx_h is None:
-        assert os.path.isfile (include_nidaqmx_h), repr(include_nidaqmx_h)
-        d = {}
-        l = ['# This file is auto-generated. Do not edit!']
-        error_map = {}
-        with open (include_nidaqmx_h, 'r') as f:
-            for line in f.readlines():
-                if not line.startswith('#define'): continue
-                i = line.find('//')
-                words = line[7:i].strip().split(None, 2)
-                if len (words)!=2: continue
-                name, value = words
-                if not name.startswith('DAQmx') or name.endswith(')'):
-                    continue
-                if value.startswith('0x'):
-                    exec '%s = %s' % (name, value)
-                    d[name] = eval(value)
-                    l.append('%s = %s' % (name, value))
-                elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
-                    assert value[0]=='(' and value[-1]==')', repr(name, value)
-                    value = int(value[1:-1])
-                    error_map[value] = name[10:]
-                elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
-                    d[name] = eval(value)
-                    l.append('%s = %s' % (name, value))
-                else:
-                    print(name, value, file=sys.stderr)
-            l.append('error_map = %r' % (error_map))
+    return nidaqmx_h.__dict__
 
-        fn = os.path.join (os.path.dirname(os.path.abspath (__file__)), nidaqmx_h_name+'.py')
-        print('Generating %r' % (fn), file=sys.stderr)
-        with open(fn, 'w') as f: 
-            f.write ('\n'.join(l) + '\n')
-        print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
-              % (fn), file=sys.stderr)
-    else:
-        d = nidaqmx_h.__dict__
+for name, value in _load_header(header_name).items():
+    if name.startswith ('_'): continue
+    exec '%s = %r' % (name, value)
 
-    for name, value in d.items():
-        if name.startswith ('_'): continue
-        exec '%s = %r' % (name, value)
+########################################################################
 
 def CHK(return_code, funcname, *args):
     """
@@ -204,6 +242,8 @@ def CHK(return_code, funcname, *args):
                 sys.stderr.write('%s%s warning:%s\n' % (funcname, args, text))
     return return_code
 
+########################################################################
+
 def CALL(name, *args):
     """
     Calls libnidaqmx function ``name`` and arguments ``args``.
@@ -217,6 +257,7 @@ def CALL(name, *args):
             new_args.append (str (a))
         else:
             new_args.append (a)
+    # pylint: disable=star-args
     r = func(*new_args)
     r = CHK(r, funcname, *new_args)
     return r
@@ -251,7 +292,7 @@ def make_pattern(paths, _main=True):
             splitted = [word[:i], word[i:]]
         l = patterns.get(splitted[0], None)
         if l is None:
-            l = patterns[splitted[0]] = set ([])
+            l = patterns[splitted[0]] = set()
         l.update(splitted[1:])
     r = []
     for prefix in sorted(patterns.keys()):
@@ -314,6 +355,8 @@ def _test_make_pattern():
     paths += ['Dev2/port1/line0','Dev2/port1/line1']
     assert make_pattern(paths) == 'Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/{port0/line0:1,port1/line0:1}',\
         repr(make_pattern(paths))
+
+########################################################################
 
 class Device(str):
 
@@ -697,7 +740,8 @@ class Task(uInt32):
         nidaqmx.libnidaqmx.System
         """
         return self._system
-    
+
+    # pylint: disable=pointless-string-statement
     channel_type = None
     """
     Holds channel type.
@@ -3033,10 +3077,12 @@ class AnalogInputTask(Task):
             samples_per_channel = self.get_samples_per_channel_available()
 
         number_of_channels = self.get_number_of_channels()
+        # pylint: disable=no-member
         if fill_mode=='group_by_scan_number':
             data = np.zeros((samples_per_channel, number_of_channels),dtype=np.float64)
         else:
             data = np.zeros((number_of_channels, samples_per_channel),dtype=np.float64)
+        # pylint: enable=no-member
         samples_read = int32(0)
 
         CALL('ReadAnalogF64', self, samples_per_channel, float64(timeout),
@@ -3184,7 +3230,7 @@ class AnalogOutputTask (Task):
           written to the buffer. Applies iff data is array.
 
         """
-        if np.isscalar(data):
+        if np.isscalar(data): # pylint: disable=no-member
             return CALL('WriteAnalogScalarF64', self, bool32(auto_start),
                         float64(timeout), float64(data), None)==0
 
@@ -3194,7 +3240,7 @@ class AnalogOutputTask (Task):
 
         samples_written = int32(0)
 
-        data = np.asarray(data, dtype = np.float64)
+        data = np.asarray(data, dtype = np.float64) # pylint: disable=no-member
 
         number_of_channels = self.get_number_of_channels()
 
@@ -3324,13 +3370,15 @@ class DigitalTask (Task):
             dtype = getattr(np, 'uint%s'%(8 * c))
         else:
             c = 1
-            dtype = np.uint8
+            dtype = np.uint8 # pylint: disable=no-member
         number_of_channels = self.get_number_of_channels()
+        # pylint: disable=no-member
         if fill_mode=='group_by_scan_number':
             data = np.zeros((samples_per_channel, number_of_channels),dtype=dtype)
         else:
             data = np.zeros((number_of_channels, samples_per_channel),dtype=dtype)
-
+        # pylint: enable=no-member
+        
         samples_read = int32(0)
         bytes_per_sample = int32(0)
 
@@ -3529,11 +3577,13 @@ class DigitalOutputTask(DigitalTask):
 
         number_of_channels = self.get_number_of_channels()
 
+        # pylint: disable=no-member
         if np.isscalar(data):
             data = np.array([data]*number_of_channels, dtype = np.uint8)
         else:
             data = np.asarray(data, dtype = np.uint8)
-
+        # pylint: enable=no-member
+        
         if len(data.shape)==1:
             if number_of_channels == 1:
                 samples_per_channel = data.shape[0]
@@ -4066,7 +4116,7 @@ class CounterInputTask(Task):
         if samples_per_channel is None:
             samples_per_channel = self.get_samples_per_channel_available()
 
-        data = np.zeros((samples_per_channel,),dtype=np.int32)
+        data = np.zeros((samples_per_channel,),dtype=np.int32) # pylint: disable=no-member
         samples_read = int32(0)
 
         
@@ -4336,6 +4386,8 @@ class CounterOutputTask(Task):
         terminal = str(terminal)
         return CALL ('SetCOPulseTerm', self, channel, terminal)==0
 
+########################################################################
+
 DoneEventCallback_map = dict(AI=ctypes.CFUNCTYPE (int32, AnalogInputTask, int32, void_p),
                              AO=ctypes.CFUNCTYPE (int32, AnalogOutputTask, int32, void_p),
                              DI=ctypes.CFUNCTYPE (int32, DigitalInputTask, int32, void_p),
@@ -4358,11 +4410,10 @@ SignalEventCallback_map = dict(AI=ctypes.CFUNCTYPE (int32, AnalogInputTask, int3
                                CO=ctypes.CFUNCTYPE (int32, CounterOutputTask, int32, void_p),
                                )
 
-if __name__=='__main__':
-    #_test_make_pattern()
-    pass
+########################################################################
 
-if 0:
+def main():
+    #_test_make_pattern()
 
     t = AnalogInputTask('measure voltage')
     t.create_voltage_channel('Dev1/ai8', 'measure')
@@ -4374,3 +4425,7 @@ if 0:
 
     print(t.get_info_str(True))
     print(g.get_info_str())
+    
+if __name__=='__main__':
+    main()
+
