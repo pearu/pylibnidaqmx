@@ -7,7 +7,6 @@
 # Created: July 2009
 
 # pylint: disable=C,R
-# pylint: disable=undefined-variable,redefined-outer-name
 
 """
 See http://pylibnidaqmx.googlecode.com/
@@ -139,7 +138,6 @@ def _convert_header(header_name, header_module_name):
     import pprint
     assert os.path.isfile(header_name), repr(header_name)
     d = {}
-    l = ['# This file is auto-generated. Do not edit!']
     error_map = {}
     with open (header_name, 'r') as f:
         for line in f.readlines():
@@ -153,40 +151,47 @@ def _convert_header(header_name, header_module_name):
             if value.startswith('0x'):
                 # Example: ^#define DAQmx_Buf_Input_BufSize                                          0x186C // Specifies the number of samples the input buffer can hold for each channel in the task. Zero indicates to allocate no buffer. Use a buffer size of 0 to perform a hardware-timed operation without using a buffer. Setting this property overrides the automatic input buffer allocation that NI-DAQmx performs.$
                 d[name] = int(value, 16)
-                l.append('%s = %s' % (name, value))
             elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
                 # Example: ^#define DAQmxErrorCOCannotKeepUpInHWTimedSinglePoint                                    (-209805)$
                 assert value[0]=='(' and value[-1]==')', repr((name, value))
                 value = int(value[1:-1])
-                error_map[value] = name[10:]
+                name = name.replace("DAQmxError", "").replace("DAQmxWarning", "")
+                error_map[value] = name
             elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
                 # Examples:
                 # ^#define DAQmx_Val_SynchronousEventCallbacks				     (1<<0)	// Synchronous callbacks$
                 # ^#define DAQmxSuccess					 (0)$
                 # ^#define DAQmx_ReadWaitMode	DAQmx_Read_WaitMode$
                 d[name] = eval(value, {}, d)
-                l.append('%s = %s' % (name, d[name]))
             else:
                 print(name, value, file=sys.stderr)
-        l.append('error_map = %s' % pprint.pformat(error_map))
 
+        # DAQmxSuccess is not renamed, because it's unused and I'm lazy.
+        _d = {k.replace("DAQmx_", ""): v for k,v in d.items()}
+                 
     try:
         path = os.path.dirname(os.path.abspath (__file__))
     except NameError:
         path = os.getcwd()
-    fn = os.path.join(path, header_module_name+'.py')
+    fn = os.path.join(path, header_module_name)
     print('Generating %r' % (fn), file=sys.stderr)
-    with open(fn, 'w') as f: 
-        f.write('\n'.join(l) + '\n')
+    with open(fn, 'w') as f:
+        f.write("# This file is auto-generated. Do not edit!\n\n")
+        f.write("from collections import namedtuple\n\n")
+        f.write("_d = %s\n" % pprint.pformat(_d))
+        f.write("DAQmxConstants = namedtuple('DAQmxConstants', _d.keys())\n")
+        f.write("DAQmx = DAQmxConstants(**_d)\n\n")
+        f.write("error_map = %s\n" % pprint.pformat(error_map))
+
     print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
           % (fn), file=sys.stderr)
 
 def _load_header(header_name):
     if libnidaqmx is None:
-        return {}
+        return (None, None)
         
     nidaqmx_version = get_nidaqmx_version()
-    nidaqmx_h_name = 'nidaqmx_h_%s' % (nidaqmx_version.replace ('.', '_'))
+    nidaqmx_h_name = 'nidaqmx_h_%s.py' % (nidaqmx_version.replace ('.', '_'))
 
     try:
         nidaqmx_h = __import__(nidaqmx_h_name)
@@ -194,11 +199,9 @@ def _load_header(header_name):
         _convert_header(header_name, nidaqmx_h_name)
         nidaqmx_h = __import__(nidaqmx_h_name)
 
-    return nidaqmx_h.__dict__
+    return nidaqmx_h.DAQmx, nidaqmx_h.error_map
 
-for name, value in _load_header(header_name).items():
-    if name.startswith ('_'): continue
-    exec '%s = %r' % (name, value)
+DAQmx, error_map = _load_header(header_name)
 
 ########################################################################
 
@@ -579,13 +582,13 @@ class Device(str):
         """
         Indicates the bus type of the device.
         """
-        bus_type_map = {DAQmx_Val_PCI: 'PCI',
-                        DAQmx_Val_PCIe: 'PCIe',
-                        DAQmx_Val_PXI: 'PXI',
-                        DAQmx_Val_SCXI:'SCXI',
-                        DAQmx_Val_PCCard:'PCCard',
-                        DAQmx_Val_USB:'USB',
-                        DAQmx_Val_Unknown:'UNKNOWN'}
+        bus_type_map = {DAQmx.Val_PCI: 'PCI',
+                        DAQmx.Val_PCIe: 'PCIe',
+                        DAQmx.Val_PXI: 'PXI',
+                        DAQmx.Val_SCXI:'SCXI',
+                        DAQmx.Val_PCCard:'PCCard',
+                        DAQmx.Val_USB:'USB',
+                        DAQmx.Val_Unknown:'UNKNOWN'}
         d = int32(0)
         CALL ('GetDevBusType', self, ctypes.byref (d))
         return bus_type_map[d.value]
@@ -983,13 +986,13 @@ class Task(uInt32):
 
           success_status : bool
         """
-        state_map = dict(start = DAQmx_Val_Task_Start,
-                         stop = DAQmx_Val_Task_Stop,
-                         verify = DAQmx_Val_Task_Verify,
-                         commit = DAQmx_Val_Task_Commit,
-                         reserve = DAQmx_Val_Task_Reserve,
-                         unreserve = DAQmx_Val_Task_Unreserve,
-                         abort = DAQmx_Val_Task_Abort)
+        state_map = dict(start = DAQmx.Val_Task_Start,
+                         stop = DAQmx.Val_Task_Stop,
+                         verify = DAQmx.Val_Task_Verify,
+                         commit = DAQmx.Val_Task_Commit,
+                         reserve = DAQmx.Val_Task_Reserve,
+                         unreserve = DAQmx.Val_Task_Unreserve,
+                         abort = DAQmx.Val_Task_Abort)
         state_val = self._get_map_value ('state', state_map, state)
         return CALL('TaskControl', self, state_val) == 0
 
@@ -1052,12 +1055,12 @@ class Task(uInt32):
 
         register_signal_event, register_done_event
         """
-        event_type_map = dict(input=DAQmx_Val_Acquired_Into_Buffer, 
-                              output=DAQmx_Val_Transferred_From_Buffer)
+        event_type_map = dict(input=DAQmx.Val_Acquired_Into_Buffer, 
+                              output=DAQmx.Val_Transferred_From_Buffer)
         event_type = event_type_map[self.channel_io_type]
 
         if options=='sync':
-            options = DAQmx_Val_SynchronousEventCallbacks
+            options = DAQmx.Val_SynchronousEventCallbacks
 
         if func is None:
             c_func = None # to unregister func
@@ -1141,7 +1144,7 @@ class Task(uInt32):
         register_signal_event, register_every_n_samples_event
         """
         if options=='sync':
-            options = DAQmx_Val_SynchronousEventCallbacks
+            options = DAQmx.Val_SynchronousEventCallbacks
 
         if func is None:
             c_func = None
@@ -1209,14 +1212,14 @@ class Task(uInt32):
         register_done_event, register_every_n_samples_event
         """
         signalID_map = dict (
-            sample_clock = DAQmx_Val_SampleClock,
-            sample_complete = DAQmx_Val_SampleCompleteEvent,
-            change_detection = DAQmx_Val_ChangeDetectionEvent,
-            counter_output = DAQmx_Val_CounterOutputEvent
+            sample_clock = DAQmx.Val_SampleClock,
+            sample_complete = DAQmx.Val_SampleCompleteEvent,
+            change_detection = DAQmx.Val_ChangeDetectionEvent,
+            counter_output = DAQmx.Val_CounterOutputEvent
             )
         signalID_val = self._get_map_value('signalID', signalID_map, signal)
         if options=='sync':
-            options = DAQmx_Val_SynchronousEventCallbacks
+            options = DAQmx.Val_SynchronousEventCallbacks
 
         if func is None:
             c_func = None
@@ -1256,9 +1259,9 @@ class Task(uInt32):
 
           success_status : bool
         """
-        sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
-                                continuous = DAQmx_Val_ContSamps,
-                                hwtimed = DAQmx_Val_HWTimedSinglePoint)
+        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
+                                continuous = DAQmx.Val_ContSamps,
+                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
         sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
@@ -1280,9 +1283,9 @@ class Task(uInt32):
 
           success_status : bool
         """
-        sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
-                                continuous = DAQmx_Val_ContSamps,
-                                hwtimed = DAQmx_Val_HWTimedSinglePoint)
+        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
+                                continuous = DAQmx.Val_ContSamps,
+                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
         sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
@@ -1304,9 +1307,9 @@ class Task(uInt32):
 
           success_status : bool
         """
-        sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
-                                continuous = DAQmx_Val_ContSamps,
-                                hwtimed = DAQmx_Val_HWTimedSinglePoint)
+        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
+                                continuous = DAQmx.Val_ContSamps,
+                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
         sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
@@ -1377,11 +1380,11 @@ class Task(uInt32):
           success_status : bool
         """
         source = str(source)
-        active_edge_map = dict (rising = DAQmx_Val_Rising,
-                                falling = DAQmx_Val_Falling)
-        sample_mode_map = dict (finite = DAQmx_Val_FiniteSamps,
-                                continuous = DAQmx_Val_ContSamps,
-                                hwtimed = DAQmx_Val_HWTimedSinglePoint)
+        active_edge_map = dict (rising = DAQmx.Val_Rising,
+                                falling = DAQmx.Val_Falling)
+        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
+                                continuous = DAQmx.Val_ContSamps,
+                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
         active_edge_val = self._get_map_value('active_edge', active_edge_map, active_edge)
         sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
@@ -1427,8 +1430,8 @@ class Task(uInt32):
 
           success_status : bool
         """
-        slope_map = dict (rising=DAQmx_Val_RisingSlope,
-                          falling=DAQmx_Val_FallingSlope)
+        slope_map = dict (rising=DAQmx.Val_RisingSlope,
+                          falling=DAQmx.Val_FallingSlope)
         slope_val = self._get_map_value('slope', slope_map, slope)
         return CALL ('CfgAnlgEdgeStartTrig', self, source, slope_val, float64(level))==0
 
@@ -1472,8 +1475,8 @@ class Task(uInt32):
           success_status : bool
         """
         source = str(source)
-        when_map = dict (entering=DAQmx_Val_EnteringWin,
-                         leaving=DAQmx_Val_LeavingWin)
+        when_map = dict (entering=DAQmx.Val_EnteringWin,
+                         leaving=DAQmx.Val_LeavingWin)
         when_val = self._get_map_value('when', when_map, when)
         return CALL ('CfgAnlgWindowStartTrig', self, source, when_val, float64(top), float64(bottom))==0
 
@@ -1501,8 +1504,8 @@ class Task(uInt32):
           success_status : bool
         """
         source = str(source)
-        edge_map = dict (rising=DAQmx_Val_Rising,
-                         falling=DAQmx_Val_Falling)
+        edge_map = dict (rising=DAQmx.Val_Rising,
+                         falling=DAQmx.Val_Falling)
         edge_val = self._get_map_value ('edge', edge_map, edge)
         return CALL('CfgDigEdgeStartTrig', self, source, edge_val) == 0
 
@@ -1538,8 +1541,8 @@ class Task(uInt32):
         """
         source = str(source)
         pattern = str(pattern)
-        when_map = dict(matches = DAQmx_Val_PatternMatches,
-                        does_not_match = DAQmx_Val_PatternDoesNotMatch)
+        when_map = dict(matches = DAQmx.Val_PatternMatches,
+                        does_not_match = DAQmx.Val_PatternDoesNotMatch)
         when_val = self._get_map_value('when', when_map, when)
         return CALL('CfgDigPatternStartTrig', self, source, pattern, when_val) == 0
 
@@ -1601,8 +1604,8 @@ class Task(uInt32):
         """
         source = str(source)
 
-        slope_map = dict (rising=DAQmx_Val_RisingSlope,
-                          falling=DAQmx_Val_FallingSlope)
+        slope_map = dict (rising=DAQmx.Val_RisingSlope,
+                          falling=DAQmx.Val_FallingSlope)
         slope_val = self._get_map_value('slope', slope_map, slope)
         return CALL ('CfgAnlgEdgeRefTrig', self, source, slope_val, float64(level), uInt32(pre_trigger_samps))==0
 
@@ -1657,8 +1660,8 @@ class Task(uInt32):
           success_status : bool
         """
         source = str(source)
-        when_map = dict (entering=DAQmx_Val_EnteringWin,
-                          leaving=DAQmx_Val_LeavingWin)
+        when_map = dict (entering=DAQmx.Val_EnteringWin,
+                          leaving=DAQmx.Val_LeavingWin)
         when_val = self._get_map_value('when', when_map, when)
         return CALL ('CfgAnlgWindowRefTrig', self, source, when_val, float64(top), float64(bottom), uInt32(pre_trigger_samps))==0
 
@@ -1703,8 +1706,8 @@ class Task(uInt32):
         source = str(source)
         if not source.startswith('/'): # source needs to start with a '/'
             source = '/'+source
-        slope_map = dict (rising=DAQmx_Val_RisingSlope,
-                          falling=DAQmx_Val_FallingSlope)
+        slope_map = dict (rising=DAQmx.Val_RisingSlope,
+                          falling=DAQmx.Val_FallingSlope)
         slope_val = self._get_map_value('slope', slope_map, slope)
         return CALL ('CfgDigEdgeRefTrig', self, source, slope_val, uInt32(pre_trigger_samps))==0
 
@@ -1752,8 +1755,8 @@ class Task(uInt32):
         source = str(source)
         if not source.startswith('/'): # source needs to start with a '/'
             source = '/'+source
-        when_map = dict (match=DAQmx_Val_PatternMatches,
-                          nomatch=DAQmx_Val_PatternDoesNotMatch)
+        when_map = dict (match=DAQmx.Val_PatternMatches,
+                          nomatch=DAQmx.Val_PatternDoesNotMatch)
         when_val = self._get_map_value('when', when_map, when)
         return CALL ('CfgDigPatternRefTrig', self, source, pattern, when_val, uInt32(pre_trigger_samps))==0
 
@@ -1837,9 +1840,9 @@ class Task(uInt32):
         channel_name = str (channel_name)
         t = int32(0)
         CALL('GetChanType', self, channel_name, ctypes.byref(t))
-        channel_type_map = {DAQmx_Val_AI:'AI', DAQmx_Val_AO:'AO',
-                            DAQmx_Val_DI:'DI', DAQmx_Val_DO:'DO',
-                            DAQmx_Val_CI:'CI', DAQmx_Val_CO:'CO',
+        channel_type_map = {DAQmx.Val_AI:'AI', DAQmx.Val_AO:'AO',
+                            DAQmx.Val_DI:'DI', DAQmx.Val_DO:'DO',
+                            DAQmx.Val_CI:'CI', DAQmx.Val_CO:'CO',
                             }
         return channel_type_map[t.value]
 
@@ -2192,21 +2195,21 @@ class Task(uInt32):
             CALL('GetAOOutputType', self, channel_name, ctypes.byref (d))
         else:
             raise NotImplementedError(repr((channel_name, channel_type)))
-        measurment_type_map = {DAQmx_Val_Voltage:'voltage',
-                               DAQmx_Val_Current:'current',
-                               DAQmx_Val_Voltage_CustomWithExcitation:'voltage_with_excitation',
-                               DAQmx_Val_Freq_Voltage:'freq_voltage',
-                               DAQmx_Val_Resistance:'resistance',
-                               DAQmx_Val_Temp_TC:'temperature',
-                               DAQmx_Val_Temp_Thrmstr:'temperature',
-                               DAQmx_Val_Temp_RTD:'temperature',
-                               DAQmx_Val_Temp_BuiltInSensor:'temperature',
-                               DAQmx_Val_Strain_Gage:'strain',
-                               DAQmx_Val_Position_LVDT:'position_lvdt',
-                               DAQmx_Val_Position_RVDT:'position_rvdt',
-                               DAQmx_Val_Accelerometer:'accelration',
-                               DAQmx_Val_SoundPressure_Microphone:'pressure',
-                               DAQmx_Val_TEDS_Sensor:'TEDS'
+        measurment_type_map = {DAQmx.Val_Voltage:'voltage',
+                               DAQmx.Val_Current:'current',
+                               DAQmx.Val_Voltage_CustomWithExcitation:'voltage_with_excitation',
+                               DAQmx.Val_Freq_Voltage:'freq_voltage',
+                               DAQmx.Val_Resistance:'resistance',
+                               DAQmx.Val_Temp_TC:'temperature',
+                               DAQmx.Val_Temp_Thrmstr:'temperature',
+                               DAQmx.Val_Temp_RTD:'temperature',
+                               DAQmx.Val_Temp_BuiltInSensor:'temperature',
+                               DAQmx.Val_Strain_Gage:'strain',
+                               DAQmx.Val_Position_LVDT:'position_lvdt',
+                               DAQmx.Val_Position_RVDT:'position_rvdt',
+                               DAQmx.Val_Accelerometer:'accelration',
+                               DAQmx.Val_SoundPressure_Microphone:'pressure',
+                               DAQmx.Val_TEDS_Sensor:'TEDS'
                                }
         return measurment_type_map[d.value]
 
@@ -2228,9 +2231,9 @@ class Task(uInt32):
         if mt=='voltage':
             d = int32(0)
             CALL('Get%sVoltageUnits' % (channel_type), self, channel_name, ctypes.byref(d))
-            units_map = {DAQmx_Val_Volts:'volts',
-                         #DAQmx_Val_FromCustomScale:'custom_scale',
-                         #DAQmx_Val_FromTEDS:'teds',
+            units_map = {DAQmx.Val_Volts:'volts',
+                         #DAQmx.Val_FromCustomScale:'custom_scale',
+                         #DAQmx.Val_FromTEDS:'teds',
                          }
             return units_map[d.value]
         raise NotImplementedError(repr((channel_name, mt)))
@@ -2248,9 +2251,9 @@ class Task(uInt32):
         d = int32(0)
         channel_type = self.channel_type
         CALL('Get%sAutoZeroMode' % (channel_type), self, channel_name, ctypes.byref (d))
-        auto_zero_mode_map = {DAQmx_Val_None:'none',
-                              DAQmx_Val_Once:'once',
-                              DAQmx_Val_EverySample:'every_sample'}
+        auto_zero_mode_map = {DAQmx.Val_None:'none',
+                              DAQmx.Val_Once:'once',
+                              DAQmx.Val_EverySample:'every_sample'}
         return auto_zero_mode_map[d.value]
 
     def get_data_transfer_mechanism(self, channel_name):
@@ -2265,10 +2268,10 @@ class Task(uInt32):
         d = int32(0)
         channel_type = self.channel_type
         CALL('Get%sDataXferMech' % (channel_type), self, channel_name, ctypes.byref (d))
-        data_transfer_mechanism_map = {DAQmx_Val_DMA:'dma',
-                                       DAQmx_Val_Interrupts:'interrupts',
-                                       DAQmx_Val_ProgrammedIO:'programmed_io',
-                                       DAQmx_Val_USBbulk:'usb'}
+        data_transfer_mechanism_map = {DAQmx.Val_DMA:'dma',
+                                       DAQmx.Val_Interrupts:'interrupts',
+                                       DAQmx.Val_ProgrammedIO:'programmed_io',
+                                       DAQmx.Val_USBbulk:'usb'}
         return data_transfer_mechanism_map[d.value]
 
     def get_regeneration(self):
@@ -2282,9 +2285,9 @@ class Task(uInt32):
         """
         d = int32(0)
         CALL('GetWriteRegenMode', self, ctypes.byref (d))
-        if d.value==DAQmx_Val_AllowRegen:
+        if d.value==DAQmx.Val_AllowRegen:
             return True
-        if d.value==DAQmx_Val_DoNotAllowRegen:
+        if d.value==DAQmx.Val_DoNotAllowRegen:
             return False
         assert 0,repr(d.value)
 
@@ -2307,8 +2310,8 @@ class Task(uInt32):
         get_regeneration, reset_regeneration
         """
         if allow:
-            return CALL('SetWriteRegenMode', self, DAQmx_Val_AllowRegen)==0
-        return CALL('SetWriteRegenMode', self, DAQmx_Val_DoNotAllowRegen)==0
+            return CALL('SetWriteRegenMode', self, DAQmx.Val_AllowRegen)==0
+        return CALL('SetWriteRegenMode', self, DAQmx.Val_DoNotAllowRegen)==0
 
     def reset_regeneration(self):
         """
@@ -2350,9 +2353,9 @@ class Task(uInt32):
         get_arm_start_trigger, reset_arm_start_trigger
         """
         if trigger_type=='digital_edge':
-            trigger_type_val = DAQmx_Val_DigEdge
+            trigger_type_val = DAQmx.Val_DigEdge
         elif trigger_type in ['disable', None]:
-            trigger_type_val = DAQmx_Val_None
+            trigger_type_val = DAQmx.Val_None
         else:
             assert 0,repr(trigger_type)
         return CALL('SetArmStartTrigType', self, trigger_type_val)==0
@@ -2367,9 +2370,9 @@ class Task(uInt32):
         """
         d = int32(0)
         CALL ('GetArmStartTrigType', self, ctypes.byref (d))
-        if d.value==DAQmx_Val_DigEdge:
+        if d.value==DAQmx.Val_DigEdge:
             return 'digital_edge'
-        if d.value==DAQmx_Val_None:
+        if d.value==DAQmx.Val_None:
             return None
         assert 0, repr(d.value)
 
@@ -2419,8 +2422,8 @@ class Task(uInt32):
         --------
         get_arm_start_trigger_edge, reset_arm_start_trigger_edge
         """
-        edge_map = dict (rising=DAQmx_Val_Rising,
-                         falling=DAQmx_Val_Falling)
+        edge_map = dict (rising=DAQmx.Val_Rising,
+                         falling=DAQmx.Val_Falling)
         edge_val = self._get_map_value ('edge', edge_map, edge)
         return CALL ('SetDigEdgeArmStartTrigEdge', self, edge_val)==0
 
@@ -2438,11 +2441,11 @@ class Task(uInt32):
         --------
         get_pause_trigger, reset_pause_trigger
         """
-        trigger_type_map = dict(digital_level = DAQmx_Val_DigLvl,
-                                analog_level = DAQmx_Val_AnlgLvl,
-                                analog_window = DAQmx_Val_AnlgWin,
+        trigger_type_map = dict(digital_level = DAQmx.Val_DigLvl,
+                                analog_level = DAQmx.Val_AnlgLvl,
+                                analog_window = DAQmx.Val_AnlgWin,
                                 )
-        trigger_type_map[None] = DAQmx_Val_None
+        trigger_type_map[None] = DAQmx.Val_None
         trigger_type_val = self._get_map_value('trigger_type',trigger_type_map, trigger_type)
         self._pause_trigger_type = trigger_type
         return CALL ('SetPauseTrigType', self, trigger_type_val)==0
@@ -2495,9 +2498,9 @@ class Task(uInt32):
                            analog_level = 'SetAnlgLvlPauseTrigWhen',
                            analog_window = 'SetAnlgWinPauseTrigWhen')
         routine = self._get_map_value('set_pause_trigger_when_routine', routine_map, self._pause_trigger_type)
-        type_when_map = dict(digital_level = dict (high = DAQmx_Val_High, low = DAQmx_Val_Low),
-                             analog_level = dict (above = DAQmx_Val_AboveLvl, below = DAQmx_Val_BelowLvl),
-                             analog_window = dict (inside = DAQmx_Val_InsideWin, outside=DAQmx_Val_OutsideWin))
+        type_when_map = dict(digital_level = dict (high = DAQmx.Val_High, low = DAQmx.Val_Low),
+                             analog_level = dict (above = DAQmx.Val_AboveLvl, below = DAQmx.Val_BelowLvl),
+                             analog_window = dict (inside = DAQmx.Val_InsideWin, outside=DAQmx.Val_OutsideWin))
         when_map = self._get_map_value('set_pause_trigger_when_map', type_when_map, self._pause_trigger_type)
         when_val = self._get_map_value('when', when_map, when)
         return CALL (routine, self, when_val)
@@ -2645,11 +2648,11 @@ class Task(uInt32):
 
         d = uInt32(0)
         CALL('GetReadRelativeTo', self, ctypes.byref(d))
-        relative_mode_map = { DAQmx_Val_FirstSample : 'first_sample',
-                              DAQmx_Val_CurrReadPos : 'current_read_position',
-                              DAQmx_Val_RefTrig : 'ref_trigger',
-                              DAQmx_Val_FirstPretrigSamp : 'first_pretrigger_sample',
-                              DAQmx_Val_MostRecentSamp : 'most_recent' }
+        relative_mode_map = { DAQmx.Val_FirstSample : 'first_sample',
+                              DAQmx.Val_CurrReadPos : 'current_read_position',
+                              DAQmx.Val_RefTrig : 'ref_trigger',
+                              DAQmx.Val_FirstPretrigSamp : 'first_pretrigger_sample',
+                              DAQmx.Val_MostRecentSamp : 'most_recent' }
         return relative_mode_map[d.value]
 
     def set_read_relative_to(self, relative_mode):
@@ -2694,11 +2697,11 @@ class Task(uInt32):
           reset_read_relative_to
 
         """
-        relative_mode_map = { 'first_sample' : DAQmx_Val_FirstSample,
-                              'current_read_position' : DAQmx_Val_CurrReadPos,
-                              'ref_trigger' : DAQmx_Val_RefTrig,
-                              'first_pretrigger_sample' : DAQmx_Val_FirstPretrigSamp,
-                              'most_recent' : DAQmx_Val_MostRecentSamp }
+        relative_mode_map = { 'first_sample' : DAQmx.Val_FirstSample,
+                              'current_read_position' : DAQmx.Val_CurrReadPos,
+                              'ref_trigger' : DAQmx.Val_RefTrig,
+                              'first_pretrigger_sample' : DAQmx.Val_FirstPretrigSamp,
+                              'most_recent' : DAQmx.Val_MostRecentSamp }
         relative_mode = self._get_map_value('relative_mode', relative_mode_map,
                                             relative_mode.lower())
         r = CALL('SetReadRelativeTo', self, relative_mode)
@@ -2745,8 +2748,8 @@ class Task(uInt32):
         d = uInt32(0)
         CALL('GetReadOverWrite', self, ctypes.byref(d))
         overwrite_mode_map = {
-            DAQmx_Val_OverwriteUnreadSamps : 'overwrite',
-            DAQmx_Val_DoNotOverwriteUnreadSamps : 'no_overwrite' }
+            DAQmx.Val_OverwriteUnreadSamps : 'overwrite',
+            DAQmx.Val_DoNotOverwriteUnreadSamps : 'no_overwrite' }
         return overwrite_mode_map[d.value]
 
     def set_read_overwrite(self, overwrite_mode):
@@ -2778,8 +2781,8 @@ class Task(uInt32):
           reset_read_overwrite
 
         """
-        overwrite_map = { 'overwrite' : DAQmx_Val_OverwriteUnreadSamps,
-                          'no_overwrite' : DAQmx_Val_DoNotOverwriteUnreadSamps }
+        overwrite_map = { 'overwrite' : DAQmx.Val_OverwriteUnreadSamps,
+                          'no_overwrite' : DAQmx.Val_DoNotOverwriteUnreadSamps }
         overwrite_mode = self._get_map_value('overwrite_mode', overwrite_map,
                                              overwrite_mode.lower())
         r = CALL('SetReadOverWrite', self, overwrite_mode)
@@ -2987,18 +2990,18 @@ class AnalogInputTask(Task):
         """
         phys_channel = str(phys_channel)
         channel_name = str(channel_name)
-        terminal_map = dict (default = DAQmx_Val_Cfg_Default,
-                             rse = DAQmx_Val_RSE,
-                             nrse = DAQmx_Val_NRSE,
-                             diff = DAQmx_Val_Diff,
-                             pseudodiff = DAQmx_Val_PseudoDiff)
-        units_map = dict (volts = DAQmx_Val_Volts,
-                          custom = DAQmx_Val_FromCustomScale)
+        terminal_map = dict (default = DAQmx.Val_Cfg_Default,
+                             rse = DAQmx.Val_RSE,
+                             nrse = DAQmx.Val_NRSE,
+                             diff = DAQmx.Val_Diff,
+                             pseudodiff = DAQmx.Val_PseudoDiff)
+        units_map = dict (volts = DAQmx.Val_Volts,
+                          custom = DAQmx.Val_FromCustomScale)
 
         terminal_val = self._get_map_value ('terminal', terminal_map, terminal.lower())
         units_val = self._get_map_value ('units', units_map, units)
 
-        if units_val==DAQmx_Val_FromCustomScale:
+        if units_val==DAQmx.Val_FromCustomScale:
             if custom_scale_name is None:
                 raise ValueError ('Must specify custom_scale_name for custom scale.')
 
@@ -3069,8 +3072,8 @@ class AnalogInputTask(Task):
         data :
           The array to read samples into, organized according to `fill_mode`.
         """
-        fill_mode_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
-                             group_by_scan_number = DAQmx_Val_GroupByScanNumber)
+        fill_mode_map = dict(group_by_channel = DAQmx.Val_GroupByChannel,
+                             group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
         if samples_per_channel is None:
@@ -3155,12 +3158,12 @@ class AnalogOutputTask (Task):
         if custom_scale_name is not None:
             custom_scale_name = str(custom_scale_name)
         self._set_channel_type('AO')
-        units_map = dict (volts = DAQmx_Val_Volts,
-                          custom = DAQmx_Val_FromCustomScale)
+        units_map = dict (volts = DAQmx.Val_Volts,
+                          custom = DAQmx.Val_FromCustomScale)
 
         units_val = self._get_map_value ('units', units_map, units)
 
-        if units_val==DAQmx_Val_FromCustomScale:
+        if units_val==DAQmx.Val_FromCustomScale:
             if custom_scale_name is None:
                 raise ValueError ('Must specify custom_scale_name for custom scale.')
 
@@ -3234,8 +3237,8 @@ class AnalogOutputTask (Task):
             return CALL('WriteAnalogScalarF64', self, bool32(auto_start),
                         float64(timeout), float64(data), None)==0
 
-        layout_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
-                          group_by_scan_number = DAQmx_Val_GroupByScanNumber)
+        layout_map = dict(group_by_channel = DAQmx.Val_GroupByChannel,
+                          group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         layout_val = self._get_map_value('layout', layout_map, layout)
 
         samples_written = int32(0)
@@ -3355,8 +3358,8 @@ class DigitalTask (Task):
             consists of.
 
         """
-        fill_mode_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
-                             group_by_scan_number = DAQmx_Val_GroupByScanNumber)
+        fill_mode_map = dict(group_by_channel = DAQmx.Val_GroupByChannel,
+                             group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
         if samples_per_channel in [None,-1]:
@@ -3450,10 +3453,10 @@ class DigitalInputTask(DigitalTask):
           success_status : bool
         """
         lines = str (lines)
-        grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
-                            for_all_lines = DAQmx_Val_ChanForAllLines)
+        grouping_map = dict(per_line=DAQmx.Val_ChanPerLine,
+                            for_all_lines = DAQmx.Val_ChanForAllLines)
         grouping_val = self._get_map_value('grouping', grouping_map, grouping)
-        self.one_channel_for_all_lines =  grouping_val==DAQmx_Val_ChanForAllLines
+        self.one_channel_for_all_lines =  grouping_val==DAQmx.Val_ChanForAllLines
         return CALL('CreateDIChan', self, lines, name, grouping_val)==0
 
 class DigitalOutputTask(DigitalTask):
@@ -3512,10 +3515,10 @@ class DigitalOutputTask(DigitalTask):
           success_status : bool
         """
         lines = str (lines)
-        grouping_map = dict(per_line=DAQmx_Val_ChanPerLine,
-                            for_all_lines = DAQmx_Val_ChanForAllLines)
+        grouping_map = dict(per_line=DAQmx.Val_ChanPerLine,
+                            for_all_lines = DAQmx.Val_ChanForAllLines)
         grouping_val = self._get_map_value('grouping', grouping_map, grouping)
-        self.one_channel_for_all_lines =  grouping_val==DAQmx_Val_ChanForAllLines
+        self.one_channel_for_all_lines =  grouping_val==DAQmx.Val_ChanForAllLines
         return CALL('CreateDOChan', self, lines, name, grouping_val)==0
 
     def write(self, data, 
@@ -3552,7 +3555,7 @@ class DigitalOutputTask(DigitalTask):
           The amount of time, in seconds, to wait for this function to
           write all the samples. The default value is 10.0 seconds. To
           specify an infinite wait, pass -1
-          (DAQmx_Val_WaitInfinitely). This function returns an error
+          (DAQmx.Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
           A value of 0 indicates to try once to write the submitted
@@ -3570,8 +3573,8 @@ class DigitalOutputTask(DigitalTask):
 
             'group_by_scan_number' - Group by scan number (interleaved).
         """
-        layout_map = dict(group_by_channel = DAQmx_Val_GroupByChannel,
-                          group_by_scan_number = DAQmx_Val_GroupByScanNumber)
+        layout_map = dict(group_by_channel = DAQmx.Val_GroupByChannel,
+                          group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         layout_val = self._get_map_value('layout', layout_map, layout)
         samples_written = int32(0)
 
@@ -3690,9 +3693,9 @@ class CounterInputTask(Task):
         """
         counter = str(counter)
         name = str(name)
-        edge_map = dict (rising=DAQmx_Val_Rising, falling=DAQmx_Val_Falling)
-        direction_map = dict (up=DAQmx_Val_CountUp, down=DAQmx_Val_CountDown,
-                              ext=DAQmx_Val_ExtControlled)
+        edge_map = dict (rising=DAQmx.Val_Rising, falling=DAQmx.Val_Falling)
+        direction_map = dict (up=DAQmx.Val_CountUp, down=DAQmx.Val_CountDown,
+                              ext=DAQmx.Val_ExtControlled)
         edge_val = self._get_map_value ('edge', edge_map, edge)
         direction_val = self._get_map_value ('direction', direction_map, direction)
         init = uInt32(init)
@@ -3768,7 +3771,7 @@ class CounterInputTask(Task):
           The states at which signal A and signal B must be while signal Z is high
           for NI-DAQmx to reset the measurement. If signal Z is never high while
           the signal A and signal B are high, for example, you must choose a phase
-          other than DAQmx_Val_AHighBHigh.
+          other than DAQmx.Val_AHighBHigh.
 
           When signal Z goes high and how long it stays high varies from encoder to
           encoder. Refer to the documentation for the encoder to determine the
@@ -3791,7 +3794,7 @@ class CounterInputTask(Task):
         customScaleName : str
 
           The name of a custom scale to apply to the channel. To use this parameter,
-          you must set units to DAQmx_Val_FromCustomScale. If you do not set units
+          you must set units to DAQmx.Val_FromCustomScale. If you do not set units
           to FromCustomScale, you must set customScaleName to NULL.
           
         Returns
@@ -3802,18 +3805,18 @@ class CounterInputTask(Task):
         counter = str(counter)
         name = str(name)
 
-        decodingType_map = dict(X1=DAQmx_Val_X1, X2=DAQmx_Val_X2, X4=DAQmx_Val_X4,
-                                TwoPulseCounting=DAQmx_Val_TwoPulseCounting)
-        ZidxPhase_map = dict(AHighBHigh=DAQmx_Val_AHighBHigh, AHighBLow=DAQmx_Val_AHighBLow,
-                            ALowBHigh=DAQmx_Val_ALowBHigh, ALowBLow=DAQmx_Val_ALowBLow)
-        units_map = dict(Meters=DAQmx_Val_Meters, Inches=DAQmx_Val_Inches,
-                        Ticks=DAQmx_Val_Ticks, FromCustomScale=DAQmx_Val_FromCustomScale)
+        decodingType_map = dict(X1=DAQmx.Val_X1, X2=DAQmx.Val_X2, X4=DAQmx.Val_X4,
+                                TwoPulseCounting=DAQmx.Val_TwoPulseCounting)
+        ZidxPhase_map = dict(AHighBHigh=DAQmx.Val_AHighBHigh, AHighBLow=DAQmx.Val_AHighBLow,
+                            ALowBHigh=DAQmx.Val_ALowBHigh, ALowBLow=DAQmx.Val_ALowBLow)
+        units_map = dict(Meters=DAQmx.Val_Meters, Inches=DAQmx.Val_Inches,
+                        Ticks=DAQmx.Val_Ticks, FromCustomScale=DAQmx.Val_FromCustomScale)
 
         decodingType_val = self._get_map_value ('decodingType', decodingType_map, decodingType)
         ZidxPhase_val = self._get_map_value ('ZidxPhase', ZidxPhase_map, ZidxPhase)
         units_val = self._get_map_value ('units', units_map, units)
 
-        if units_val != DAQmx_Val_FromCustomScale:
+        if units_val != DAQmx.Val_FromCustomScale:
             customScaleName = None
 
         return CALL(
@@ -3932,21 +3935,21 @@ class CounterInputTask(Task):
         assert min_val <= max_val
         min_val = float64(min_val)
         max_val = float64(max_val)
-        units_map = dict(hertz=DAQmx_Val_Hz,
-                         ticks=DAQmx_Val_Ticks,
-                         custom=DAQmx_Val_FromCustomScale)
+        units_map = dict(hertz=DAQmx.Val_Hz,
+                         ticks=DAQmx.Val_Ticks,
+                         custom=DAQmx.Val_FromCustomScale)
         units_val = self._get_map_value('units', units_map, units)
-        edge_map = dict(rising=DAQmx_Val_Rising, falling=DAQmx_Val_Falling)
+        edge_map = dict(rising=DAQmx.Val_Rising, falling=DAQmx.Val_Falling)
         edge_val = self._get_map_value('edge', edge_map, edge)
-        meas_meth_map = dict(low_freq=DAQmx_Val_LowFreq1Ctr,
-                             high_freq=DAQmx_Val_HighFreq2Ctr,
-                             large_range=DAQmx_Val_LargeRng2Ctr)
+        meas_meth_map = dict(low_freq=DAQmx.Val_LowFreq1Ctr,
+                             high_freq=DAQmx.Val_HighFreq2Ctr,
+                             large_range=DAQmx.Val_LargeRng2Ctr)
         meas_meth_val = self._get_map_value('meas_method', meas_meth_map,
                                             meas_method)
         meas_time = float64(meas_time)
         divisor = uInt32(divisor)
         assert divisor > 0
-        if (units_val == DAQmx_Val_FromCustomScale
+        if (units_val == DAQmx.Val_FromCustomScale
             and custom_scale_name is None):
             raise ValueError('Must specify custom_scale_name for custom scale.')
         if custom_scale_name is not None:
@@ -4074,7 +4077,7 @@ class CounterInputTask(Task):
 
         samples_per_channel : int
           The number of samples, per channel, to read. The default
-          value of -1 (DAQmx_Val_Auto) reads all available samples. If
+          value of -1 (DAQmx.Val_Auto) reads all available samples. If
           readArray does not contain enough space, this function
           returns as many samples as fit in readArray.
 
@@ -4098,7 +4101,7 @@ class CounterInputTask(Task):
           The amount of time, in seconds, to wait for the function to
           read the sample(s). The default value is 10.0 seconds. To
           specify an infinite wait, pass -1
-          (DAQmx_Val_WaitInfinitely). This function returns an error
+          (DAQmx.Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
           A value of 0 indicates to try once to read the requested
@@ -4136,7 +4139,7 @@ class CounterInputTask(Task):
           The amount of time, in seconds, to wait for the function to
           read the sample(s). The default value is 10.0 seconds. To
           specify an infinite wait, pass -1
-          (DAQmx_Val_WaitInfinitely). This function returns an error if
+          (DAQmx.Val_WaitInfinitely). This function returns an error if
           the timeout elapses.
 
           A value of 0 indicates to try once to read the requested
@@ -4229,8 +4232,8 @@ class CounterOutputTask(Task):
         """
         counter = str(counter)
         name = str(name)
-        units_map = dict (hertz = DAQmx_Val_Hz)
-        idle_state_map = dict (low=DAQmx_Val_Low, high=DAQmx_Val_High)
+        units_map = dict (hertz = DAQmx.Val_Hz)
+        idle_state_map = dict (low=DAQmx.Val_Low, high=DAQmx.Val_High)
         units_val = self._get_map_value('units', units_map, units)
         idle_state_val = self._get_map_value('idle_state', idle_state_map, idle_state)
         return CALL('CreateCOPulseChanFreq', self, counter, name, units_val, idle_state_val,
@@ -4299,7 +4302,7 @@ class CounterOutputTask(Task):
         """
         counter = str(counter)
         name = str(name)
-        idle_state_map = dict (low=DAQmx_Val_Low, high=DAQmx_Val_High)
+        idle_state_map = dict (low=DAQmx.Val_Low, high=DAQmx.Val_High)
         idle_state_val = self._get_map_value('idle_state', idle_state_map, idle_state)
         return CALL('CreateCOPulseChanTicks', self, counter, name, source, idle_state_val,
                     int32 (delay), int32 (low_ticks), int32 (high_ticks))==0
@@ -4366,8 +4369,8 @@ class CounterOutputTask(Task):
         """
         counter = str(counter)
         name = str(name)
-        units_map = dict (seconds = DAQmx_Val_Seconds)
-        idle_state_map = dict (low=DAQmx_Val_Low, high=DAQmx_Val_High)
+        units_map = dict (seconds = DAQmx.Val_Seconds)
+        idle_state_map = dict (low=DAQmx.Val_Low, high=DAQmx.Val_High)
         units_val = self._get_map_value('units', units_map, units)
         idle_state_val = self._get_map_value('idle_state', idle_state_map, idle_state)
         return CALL('CreateCOPulseChanTime', self, counter, name, units_val, idle_state_val,
