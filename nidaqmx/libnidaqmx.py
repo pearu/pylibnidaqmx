@@ -74,10 +74,11 @@ else:
 
 libnidaqmx = None
 if lib is None:
-    warnings.warn('''\
-Failed to find NI-DAQmx library.
-Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.
-The functionality of libnidaqmx.py will be disabled.''' % (libname), ImportWarning)
+    warnings.warn(
+        'Failed to find NI-DAQmx library.\n'
+        'Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.\n'
+        'The functionality of libnidaqmx.py will be disabled.'
+        % (libname), ImportWarning)
 else:
     if os.name=='nt':
         libnidaqmx = ctypes.windll.LoadLibrary(lib)
@@ -122,40 +123,38 @@ if libnidaqmx is not None:
         nidaqmx_h = None
 
     if nidaqmx_h is None:
-        assert os.path.isfile (include_nidaqmx_h), `include_nidaqmx_h`
+        assert os.path.isfile (include_nidaqmx_h), repr(include_nidaqmx_h)
         d = {}
         l = ['# This file is auto-generated. Do not edit!']
         error_map = {}
-        f = open (include_nidaqmx_h, 'r')
-        for line in f.readlines():
-            if not line.startswith('#define'): continue
-            i = line.find('//')
-            words = line[7:i].strip().split(None, 2)
-            if len (words)!=2: continue
-            name, value = words
-            if not name.startswith('DAQmx') or name.endswith(')'):
-                continue
-            if value.startswith('0x'):
-                exec '%s = %s' % (name, value)
-                d[name] = eval(value)
-                l.append('%s = %s' % (name, value))
-            elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
-                assert value[0]=='(' and value[-1]==')', `name, value`
-                value = int(value[1:-1])
-                error_map[value] = name[10:]
-            elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
-                d[name] = eval(value)
-                l.append('%s = %s' % (name, value))
-            else:
-                print(name, value, file=sys.stderr)
-                pass
-        l.append('error_map = %r' % (error_map))
+        with open (include_nidaqmx_h, 'r') as f:
+            for line in f.readlines():
+                if not line.startswith('#define'): continue
+                i = line.find('//')
+                words = line[7:i].strip().split(None, 2)
+                if len (words)!=2: continue
+                name, value = words
+                if not name.startswith('DAQmx') or name.endswith(')'):
+                    continue
+                if value.startswith('0x'):
+                    exec '%s = %s' % (name, value)
+                    d[name] = eval(value)
+                    l.append('%s = %s' % (name, value))
+                elif name.startswith('DAQmxError') or name.startswith('DAQmxWarning'):
+                    assert value[0]=='(' and value[-1]==')', repr(name, value)
+                    value = int(value[1:-1])
+                    error_map[value] = name[10:]
+                elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
+                    d[name] = eval(value)
+                    l.append('%s = %s' % (name, value))
+                else:
+                    print(name, value, file=sys.stderr)
+            l.append('error_map = %r' % (error_map))
 
         fn = os.path.join (os.path.dirname(os.path.abspath (__file__)), nidaqmx_h_name+'.py')
         print('Generating %r' % (fn), file=sys.stderr)
-        f = open(fn, 'w')
-        f.write ('\n'.join(l) + '\n')
-        f.close()
+        with open(fn, 'w') as f: 
+            f.write ('\n'.join(l) + '\n')
         print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
               % (fn), file=sys.stderr)
     else:
@@ -190,11 +189,13 @@ def CHK(return_code, funcname, *args):
                 break
         if r:
             if return_code < 0:
-                raise NIDAQmxRuntimeError('%s%s failed with error %s=%d: %s'%\
-                                          (funcname, args, error_map[return_code], return_code, repr(buf.value)))
+                raise NIDAQmxRuntimeError(
+                    '%s%s failed with error %s=%d: %s'
+                    % (funcname, args, error_map[return_code],
+                       return_code, repr(buf.value)))
             else:
                 warning = error_map.get(return_code, return_code)
-                sys.stderr.write('%s%s warning: %s\n' % (funcname, args, warning))                
+                sys.stderr.write('%s%s warning: %s\n' % (funcname, args, warning))
         else:
             text = '\n  '.join(['']+textwrap.wrap(buf.value, 80)+['-'*10])
             if return_code < 0:
@@ -238,7 +239,7 @@ def make_pattern(paths, _main=True):
         splitted = path.split('/',1)
         if len(splitted)==1:
             if patterns:
-                assert flag,`flag,paths,patterns, path,splitted`
+                assert flag, repr((flag,paths,patterns, path,splitted))
             flag = True
             word = splitted[0]
             i = 0
@@ -251,7 +252,7 @@ def make_pattern(paths, _main=True):
         l = patterns.get(splitted[0], None)
         if l is None:
             l = patterns[splitted[0]] = set ([])
-        map(l.add, splitted[1:])
+        l.update(splitted[1:])
     r = []
     for prefix in sorted(patterns.keys()):
         lst = list(patterns[prefix])
@@ -266,7 +267,7 @@ def make_pattern(paths, _main=True):
                 if subpattern is None:
                     if _main:
                         return ','.join(paths)
-                        raise NotImplementedError (`lst, prefix, paths, patterns`)
+                        #raise NotImplementedError(repr((lst, prefix, paths, patterns))
                     else:
                         return None
                 if ',' in subpattern:
@@ -276,15 +277,15 @@ def make_pattern(paths, _main=True):
                 else:
                     r.append(prefix+'/'+subpattern)
             else:
-                slst = sorted(map(int,lst))
-                #assert slst == range(slst[0], slst[-1]+1),`slst, lst`
+                slst = sorted(int(i) for i in lst)
+                #assert slst == range(slst[0], slst[-1]+1), repr((slst, lst))
                 if len (slst)==1:
                     r.append(str (slst[0]))
                 elif slst == range (slst[0], slst[-1]+1):
                     r.append('%s:%s' % (slst[0],slst[-1]))
                 else:
                     return None
-                    raise NotImplementedError(`slst`,`prefix`,`paths`)
+                    #raise NotImplementedError(repr(slst), repr(prefix), repr(paths))
         else:
             r.append(prefix)
     return ','.join(r)
@@ -293,19 +294,26 @@ def make_pattern(paths, _main=True):
 def _test_make_pattern():
     paths = ['Dev1/ao1', 'Dev1/ao2','Dev1/ao3', 'Dev1/ao4',
              'Dev1/ao5','Dev1/ao6','Dev1/ao7']
-    assert make_pattern(paths)=='Dev1/ao1:7',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev1/ao1:7',\
+        repr(make_pattern(paths))
     paths += ['Dev0/ao1']
-    assert make_pattern(paths)=='Dev0/ao1,Dev1/ao1:7',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev0/ao1,Dev1/ao1:7',\
+        repr(make_pattern(paths))
     paths += ['Dev0/ao0']
-    assert make_pattern(paths)=='Dev0/ao0:1,Dev1/ao1:7',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev0/ao0:1,Dev1/ao1:7',\
+        repr(make_pattern(paths))
     paths += ['Dev1/ai1', 'Dev1/ai2','Dev1/ai3']
-    assert make_pattern(paths)=='Dev0/ao0:1,Dev1/{ai1:3,ao1:7}',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev0/ao0:1,Dev1/{ai1:3,ao1:7}',\
+        repr(make_pattern(paths))
     paths += ['Dev2/port0/line0']
-    assert make_pattern(paths)=='Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/port0/line0',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/port0/line0',\
+        repr(make_pattern(paths))
     paths += ['Dev2/port0/line1']
-    assert make_pattern(paths)=='Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/port0/line0:1',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/port0/line0:1',\
+        repr(make_pattern(paths))
     paths += ['Dev2/port1/line0','Dev2/port1/line1']
-    assert make_pattern(paths)=='Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/{port0/line0:1,port1/line0:1}',`make_pattern(paths)`
+    assert make_pattern(paths) == 'Dev0/ao0:1,Dev1/{ai1:3,ao1:7},Dev2/{port0/line0:1,port1/line0:1}',\
+        repr(make_pattern(paths))
 
 class Device(str):
 
@@ -713,18 +721,19 @@ class Task(uInt32):
         unnecessary memory.
         """
         name = str(name)
-        uInt32.__init__(self, 0)
+        super(Task, self).__init__(0)
         CALL('CreateTask', name, ctypes.byref(self))
         buf_size = max(len(name)+1, default_buf_size)
         buf = ctypes.create_string_buffer('\000' * buf_size)
-        r = CALL('GetTaskName', self, ctypes.byref(buf), buf_size)
+        CALL('GetTaskName', self, ctypes.byref(buf), buf_size)
         self.name = buf.value
         self.sample_mode = None
+        self.samples_per_channel = None
 
     def _set_channel_type(self, t):
         """ Sets channel type for the task.
         """
-        assert t in ['AI', 'AO', 'DI', 'DO', 'CI', 'CO'],`t`
+        assert t in ['AI', 'AO', 'DI', 'DO', 'CI', 'CO'], repr(t)
         if self.channel_type is None:
             self.channel_type = t
         elif self.channel_type != t:
@@ -828,13 +837,13 @@ class Task(uInt32):
         return CALL('StopTask', self) == 0
 
     @classmethod
-    def _get_map_value(cls, label, map, key):
+    def _get_map_value(cls, label, map_, key):
         """
         Helper method.
         """
-        val = map.get(key)
+        val = map_.get(key)
         if val is None:
-            raise ValueError('Expected %s %s but got %r' % (label, '|'.join(map.keys ()), key))
+            raise ValueError('Expected %s %s but got %r' % (label, '|'.join(map_.keys ()), key))
         return val
 
     def get_number_of_channels(self):
@@ -866,7 +875,7 @@ class Task(uInt32):
         CALL('GetTaskChannels', self, ctypes.byref(buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         n = self.get_number_of_channels()
-        assert len(names)==n,`names, n`
+        assert len(names)==n,repr((names, n))
         return names
 
     def get_devices (self, buf_size=None):
@@ -1337,22 +1346,6 @@ class Task(uInt32):
                     uInt64(samples_per_channel))
         return r==0
 
-    def configure_timing_burst_handshaking_export_clock(self, *args, **kws): 
-        """
-        Configures when the DAQ device transfers data to a peripheral
-        device, using the DAQ device's onboard sample clock to control
-        burst handshaking timing.
-        """
-        raise NotImplementedError
-
-    def configure_timing_burst_handshaking_import_clock(self, *args, **kws): 
-        """
-        Configures when the DAQ device transfers data to a peripheral
-        device, using an imported sample clock to control burst
-        handshaking timing.
-        """
-        raise NotImplementedError
-
     def configure_trigger_analog_edge_start(self, source, slope='rising',level=1.0):
         """
         Configures the task to start acquiring or generating samples
@@ -1785,7 +1778,7 @@ class Task(uInt32):
         channel_name = str (channel_name)
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer('\000' * buf_size)
-        r = CALL('GetPhysicalChanName', self, channel_name, ctypes.byref(buf), uInt32(buf_size))
+        CALL('GetPhysicalChanName', self, channel_name, ctypes.byref(buf), uInt32(buf_size))
         return buf.value
 
     def get_channel_type(self, channel_name):
@@ -2150,11 +2143,11 @@ class Task(uInt32):
         d = int32(0)
         channel_type = self.channel_type
         if channel_type=='AI':
-            r = CALL('GetAIMeasType', self, channel_name, ctypes.byref (d))
+            CALL('GetAIMeasType', self, channel_name, ctypes.byref (d))
         elif channel_type=='AO':
-            r = CALL('GetAOOutputType', self, channel_name, ctypes.byref (d))
+            CALL('GetAOOutputType', self, channel_name, ctypes.byref (d))
         else:
-            raise NotImplementedError(`channel_name, channel_type`)
+            raise NotImplementedError(repr((channel_name, channel_type)))
         measurment_type_map = {DAQmx_Val_Voltage:'voltage',
                                DAQmx_Val_Current:'current',
                                DAQmx_Val_Voltage_CustomWithExcitation:'voltage_with_excitation',
@@ -2196,7 +2189,7 @@ class Task(uInt32):
                          #DAQmx_Val_FromTEDS:'teds',
                          }
             return units_map[d.value]
-        raise NotImplementedError(`channel_name, mt`)
+        raise NotImplementedError(repr((channel_name, mt)))
 
     def get_auto_zero_mode (self, channel_name):
         """
@@ -2210,7 +2203,7 @@ class Task(uInt32):
         channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
-        r = CALL('Get%sAutoZeroMode' % (channel_type), self, channel_name, ctypes.byref (d))
+        CALL('Get%sAutoZeroMode' % (channel_type), self, channel_name, ctypes.byref (d))
         auto_zero_mode_map = {DAQmx_Val_None:'none',
                               DAQmx_Val_Once:'once',
                               DAQmx_Val_EverySample:'every_sample'}
@@ -2227,7 +2220,7 @@ class Task(uInt32):
         channel_name = str(channel_name)
         d = int32(0)
         channel_type = self.channel_type
-        r = CALL('Get%sDataXferMech' % (channel_type), self, channel_name, ctypes.byref (d))
+        CALL('Get%sDataXferMech' % (channel_type), self, channel_name, ctypes.byref (d))
         data_transfer_mechanism_map = {DAQmx_Val_DMA:'dma',
                                        DAQmx_Val_Interrupts:'interrupts',
                                        DAQmx_Val_ProgrammedIO:'programmed_io',
@@ -2249,7 +2242,7 @@ class Task(uInt32):
             return True
         if d.value==DAQmx_Val_DoNotAllowRegen:
             return False
-        assert 0,`d.value`
+        assert 0,repr(d.value)
 
     def set_regeneration(self, allow = True):
         """
@@ -2317,7 +2310,7 @@ class Task(uInt32):
         elif trigger_type in ['disable', None]:
             trigger_type_val = DAQmx_Val_None
         else:
-            assert 0,`trigger_type`
+            assert 0,repr(trigger_type)
         return CALL('SetArmStartTrigType', self, trigger_type_val)==0
 
     def get_arm_start_trigger(self):
@@ -2334,7 +2327,7 @@ class Task(uInt32):
             return 'digital_edge'
         if d.value==DAQmx_Val_None:
             return None
-        assert 0, `d.value`
+        assert 0, repr(d.value)
 
     def reset_arm_start_trigger(self):
         '''
@@ -3046,8 +3039,8 @@ class AnalogInputTask(Task):
             data = np.zeros((number_of_channels, samples_per_channel),dtype=np.float64)
         samples_read = int32(0)
 
-        r = CALL('ReadAnalogF64', self, samples_per_channel, float64(timeout),
-                 fill_mode_val, data.ctypes.data, data.size, ctypes.byref(samples_read), None)
+        CALL('ReadAnalogF64', self, samples_per_channel, float64(timeout),
+             fill_mode_val, data.ctypes.data, data.size, ctypes.byref(samples_read), None)
 
         if samples_per_channel < samples_read.value:
             if fill_mode=='group_by_scan_number':
@@ -3083,8 +3076,8 @@ class AnalogInputTask(Task):
         """
         
         data = float64(0)
-        r = CALL('ReadAnalogScalarF64', self,
-                 float64(timeout), ctypes.byref(data), None)
+        CALL('ReadAnalogScalarF64', self,
+             float64(timeout), ctypes.byref(data), None)
         return data.value
 
 class AnalogOutputTask (Task):
@@ -3219,15 +3212,15 @@ class AnalogOutputTask (Task):
                 else:
                     data = data.reshape ((number_of_channels, samples_per_channel))
         else:
-            assert len (data.shape)==2,`data.shape`
+            assert len (data.shape)==2,repr(data.shape)
             if layout=='group_by_scan_number':
-                assert data.shape[-1]==number_of_channels,`data.shape, number_of_channels`
+                assert data.shape[-1]==number_of_channels,repr((data.shape, number_of_channels))
                 samples_per_channel = data.shape[0]
             else:
-                assert data.shape[0]==number_of_channels,`data.shape, number_of_channels`
+                assert data.shape[0]==number_of_channels,repr((data.shape, number_of_channels))
                 samples_per_channel = data.shape[-1]
 
-        r = CALL('WriteAnalogF64', self, int32(samples_per_channel), bool32(auto_start),
+        CALL('WriteAnalogF64', self, int32(samples_per_channel), bool32(auto_start),
                  float64 (timeout), layout_val, data.ctypes.data, ctypes.byref(samples_written), None)
 
         return samples_written.value
@@ -3239,7 +3232,7 @@ class DigitalTask (Task):
         Indicates the number of digital lines in the channel.
         """
         channel_type = self.channel_type
-        assert channel_type in ['DI', 'DO'],`channel_type, channel`
+        assert channel_type in ['DI', 'DO'],repr((channel_type, channel))
         channel = str (channel)
         d = uInt32(0)
         CALL('Get%sNumLines' % (channel_type), self, channel, ctypes.byref(d))
@@ -3358,6 +3351,10 @@ class DigitalInputTask(DigitalTask):
     """Exposes NI-DAQmx digital input task to Python.
     """
 
+    def __init__(self, name=""):
+        super(DigitalInputTask, self).__init__(name)
+        self.one_channel_for_all_lines = None
+    
     channel_type = 'DI'
 
     def create_channel(self, lines, name='', grouping='per_line'):
@@ -3417,6 +3414,10 @@ class DigitalOutputTask(DigitalTask):
     """
 
     channel_type = 'DO'
+
+    def __init__(self, name=""):
+        super(DigitalOutputTask, self).__init__(name)
+        self.one_channel_for_all_lines = None
 
     def create_channel(self, lines, name='', grouping='per_line'):
         """
@@ -3547,18 +3548,18 @@ class DigitalOutputTask(DigitalTask):
                 else:
                     data = data.reshape ((number_of_channels, samples_per_channel))
         else:
-            assert len (data.shape)==2,`data.shape`
+            assert len (data.shape)==2,repr(data.shape)
             if layout=='group_by_scan_number':
-                assert data.shape[-1]==number_of_channels,`data.shape, number_of_channels`
+                assert data.shape[-1]==number_of_channels,repr((data.shape, number_of_channels))
                 samples_per_channel = data.shape[0]
             else:
-                assert data.shape[0]==number_of_channels,`data.shape, number_of_channels`
+                assert data.shape[0]==number_of_channels,repr((data.shape, number_of_channels))
                 samples_per_channel = data.shape[-1]
 
-        r = CALL('WriteDigitalLines', self, samples_per_channel, 
-                 bool32(auto_start),
-                 float64(timeout), layout_val, 
-                 data.ctypes.data, ctypes.byref(samples_written), None)
+        CALL('WriteDigitalLines', self, samples_per_channel, 
+             bool32(auto_start),
+             float64(timeout), layout_val, 
+             data.ctypes.data, ctypes.byref(samples_written), None)
 
         return samples_written.value
 
@@ -3570,6 +3571,10 @@ class CounterInputTask(Task):
     """
 
     channel_type = 'CI'
+
+    def __init__(self, name=""):
+        super(CounterInputTask, self).__init__(name)
+        self.data_type = float
 
     def create_channel_count_edges (self, counter, name="", edge='rising',
                                     init=0, direction='up'):
@@ -3640,6 +3645,7 @@ class CounterInputTask(Task):
                               ext=DAQmx_Val_ExtControlled)
         edge_val = self._get_map_value ('edge', edge_map, edge)
         direction_val = self._get_map_value ('direction', direction_map, direction)
+        init = uInt32(init)
         return CALL ('CreateCICountEdgesChan', self, counter, name, edge_val, init, direction_val)==0
 
     def create_channel_linear_encoder(
@@ -3922,7 +3928,7 @@ class CounterInputTask(Task):
         """
         b = bool32(0)
         r = CALL('GetCIDupCountPrevent', self, channel, ctypes.byref(b))
-        assert r==0,`r, channel, b`
+        assert r==0,repr((r, channel, b))
         return b != 0
 
     def set_duplicate_count_prevention(self, channel, enable=True):
@@ -3967,7 +3973,7 @@ class CounterInputTask(Task):
         """
         data = float64(0)
         r = CALL('GetCICtrTimebaseRate', self, channel, ctypes.byref(data))
-        assert r==0,`r, channel, data`
+        assert r==0,repr((r, channel, data))
         return data.value
 
     def set_timebase_rate(self, channel, rate):
@@ -3991,7 +3997,7 @@ class CounterInputTask(Task):
         data = float64(rate)
         return CALL('SetCICtrTimebaseRate', self, channel, data)==0
 
-    def reset_timebase_rate(self, channel, rate):
+    def reset_timebase_rate(self, channel):
         """
         Resets the frequency of the counter timebase.
 
@@ -4064,9 +4070,9 @@ class CounterInputTask(Task):
         samples_read = int32(0)
 
         
-        r = CALL('ReadCounterU32', self, samples_per_channel, float64(timeout),
-                 data.ctypes.data, data.size, ctypes.byref(samples_read), None)
-
+        CALL('ReadCounterU32', self, samples_per_channel, float64(timeout),
+             data.ctypes.data, data.size, ctypes.byref(samples_read), None)
+        
         return data[:samples_read.value]
 
     def read_scalar(self, timeout=10.0):
@@ -4097,8 +4103,8 @@ class CounterInputTask(Task):
 
         timeout = float64(timeout)
         data = float64(0)
-        ret = CALL("ReadCounterScalarF64", self,
-                   timeout, ctypes.byref(data), None)
+        CALL("ReadCounterScalarF64", self,
+             timeout, ctypes.byref(data), None)
         #assert ret == 0
         return data.value
         
