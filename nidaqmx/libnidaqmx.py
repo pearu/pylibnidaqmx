@@ -58,8 +58,8 @@ def _find_library_linux():
     # using the location of the library).
     header_name = '/usr/local/include/NIDAQmx.h'
     libname = 'nidaqmx'
-    lib = ctypes.util.find_library(libname)
-    return header_name, libname, lib
+    libfile = ctypes.util.find_library(libname)
+    return header_name, libname, libfile
         
 def _find_library_nt():
     import _winreg as winreg # pylint: disable=import-error
@@ -89,25 +89,26 @@ def _find_library_nt():
         ansi_c_dev = os.path.join(nidaqmx_install, r'DAQmx ANSI C Dev')
     regkey.Close()
 
-    lib = ctypes.util.find_library(libname)
-    if lib is None:
+    libfile = ctypes.util.find_library(libname)
+    if libfile is None:
         # try default installation path:
-        lib = os.path.join(ansi_c_dev, r'lib\nicaiu.dll')
-        if os.path.isfile(lib):
+        libfile = os.path.join(ansi_c_dev, r'lib\nicaiu.dll')
+        if os.path.isfile(libfile):
             print('You should add %r to PATH environment variable and reboot.'
-                  % (os.path.dirname (lib)), file=sys.stderr)
+                  % (os.path.dirname(libfile)), file=sys.stderr)
         else:
-            lib = None
+            libfile = None
 
-    return header_name, libname, lib
+    return header_name, libname, libfile
 
 def _find_library():
     if os.name == "nt":
-        header_name, libname, lib = _find_library_nt()
+        header_name, libname, libfile = _find_library_nt()
     else:
-        header_name, libname, lib = _find_library_linux()
-    
-    if lib is None:
+        header_name, libname, libfile = _find_library_linux()
+
+    lib = None
+    if libfile is None:
         warnings.warn(
             'Failed to find NI-DAQmx library.\n'
             'Make sure that lib%s is installed and its location is listed in PATH|LD_LIBRARY_PATH|.\n'
@@ -115,14 +116,14 @@ def _find_library():
             % (libname), ImportWarning)
     else:
         if os.name == 'nt':
-            lib = ctypes.windll.LoadLibrary(lib)
+            lib = ctypes.windll.LoadLibrary(libfile)
         else:
-            lib = ctypes.cdll.LoadLibrary(lib)
+            lib = ctypes.cdll.LoadLibrary(libfile)
 
-    # FIXME if lib is None
+    # FIXME If lib is None.
     return header_name, lib
 
-header_name, libnidaqmx = _find_library()
+_header_name, libnidaqmx = _find_library()
 
 def get_nidaqmx_version ():
     if libnidaqmx is None:
@@ -138,7 +139,7 @@ def _convert_header(header_name, header_module_name):
     import pprint
     assert os.path.isfile(header_name), repr(header_name)
     d = {}
-    error_map = {}
+    err_map = {}
     with open (header_name, 'r') as f:
         for line in f.readlines():
             if not line.startswith('#define'): continue
@@ -156,13 +157,13 @@ def _convert_header(header_name, header_module_name):
                 assert value[0]=='(' and value[-1]==')', repr((name, value))
                 value = int(value[1:-1])
                 name = name.replace("DAQmxError", "").replace("DAQmxWarning", "")
-                error_map[value] = name
+                err_map[value] = name
             elif name.startswith('DAQmx_Val') or name[5:] in ['Success','_ReadWaitMode']:
                 # Examples:
                 # ^#define DAQmx_Val_SynchronousEventCallbacks				     (1<<0)	// Synchronous callbacks$
                 # ^#define DAQmxSuccess					 (0)$
                 # ^#define DAQmx_ReadWaitMode	DAQmx_Read_WaitMode$
-                d[name] = eval(value, {}, d)
+                d[name] = eval(value, {}, d) # pylint: disable=eval-used
             else:
                 print(name, value, file=sys.stderr)
 
@@ -181,7 +182,7 @@ def _convert_header(header_name, header_module_name):
         f.write("_d = %s\n" % pprint.pformat(_d))
         f.write("DAQmxConstants = namedtuple('DAQmxConstants', _d.keys())\n")
         f.write("DAQmx = DAQmxConstants(**_d)\n\n")
-        f.write("error_map = %s\n" % pprint.pformat(error_map))
+        f.write("error_map = %s\n" % pprint.pformat(err_map))
 
     print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
           % (fn), file=sys.stderr)
@@ -201,7 +202,7 @@ def _load_header(header_name):
 
     return nidaqmx_h.DAQmx, nidaqmx_h.error_map
 
-DAQmx, error_map = _load_header(header_name)
+DAQmx, error_map = _load_header(_header_name)
 
 ########################################################################
 
@@ -799,6 +800,7 @@ class Task(uInt32):
             raise TypeError('%s: cannot determine channel I/O type when no channels have been created.' % (self.__class__.__name__))
         return 'input' if t[1]=='I' else 'output'
 
+    # FIXME: why do we need this argument?
     def clear(self, libnidaqmx=libnidaqmx):
         """
         Clears the task.
