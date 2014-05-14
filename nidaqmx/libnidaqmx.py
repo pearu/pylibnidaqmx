@@ -21,6 +21,7 @@ import numpy as np
 import ctypes
 import ctypes.util
 import warnings
+from inspect import getargspec
 
 ########################################################################
 
@@ -1071,7 +1072,9 @@ class Task(uInt32):
             if self._register_every_n_samples_event_cache is not None:
                 # unregister:
                 self.register_every_n_samples_event(None, samples=samples, options=options, cb_data=cb_data)
-            # TODO: check the validity of func signature
+            argspec = getargspec(func)
+            if len(argspec.args) != 4:
+                raise ValueError("Function signature should be like f(task, event_type, samples, cb_data) -> 0.")
             # TODO: use wrapper function that converts cb_data argument to given Python object
             c_func = EveryNSamplesEventCallback_map[self.channel_type](func)
         
@@ -1154,7 +1157,9 @@ class Task(uInt32):
         else:
             if self._register_done_event_cache is not None:
                 self.register_done_event(None, options=options, cb_data=cb_data)
-            # TODO: check the validity of func signature
+            argspec = getargspec(func)
+            if len(argspec.args) != 3 or argspec.defaults != (None,):
+                raise ValueError("Function signature should be like f(task, status, cb_data=None) -> 0.")
             c_func = DoneEventCallback_map[self.channel_type](func)
         self._register_done_event_cache = c_func
 
@@ -1229,7 +1234,9 @@ class Task(uInt32):
         else:
             if self._register_signal_event_cache is not None:
                 self._register_signal_event(None, signal=signal, options=options, cb_data=cb_data)
-            # TODO: check the validity of func signature
+            argspec = getargspec(func)
+            if len(argspec.args) != 4:
+                raise ValueError("Function signature should be like f(task, signalID, cb_data) -> 0.")
             c_func = SignalEventCallback_map[self.channel_type](func)
         self._register_signal_event_cache = c_func
         return CALL('RegisterSignalEvent', self, signalID_val, uInt32(options), c_func, cb_data)==0
