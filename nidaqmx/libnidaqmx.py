@@ -12,7 +12,7 @@
 See http://pylibnidaqmx.googlecode.com/
 """
 
-from __future__ import print_function
+from __future__ import print_function, division, unicode_literals, absolute_import
 
 import os
 import sys
@@ -167,7 +167,7 @@ def _convert_header(header_name, header_module_name):
                 print(name, value, file=sys.stderr)
 
         # DAQmxSuccess is not renamed, because it's unused and I'm lazy.
-        _d = {k.replace("DAQmx_", ""): v for k,v in d.items()}
+        _d = {k.replace("DAQmx_", ""): v for k,v in d.viewitems()}
                  
     try:
         path = os.path.dirname(os.path.abspath (__file__))
@@ -216,12 +216,12 @@ def CHK(return_code, funcname, *args):
     else:
         buf_size = default_buf_size
         while buf_size < 1000000:
-            buf = ctypes.create_string_buffer('\000' * buf_size)
+            buf = ctypes.create_string_buffer(b'\000' * buf_size)
             try:
                 r = libnidaqmx.DAQmxGetExtendedErrorInfo(ctypes.byref(buf), buf_size)
                 if r != 0:
                     r = libnidaqmx.DAQmxGetErrorString(return_code, ctypes.byref(buf), buf_size)
-            except RuntimeError, msg:
+            except RuntimeError as msg:
                 if 'Buffer is too small to fit the string' in str(msg):
                     buf_size *= 2
                 else:
@@ -255,9 +255,9 @@ def CALL(name, *args):
     func = getattr(libnidaqmx, funcname)
     new_args = []
     for a in args:
-        if isinstance (a, unicode):
-            print(name, 'argument',a, 'is unicode', file=sys.stderr)
-            new_args.append (str (a))
+        if isinstance(a, unicode):
+            print(name, 'argument', a, 'is unicode', file=sys.stderr)
+            new_args.append (bytes(a))
         else:
             new_args.append (a)
     # pylint: disable=star-args
@@ -372,7 +372,7 @@ class Device(str):
         Indicates the product name of the device.
         """
         buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevProductType', self, ctypes.byref (buf), buf_size)
         return buf.value
 
@@ -412,7 +412,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevAIPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -435,7 +435,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetDevAOPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -458,7 +458,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDILines', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -481,7 +481,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDIPorts', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -504,7 +504,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDOLines', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -527,7 +527,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDOPorts', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -550,7 +550,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevCIPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -573,7 +573,7 @@ class Device(str):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevCOPhysicalChans', self, ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
@@ -689,7 +689,7 @@ class System(object):
         Indicates the names of all devices installed in the system.
         """
         buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysDevNames', ctypes.byref (buf), buf_size)
         names = [Device(n.strip()) for n in buf.value.split(',') if n.strip()]
         return names
@@ -701,7 +701,7 @@ class System(object):
         on the system.
         """
         buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysTasks', ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
@@ -713,7 +713,7 @@ class System(object):
         channels saved on the system.
         """
         buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysGlobalChans', ctypes.byref (buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
@@ -771,7 +771,7 @@ class Task(uInt32):
         super(Task, self).__init__(0)
         CALL('CreateTask', name, ctypes.byref(self))
         buf_size = max(len(name)+1, default_buf_size)
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetTaskName', self, ctypes.byref(buf), buf_size)
         self.name = buf.value
         self.sample_mode = None
@@ -890,7 +890,8 @@ class Task(uInt32):
         """
         val = map_.get(key)
         if val is None:
-            raise ValueError('Expected %s %s but got %r' % (label, '|'.join(map_.keys ()), key))
+            raise ValueError('Expected %s %s but got %r'
+                             % (label, '|'.join(map_.viewkeys()), key))
         return val
 
     def get_number_of_channels(self):
@@ -918,7 +919,7 @@ class Task(uInt32):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetTaskChannels', self, ctypes.byref(buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         n = self.get_number_of_channels()
@@ -943,7 +944,7 @@ class Task(uInt32):
         """
         if buf_size is None:
             buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetTaskDevices', self, ctypes.byref(buf), buf_size)
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
@@ -1824,7 +1825,7 @@ class Task(uInt32):
         """
         channel_name = str (channel_name)
         buf_size = default_buf_size
-        buf = ctypes.create_string_buffer('\000' * buf_size)
+        buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetPhysicalChanName', self, channel_name, ctypes.byref(buf), uInt32(buf_size))
         return buf.value
 
@@ -3255,7 +3256,7 @@ class AnalogOutputTask (Task):
                 else:
                     data = data.reshape((1, samples_per_channel))
             else:
-                samples_per_channel = data.size / number_of_channels
+                samples_per_channel = data.size // number_of_channels
                 if layout=='group_by_scan_number':
                     data = data.reshape ((samples_per_channel, number_of_channels))
                 else:
@@ -3595,7 +3596,7 @@ class DigitalOutputTask(DigitalTask):
                 else:
                     data = data.reshape((1, samples_per_channel))
             else:
-                samples_per_channel = data.size / number_of_channels
+                samples_per_channel = data.size // number_of_channels
                 if layout=='group_by_scan_number':
                     data = data.reshape ((samples_per_channel, number_of_channels))
                 else:
@@ -4426,7 +4427,7 @@ def main():
     g.create_voltage_channel('Dev1/ao2', 'generate')
 
 
-    print(t.get_info_str(True))
+    print(t.get_info_str(global_info=True))
     print(g.get_info_str())
     
 if __name__=='__main__':
