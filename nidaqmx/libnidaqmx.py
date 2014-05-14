@@ -191,17 +191,18 @@ def _convert_header(header_name, header_module_name):
 def _load_header(header_name):
     if libnidaqmx is None:
         return (None, None)
-        
-    nidaqmx_version = get_nidaqmx_version()
-    nidaqmx_h_name = 'nidaqmx_h_%s.py' % (nidaqmx_version.replace ('.', '_'))
 
+    version = get_nidaqmx_version()
+    mod_name = 'nidaqmx_h_%s' % (version.replace ('.', '_'))
+    pkg_name = "nidaqmx."
+    
     try:
-        nidaqmx_h = __import__(nidaqmx_h_name)
+        mod = __import__(pkg_name + mod_name, fromlist=[mod_name])
     except ImportError:
-        _convert_header(header_name, nidaqmx_h_name)
-        nidaqmx_h = __import__(nidaqmx_h_name)
+        _convert_header(header_name, mod_name + ".py")
+        mod = __import__(pkg_name + mod_name, fromlist=[mod_name])
 
-    return nidaqmx_h.DAQmx, nidaqmx_h.error_map
+    return mod.DAQmx, mod.error_map
 
 DAQmx, error_map = _load_header(_header_name)
 
