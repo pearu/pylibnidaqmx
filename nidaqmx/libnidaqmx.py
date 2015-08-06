@@ -69,12 +69,12 @@ def _find_library_nt():
     libname = 'nicaiu'
 
     try:
-        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, regpath)
+        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg6432path)
     except WindowsError: # pylint: disable=undefined-variable
         try:
-            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg6432path)
+            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, regpath)
         except WindowsError: # pylint: disable=undefined-variable
-            print('You need to install NI DAQmx first.', file=sys.stderr)
+            print('You need to install NI-DAQmx first.', file=sys.stderr)
     nidaqmx_install = winreg.QueryValueEx(regkey, 'Path')[0]
     header_name = os.path.join(nidaqmx_install, r'include\NIDAQmx.h')
     if not os.path.isfile(header_name): # from Issue 23
