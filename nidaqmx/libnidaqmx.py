@@ -721,7 +721,7 @@ class System(object):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
 
-class Task(uInt32):
+class Task(TaskHandle):
 
     """
     Base class to NI-DAQmx task classes.
