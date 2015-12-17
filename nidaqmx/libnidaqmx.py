@@ -837,8 +837,8 @@ class Task(uInt32):
         operation is complete before you stop the task.
         """
         b = bool32(0)
-        if not CALL('IsTaskDone', self, ctypes.byref(b)):
-            return b != 0
+        CALL('IsTaskDone', self, ctypes.byref(b))
+        return b.value != 0
 
     # NotImplemented: DAQmxGetTaskComplete
 
