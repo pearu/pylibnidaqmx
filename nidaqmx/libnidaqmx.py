@@ -898,6 +898,36 @@ class Task(uInt32):
                              % (label, '|'.join(map_.viewkeys()), key))
         return val
 
+    def _reshape_data(self, data, layout):
+        number_of_channels = self.get_number_of_channels()
+
+        if number_of_channels == 0:
+            raise ValueError('Can\'t write any data without any channels')
+
+        if len(data.shape) == 1:
+            if number_of_channels == 1:
+                samples_per_channel = data.shape[0]
+                if layout == 'group_by_scan_number':
+                    data = data.reshape((samples_per_channel, 1))
+                else:
+                    data = data.reshape((1, samples_per_channel))
+            else:
+                samples_per_channel = data.size // number_of_channels
+                if layout == 'group_by_scan_number':
+                    data = data.reshape((samples_per_channel, number_of_channels))
+                else:
+                    data = data.reshape((number_of_channels, samples_per_channel))
+        else:
+            assert len(data.shape) == 2, repr(data.shape)
+            if layout == 'group_by_scan_number':
+                assert data.shape[-1] == number_of_channels, repr((data.shape, number_of_channels))
+                samples_per_channel = data.shape[0]
+            else:
+                assert data.shape[0] == number_of_channels, repr((data.shape, number_of_channels))
+                samples_per_channel = data.shape[-1]
+
+        return data, samples_per_channel
+
     def get_number_of_channels(self):
         """
         Indicates the number of virtual channels in the task.
@@ -3274,30 +3304,7 @@ class AnalogOutputTask (Task):
         samples_written = int32(0)
 
         data = np.asarray(data, dtype = np.float64) # pylint: disable=no-member
-
-        number_of_channels = self.get_number_of_channels()
-
-        if len(data.shape)==1:
-            if number_of_channels==1:
-                samples_per_channel = data.shape[0]
-                if layout=='group_by_scan_number':
-                    data = data.reshape((samples_per_channel, 1))
-                else:
-                    data = data.reshape((1, samples_per_channel))
-            else:
-                samples_per_channel = data.size // number_of_channels
-                if layout=='group_by_scan_number':
-                    data = data.reshape ((samples_per_channel, number_of_channels))
-                else:
-                    data = data.reshape ((number_of_channels, samples_per_channel))
-        else:
-            assert len (data.shape)==2,repr(data.shape)
-            if layout=='group_by_scan_number':
-                assert data.shape[-1]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[0]
-            else:
-                assert data.shape[0]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[-1]
+        data, samples_per_channel = self._reshape_data(data, layout)
 
         CALL('WriteAnalogF64', self, int32(samples_per_channel), bool32(auto_start),
                  float64 (timeout), layout_val, data.ctypes.data, ctypes.byref(samples_written), None)
@@ -3617,27 +3624,7 @@ class DigitalOutputTask(DigitalTask):
             data = np.asarray(data, dtype = np.uint8)
         # pylint: enable=no-member
         
-        if len(data.shape)==1:
-            if number_of_channels == 1:
-                samples_per_channel = data.shape[0]
-                if layout=='group_by_scan_number':
-                    data = data.reshape((samples_per_channel, 1))
-                else:
-                    data = data.reshape((1, samples_per_channel))
-            else:
-                samples_per_channel = data.size // number_of_channels
-                if layout=='group_by_scan_number':
-                    data = data.reshape ((samples_per_channel, number_of_channels))
-                else:
-                    data = data.reshape ((number_of_channels, samples_per_channel))
-        else:
-            assert len (data.shape)==2,repr(data.shape)
-            if layout=='group_by_scan_number':
-                assert data.shape[-1]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[0]
-            else:
-                assert data.shape[0]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[-1]
+        data, samples_per_channel = self._reshape_data(data, layout)
 
         CALL('WriteDigitalLines', self, samples_per_channel, 
              bool32(auto_start),
