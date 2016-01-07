@@ -898,6 +898,36 @@ class Task(uInt32):
                              % (label, '|'.join(map_.viewkeys()), key))
         return val
 
+    def _reshape_data(self, data, layout):
+        number_of_channels = self.get_number_of_channels()
+
+        if number_of_channels == 0:
+            raise ValueError('Can\'t write any data without any channels')
+
+        if len(data.shape) == 1:
+            if number_of_channels == 1:
+                samples_per_channel = data.shape[0]
+                if layout == 'group_by_scan_number':
+                    data = data.reshape((samples_per_channel, 1))
+                else:
+                    data = data.reshape((1, samples_per_channel))
+            else:
+                samples_per_channel = data.size // number_of_channels
+                if layout == 'group_by_scan_number':
+                    data = data.reshape((samples_per_channel, number_of_channels))
+                else:
+                    data = data.reshape((number_of_channels, samples_per_channel))
+        else:
+            assert len(data.shape) == 2, repr(data.shape)
+            if layout == 'group_by_scan_number':
+                assert data.shape[-1] == number_of_channels, repr((data.shape, number_of_channels))
+                samples_per_channel = data.shape[0]
+            else:
+                assert data.shape[0] == number_of_channels, repr((data.shape, number_of_channels))
+                samples_per_channel = data.shape[-1]
+
+        return data, samples_per_channel
+
     def get_number_of_channels(self):
         """
         Indicates the number of virtual channels in the task.
@@ -3274,30 +3304,7 @@ class AnalogOutputTask (Task):
         samples_written = int32(0)
 
         data = np.asarray(data, dtype = np.float64) # pylint: disable=no-member
-
-        number_of_channels = self.get_number_of_channels()
-
-        if len(data.shape)==1:
-            if number_of_channels==1:
-                samples_per_channel = data.shape[0]
-                if layout=='group_by_scan_number':
-                    data = data.reshape((samples_per_channel, 1))
-                else:
-                    data = data.reshape((1, samples_per_channel))
-            else:
-                samples_per_channel = data.size // number_of_channels
-                if layout=='group_by_scan_number':
-                    data = data.reshape ((samples_per_channel, number_of_channels))
-                else:
-                    data = data.reshape ((number_of_channels, samples_per_channel))
-        else:
-            assert len (data.shape)==2,repr(data.shape)
-            if layout=='group_by_scan_number':
-                assert data.shape[-1]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[0]
-            else:
-                assert data.shape[0]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[-1]
+        data, samples_per_channel = self._reshape_data(data, layout)
 
         CALL('WriteAnalogF64', self, int32(samples_per_channel), bool32(auto_start),
                  float64 (timeout), layout_val, data.ctypes.data, ctypes.byref(samples_written), None)
@@ -3617,27 +3624,7 @@ class DigitalOutputTask(DigitalTask):
             data = np.asarray(data, dtype = np.uint8)
         # pylint: enable=no-member
         
-        if len(data.shape)==1:
-            if number_of_channels == 1:
-                samples_per_channel = data.shape[0]
-                if layout=='group_by_scan_number':
-                    data = data.reshape((samples_per_channel, 1))
-                else:
-                    data = data.reshape((1, samples_per_channel))
-            else:
-                samples_per_channel = data.size // number_of_channels
-                if layout=='group_by_scan_number':
-                    data = data.reshape ((samples_per_channel, number_of_channels))
-                else:
-                    data = data.reshape ((number_of_channels, samples_per_channel))
-        else:
-            assert len (data.shape)==2,repr(data.shape)
-            if layout=='group_by_scan_number':
-                assert data.shape[-1]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[0]
-            else:
-                assert data.shape[0]==number_of_channels,repr((data.shape, number_of_channels))
-                samples_per_channel = data.shape[-1]
+        data, samples_per_channel = self._reshape_data(data, layout)
 
         CALL('WriteDigitalLines', self, samples_per_channel, 
              bool32(auto_start),
@@ -4418,6 +4405,82 @@ class CounterOutputTask(Task):
         channel = str(channel)
         terminal = str(terminal)
         return CALL ('SetCOPulseTerm', self, channel, terminal)==0
+
+    def write_ticks(self, high_ticks, low_ticks,
+                    auto_start = False, timeout = 10.0,
+                    layout = 'group_by_scan_number'):
+        """
+        Writes new pulse high tick counts and low tick counts to each
+        channel in a continuous counter output task that contains one or
+        more channels.
+
+        Parameters
+        ----------
+
+        high_ticks : array
+
+          The number of timebase ticks the pulse is high
+
+        low_ticks : array
+
+          The number of timebase ticks the pulse is low
+
+        auto_start : bool
+
+          Specifies whether or not this function automatically starts
+          the task if you do not start it.
+
+        timeout : float
+
+          The amount of time, in seconds, to wait for this
+          function to write all the samples. The default value is 10.0
+          seconds. To specify an infinite wait, pass -1
+          (DAQmx_Val_WaitInfinitely). This function returns an error
+          if the timeout elapses.
+
+          A value of 0 indicates to try once to write the submitted
+          samples. If this function successfully writes all submitted
+          samples, it does not return an error. Otherwise, the
+          function returns a timeout error and returns the number of
+          samples actually written.
+
+        layout : {'group_by_channel', 'group_by_scan_number'}
+
+          Specifies how the samples are arranged, either interleaved
+          or noninterleaved:
+
+            'group_by_channel' - Group by channel (non-interleaved).
+
+            'group_by_scan_number' - Group by scan number (interleaved).
+
+          Applies iff data is array.
+
+        Returns
+        -------
+
+        samples_written : int
+
+          The actual number of samples per channel successfully
+          written to the buffer. Applies iff data is array.
+        """
+        layout_map = dict(group_by_channel = DAQmx.Val_GroupByChannel,
+                          group_by_scan_number = DAQmx.Val_GroupByScanNumber)
+        layout_val = self._get_map_value('layout', layout_map, layout)
+        samples_written = int32(0)
+
+        assert len(high_ticks) == len(low_ticks)
+
+        low_ticks = np.asarray(low_ticks, dtype = uInt32)
+        low_ticks, samples_per_channel = self._reshape_data(low_ticks, layout)
+        high_ticks = np.asarray(high_ticks, dtype = uInt32)
+        high_ticks, samples_per_channel = self._reshape_data(high_ticks, layout)
+
+        CALL('WriteCtrTicks', self, samples_per_channel,
+                bool32(auto_start), float64(timeout), layout_val,
+                high_ticks.ctypes.data, low_ticks.ctypes.data,
+                ctypes.byref(samples_written), None)
+
+        return samples_written.value
 
 ########################################################################
 
