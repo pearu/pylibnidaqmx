@@ -40,13 +40,13 @@ uInt8 = ctypes.c_uint8
 int16 = ctypes.c_int16
 uInt16 = ctypes.c_uint16
 int32 = ctypes.c_int32
-TaskHandle = bool32 = uInt32 = ctypes.c_uint32
+bool32 = uInt32 = ctypes.c_uint32
 int64 = ctypes.c_int64
 uInt64 = ctypes.c_uint64
 
 float32 = ctypes.c_float
 float64 = ctypes.c_double
-void_p = ctypes.c_void_p
+TaskHandle = void_p = ctypes.c_void_p
 
 # Increase default_buf_size value when receiving RuntimeError
 # with "Buffer is too small to fit the string." message.
@@ -721,7 +721,7 @@ class System(object):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
 
-class Task(uInt32):
+class Task(TaskHandle):
 
     """
     Base class to NI-DAQmx task classes.
