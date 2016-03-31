@@ -9,7 +9,7 @@ PyLibNIDAQmx - a Python wrapper to libnidaqmx library
 
 :Website:
 
-  http://pylibnidaqmx.googlecode.com/
+  https://github.com/pearu/pylibnidaqmx
 
 :License:
 
