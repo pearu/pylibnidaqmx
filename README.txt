@@ -1,4 +1,3 @@
-
 =====================================================
 PyLibNIDAQmx - a Python wrapper to libnidaqmx library
 =====================================================
@@ -7,9 +6,13 @@ PyLibNIDAQmx - a Python wrapper to libnidaqmx library
 
   Pearu Peterson <pearu.peterson AT gmail DOT com>
 
-:Website:
+:Download:
 
   https://github.com/pearu/pylibnidaqmx
+
+:Documentation:
+
+  https://sysbio.ioc.ee/download/software/pylibnidaqmx/
 
 :License:
 
@@ -20,16 +23,6 @@ History
 
  * Project published on November 5, 2009.
 
-Download
-========
-
-The latest release can be downloaded from pylibnidaqmx website.
-
-The latest development code is available via SVN. To check it out,
-run::
-
-  svn checkout http://pylibnidaqmx.googlecode.com/svn/trunk/ pylibnidaqmx-svn
-  cd pylibnidaqmx-svn
 
 Installation
 ============
