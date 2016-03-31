@@ -56,7 +56,7 @@ Here follows an example how to generate voltage:
 >>> task = AnalogOutputTask()
 >>> task.create_voltage_channel('Dev1/ao2', min_val=-10.0, max_val=10.0)
 >>> task.configure_timing_sample_clock(rate = 1000.0)
->>> task.write(data)
+>>> task.write(data, auto_start=False)
 >>> task.start()
 >>> raw_input('Generating voltage continuously. Press Enter to interrupt..')
 >>> task.stop()
