@@ -86,7 +86,7 @@ Help and bug reports
 
 You can report bugs at the pylibnidaqmx issue tracker:
 
-  http://code.google.com/p/pylibnidaqmx/issues/list
+  https://github.com/pearu/pylibnidaqmx/issues
 
 Any comments and questions can be sent also to the authors.
 
