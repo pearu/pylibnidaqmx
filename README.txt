@@ -1,4 +1,3 @@
-
 =====================================================
 PyLibNIDAQmx - a Python wrapper to libnidaqmx library
 =====================================================
@@ -7,9 +6,13 @@ PyLibNIDAQmx - a Python wrapper to libnidaqmx library
 
   Pearu Peterson <pearu.peterson AT gmail DOT com>
 
-:Website:
+:Download:
 
   https://github.com/pearu/pylibnidaqmx
+
+:Documentation:
+
+  https://sysbio.ioc.ee/download/software/pylibnidaqmx/
 
 :License:
 
@@ -20,16 +23,6 @@ History
 
  * Project published on November 5, 2009.
 
-Download
-========
-
-The latest release can be downloaded from pylibnidaqmx website.
-
-The latest development code is available via SVN. To check it out,
-run::
-
-  svn checkout http://pylibnidaqmx.googlecode.com/svn/trunk/ pylibnidaqmx-svn
-  cd pylibnidaqmx-svn
 
 Installation
 ============
@@ -63,7 +56,7 @@ Here follows an example how to generate voltage:
 >>> task = AnalogOutputTask()
 >>> task.create_voltage_channel('Dev1/ao2', min_val=-10.0, max_val=10.0)
 >>> task.configure_timing_sample_clock(rate = 1000.0)
->>> task.write(data)
+>>> task.write(data, auto_start=False)
 >>> task.start()
 >>> raw_input('Generating voltage continuously. Press Enter to interrupt..')
 >>> task.stop()
