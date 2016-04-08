@@ -259,11 +259,10 @@ def CALL(name, *args):
     new_args = []
     for a in args:
         if isinstance(a, unicode):
-            print(name, 'argument', a, 'is unicode', file=sys.stderr)
+            #print(name, 'argument', a, 'is unicode', file=sys.stderr)
             new_args.append (bytes(a))
         else:
             new_args.append (a)
-    # pylint: disable=star-args
     r = func(*new_args)
     r = CHK(r, funcname, *new_args)
     return r
