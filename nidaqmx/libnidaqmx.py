@@ -3623,15 +3623,47 @@ class DigitalOutputTask(DigitalTask):
         else:
             data = np.asarray(data, dtype = np.uint8)
         # pylint: enable=no-member
-        
+
         data, samples_per_channel = self._reshape_data(data, layout)
 
-        CALL('WriteDigitalLines', self, samples_per_channel, 
+        CALL('WriteDigitalLines', self, samples_per_channel,
              bool32(auto_start),
-             float64(timeout), layout_val, 
+             float64(timeout), layout_val,
              data.ctypes.data, ctypes.byref(samples_written), None)
 
         return samples_written.value
+
+    def set_drive_type(self, drive_type, channel=None):
+        """Sets the drive type of the channel.
+
+        Parameters
+        ----------
+
+        drive_type : str or None
+
+          The drive type, one of "active", "open_collector", or None.
+          None will reset the drive type.
+
+        channel : str or None
+
+          The name of a channel or terminal to modify.  If None is
+          given, use all channels in the task (via
+          get_names_of_channels()).
+
+        """
+        if channel is None:
+            channel = ",".join(self.get_names_of_channels())
+        else:
+            channel = str(channel)
+        output_drive_mapping = dict(
+            active=DAQmx.Val_ActiveDrive,
+            open_collector=DAQmx.Val_OpenCollector)
+        if drive_type is None:
+            CALL("ResetDOOutputDriveType", self, channel)
+        else:
+            drive_type = self._get_map_value(
+                "output_drive", output_drive_mapping, drive_type)
+            CALL("SetDOOutputDriveType", self, channel, drive_type)
 
     # NotImplemented: WriteDigitalU8, WriteDigitalU16, WriteDigitalU32, WriteDigitalScalarU32
 
