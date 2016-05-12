@@ -75,6 +75,7 @@ def _find_library_nt():
             regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, regpath)
         except WindowsError: # pylint: disable=undefined-variable
             print('You need to install NI-DAQmx first.', file=sys.stderr)
+            return None, libname, None
     nidaqmx_install = winreg.QueryValueEx(regkey, 'Path')[0]
     header_name = os.path.join(nidaqmx_install, r'include\NIDAQmx.h')
     if not os.path.isfile(header_name): # from Issue 23
