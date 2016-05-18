@@ -819,6 +819,7 @@ class Task(TaskHandle):
         """
         if self.value:
             r = libnidaqmx.DAQmxClearTask(self)
+            self.value = 0
             if r:
                 warnings.warn("DAQmxClearTask failed with error code %s (%r)" % (r, error_map.get(r)))
 
