@@ -3150,7 +3150,7 @@ class AnalogInputTask(Task):
         samples_read = int32(0)
 
         CALL('ReadAnalogF64', self, samples_per_channel, float64(timeout),
-             fill_mode_val, data.ctypes.data, data.size, ctypes.byref(samples_read), None)
+             fill_mode_val, data.ctypes, data.size, ctypes.byref(samples_read), None)
 
         if samples_per_channel < samples_read.value:
             if fill_mode=='group_by_scan_number':
@@ -3308,7 +3308,7 @@ class AnalogOutputTask (Task):
         data, samples_per_channel = self._reshape_data(data, layout)
 
         CALL('WriteAnalogF64', self, int32(samples_per_channel), bool32(auto_start),
-                 float64 (timeout), layout_val, data.ctypes.data, ctypes.byref(samples_written), None)
+                 float64 (timeout), layout_val, data.ctypes, ctypes.byref(samples_written), None)
 
         return samples_written.value
 
@@ -3424,7 +3424,7 @@ class DigitalTask (Task):
         bytes_per_sample = int32(0)
 
         CALL ('ReadDigitalLines', self, samples_per_channel, float64 (timeout),
-              fill_mode_val, data.ctypes.data, uInt32 (data.size * c), 
+              fill_mode_val, data.ctypes, uInt32 (data.size * c),
               ctypes.byref (samples_read), ctypes.byref (bytes_per_sample),
               None
               )
@@ -3630,7 +3630,7 @@ class DigitalOutputTask(DigitalTask):
         CALL('WriteDigitalLines', self, samples_per_channel,
              bool32(auto_start),
              float64(timeout), layout_val,
-             data.ctypes.data, ctypes.byref(samples_written), None)
+             data.ctypes, ctypes.byref(samples_written), None)
 
         return samples_written.value
 
@@ -4174,7 +4174,7 @@ class CounterInputTask(Task):
 
         
         CALL('ReadCounterU32', self, samples_per_channel, float64(timeout),
-             data.ctypes.data, data.size, ctypes.byref(samples_read), None)
+             data.ctypes, data.size, ctypes.byref(samples_read), None)
         
         return data[:samples_read.value]
 
@@ -4510,7 +4510,7 @@ class CounterOutputTask(Task):
 
         CALL('WriteCtrTicks', self, samples_per_channel,
                 bool32(auto_start), float64(timeout), layout_val,
-                high_ticks.ctypes.data, low_ticks.ctypes.data,
+                high_ticks.ctypes, low_ticks.ctypes,
                 ctypes.byref(samples_written), None)
 
         return samples_written.value
