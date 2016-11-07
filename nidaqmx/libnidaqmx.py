@@ -14,6 +14,7 @@ See http://pylibnidaqmx.googlecode.com/
 
 from __future__ import print_function, division, unicode_literals, absolute_import
 
+
 import os
 import sys
 import textwrap
@@ -63,7 +64,7 @@ def _find_library_linux():
     return header_name, libname, libfile
         
 def _find_library_nt():
-    import _winreg as winreg # pylint: disable=import-error
+    import winreg as winreg # pylint: disable=import-error
     regpath = r'SOFTWARE\National Instruments\NI-DAQmx\CurrentVersion'
     reg6432path = r'SOFTWARE\Wow6432Node\National Instruments\NI-DAQmx\CurrentVersion'
     libname = 'nicaiu'
@@ -170,7 +171,7 @@ def _convert_header(header_name, header_module_name):
                 print(name, value, file=sys.stderr)
 
         # DAQmxSuccess is not renamed, because it's unused and I'm lazy.
-        _d = {k.replace("DAQmx_", ""): v for k,v in d.viewitems()}
+        _d = {k.replace("DAQmx_", ""): v for k,v in d.items()}
                  
     try:
         path = os.path.dirname(os.path.abspath (__file__))
@@ -259,7 +260,7 @@ def CALL(name, *args):
     func = getattr(libnidaqmx, funcname)
     new_args = []
     for a in args:
-        if isinstance(a, unicode):
+        if isinstance(a, str):
             #print(name, 'argument', a, 'is unicode', file=sys.stderr)
             new_args.append (bytes(a))
         else:
@@ -328,7 +329,7 @@ def make_pattern(paths, _main=True):
                 #assert slst == range(slst[0], slst[-1]+1), repr((slst, lst))
                 if len (slst)==1:
                     r.append(str (slst[0]))
-                elif slst == range (slst[0], slst[-1]+1):
+                elif slst == list(range(slst[0], slst[-1]+1)):
                     r.append('%s:%s' % (slst[0],slst[-1]))
                 else:
                     return None
@@ -896,7 +897,7 @@ class Task(TaskHandle):
         val = map_.get(key)
         if val is None:
             raise ValueError('Expected %s %s but got %r'
-                             % (label, '|'.join(map_.viewkeys()), key))
+                             % (label, '|'.join(map_.keys()), key))
         return val
 
     def _reshape_data(self, data, layout):

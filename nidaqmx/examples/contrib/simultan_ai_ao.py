@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # do simultaneous analog input and output
+from __future__ import print_function
+
 import numpy as np
 import nidaqmx
 
@@ -17,7 +19,7 @@ samplemode = 'finite' # or 'continuous'
 outputdata = np.arange(nsamples,dtype='float64') # assumine default to float64
 outputdata = np.sin(0.2*outputdata)
 
-print outputdata.shape
+print(outputdata.shape)
 
 
 
@@ -51,4 +53,4 @@ otask.start()
 itask.start()
 
 itask.wait_until_done(10.0)
-print "done"
+print("done")

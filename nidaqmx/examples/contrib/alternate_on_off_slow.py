@@ -1,6 +1,6 @@
 # with relatively loose timing constraints
 # turn on and off a digital output
-
+from __future__ import print_function
 from __future__ import division
 from numpy import *
 import labdaq.daqmx as daqmx
@@ -22,14 +22,14 @@ state_verbal= {True:'On', False: 'Off'}
 
 
 def change_voltage(onstate):
-    print onstate
+    print(onstate)
     if onstate:
         daq.set_voltage_ch0(onvoltage)
     else :
         daq.set_voltage_ch0(offvoltage)
 
 def cycle(onstate=onstate):
-    print "hi! Starting up loop of alternating on voltage %f with off voltage of %f every %f seconds or %f minutes" % (onvoltage, offvoltage, duration, sec2min(duration))
+    print("hi! Starting up loop of alternating on voltage %f with off voltage of %f every %f seconds or %f minutes" % (onvoltage, offvoltage, duration, sec2min(duration)))
     while 1:
         onstate = not onstate
         change_voltage(onstate)

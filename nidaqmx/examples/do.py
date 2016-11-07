@@ -5,7 +5,7 @@
 # Author: Pearu Peterson
 # Created: August 2009
 
-from __future__ import division
+from __future__ import print_function
 import os
 import sys
 import time
@@ -23,15 +23,15 @@ from nidaqmx.optparse_options import get_method_arguments, set_do_options
 def runner (parser, options, args):
     task = DigitalOutputTask()
 
-    print 'Created DigitalOutputTask %s (task.value=%s)' % (task, task.value)
+    print('Created DigitalOutputTask %s (task.value=%s)' % (task, task.value))
 
     args, kws = get_method_arguments('create_channel', options)
-    print 'create_channel', kws
+    print('create_channel', kws)
     task.create_channel (**kws)
 
     channels = task.get_names_of_channels()
     if not channels:
-        print 'No channels specified'
+        print('No channels specified')
         return
 
     args, kws = get_method_arguments('ao_write', options)
@@ -50,7 +50,7 @@ def runner (parser, options, args):
                 task.write (data.ravel (), **kws)
                 time.sleep(1)
         except KeyboardInterrupt:
-            print 'Caught Ctrl-C.'
+            print('Caught Ctrl-C.')
         task.stop ()
         del task
         return
@@ -62,17 +62,17 @@ def runner (parser, options, args):
     elif options.do_task=='ten': # 1010
         data = np.array([1,0,1,0], dtype=np.uint8)
     else:
-        raise `options.do_task`
+        raise repr(options.do_task)
 
     if layout=='group_by_scan_number':
         data = data.T
 
-    print 'samples available/written per channel= %s/%s ' % (data.size//len(channels), task.write(data.ravel(), **kws))
+    print('samples available/written per channel= %s/%s ' % (data.size//len(channels), task.write(data.ravel(), **kws)))
 
     try:
         time.sleep (options.do_task_duration)
     except KeyboardInterrupt:
-        print 'Caught Ctrl-C.'
+        print('Caught Ctrl-C.')
 
     task.stop ()
     del task

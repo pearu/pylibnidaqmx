@@ -28,7 +28,7 @@ def runner (parser, options, args):
 
     channels = task.get_names_of_channels()
     if not channels:
-        print 'No channels specified'
+        print('No channels specified')
         return
 
     args, kws = get_method_arguments('configure_timing_sample_clock', options)
@@ -52,15 +52,15 @@ def runner (parser, options, args):
         if layout=='group_by_scan_number':
             data = data.T
     else:
-        raise NotImplementedError (`options.ai_task`)
-    print 'samples available/written per channel= %s/%s ' % (data.size//len(channels), task.write(data.ravel(), **kws))
+        raise NotImplementedError (repr(options.ai_task))
+    print('samples available/written per channel= %s/%s ' % (data.size//len(channels), task.write(data.ravel(), **kws)))
 
     if not options.ao_write_auto_start:
         task.start()
     try:
         time.sleep(options.ao_task_duration)
-    except KeyboardInterrupt, msg:
-        print 'Caught Ctrl-C.'
+    except KeyboardInterrupt as msg:
+        print('Caught Ctrl-C.')
     task.stop()
     del task
 

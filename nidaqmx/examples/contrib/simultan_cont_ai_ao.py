@@ -30,6 +30,7 @@ def resetRelativeTo(task):
         
 
 ##########
+from __future__ import print_function
 analog_output_term = r'Dev1/ao0'
 analog_input = r'Dev1/ai15' # connect analog input to this terminal, customize as you wish
 TERMINALEND = 'nrse' # consider 'rse' (referenced single-ended),'nrse'
@@ -43,7 +44,7 @@ samplemode = 'continuous' # or 'continuous'
 outputdata = np.arange(nsamples,dtype='float64') 
 outputdata = np.sin(0.2*outputdata)
 output2 = np.sin(0.5*np.arange(nsamples,dtype='float64') )
-print outputdata.shape
+print(outputdata.shape)
 
 
 
@@ -78,7 +79,7 @@ otask.start()
 itask.start()
 d1=itask.read(samples_per_channel=500)
 time.sleep(1.0)
-print "current read position", itask.get_read_current_position()
+print("current read position", itask.get_read_current_position())
 mx.ni.DAQmxGetWriteCurrWritePos(otask, byref(cur_wp))
 otask.write(output2)
 after = getCurWritePos(otask)
@@ -86,7 +87,7 @@ time.sleep(0.1)
 # d2 = itask.read(samples_per_channel=500)
 # itask.wait_until_done(10.0)
 # print "otask.get_bufsize()",otask.get_bufsize()
-print "before cur_wp:",cur_wp.value, "and after:", after
-print "relativeTo:", relativeTo(otask)
-print "done"
+print("before cur_wp:",cur_wp.value, "and after:", after)
+print("relativeTo:", relativeTo(otask))
+print("done")
 

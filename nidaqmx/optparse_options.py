@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 import os
 from optparse import OptionGroup
 
@@ -175,7 +175,7 @@ def get_digital_io_options_group (parser, group=None):
 
 
 def get_ai_read_options_group(parser, group=None):
-    assert group is not None, `group`
+    assert group is not None, repr(group)
     group.add_option ('--ai-read-samples-per-channel',
                       type = 'int')
     group.add_option ('--ai-read-timeout',
@@ -187,7 +187,7 @@ def get_ai_read_options_group(parser, group=None):
     return group
 
 def get_di_read_options_group(parser, group=None):
-    assert group is not None, `group`
+    assert group is not None, repr(group)
     group.add_option ('--di-read-samples-per-channel',
                       type = 'int')
     group.add_option ('--di-read-timeout',
@@ -199,7 +199,7 @@ def get_di_read_options_group(parser, group=None):
     return group
 
 def get_ao_write_options_group(parser, group=None):
-    assert group is not None, `group`
+    assert group is not None, repr(group)
     group.add_option ('--ao-write-auto-start', action='store_true')
     group.add_option ('--no-ao-write-auto-start', dest='ao_write_auto_start', action='store_false')
     group.add_option ('--ao-write-timeout',
@@ -211,7 +211,7 @@ def get_ao_write_options_group(parser, group=None):
     return group
 
 def get_do_write_options_group(parser, group=None):
-    assert group is not None, `group`
+    assert group is not None, repr(group)
     group.add_option ('--do-write-auto-start', action='store_true')
     group.add_option ('--no-do-write-auto-start', dest='do_write_auto_start', action='store_false')
     group.add_option ('--do-write-timeout',

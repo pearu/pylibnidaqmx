@@ -95,6 +95,6 @@ if __name__=='__main__':
         download_url = DOWNLOAD_URL,
         description = DESCRIPTION,
         long_description = LONG_DESCRIPTION,
-        classifiers = filter(None, CLASSIFIERS.split('\n')),
+        classifiers = [_f for _f in CLASSIFIERS.split('\n') if _f],
         platforms = PLATFORMS,
         configuration = configuration)

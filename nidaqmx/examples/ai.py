@@ -23,27 +23,27 @@ from nidaqmx.optparse_options import get_method_arguments, set_ai_options
 def runner (parser, options, args):
     task = AnalogInputTask()
 
-    print 'Created AnalogInputTask %s (task.value=%s)' % (task, task.value)
+    print('Created AnalogInputTask %s (task.value=%s)' % (task, task.value))
 
     args, kws = get_method_arguments('create_voltage_channel', options)
-    print 'create_voltage_channel', kws
+    print('create_voltage_channel', kws)
     task.create_voltage_channel (**kws)
 
     channels = task.get_names_of_channels()
     if not channels:
-        print 'No channels specified'
+        print('No channels specified')
         return
 
     args, kws = get_method_arguments('configure_timing_sample_clock', options)
-    print 'configure_timing_sample_clock', kws
+    print('configure_timing_sample_clock', kws)
     clock_rate = kws.get('rate', 1000.0)
     task.configure_timing_sample_clock(**kws)
-    print 'task'
+    print('task')
     task.start()
     args, read_kws = get_method_arguments('ai_read', options)
     kws = read_kws
     fill_mode = kws.get ('fill_mode', 'group_by_scan_number')
-    print 'read', read_kws
+    print('read', read_kws)
 
     if options.ai_task=='show':
         from nidaqmx.wxagg_plot import animated_plot
@@ -65,10 +65,10 @@ def runner (parser, options, args):
             data = task.read (**kws)
         finally:
             del task
-        print data
+        print(data)
     else:
         del task
-        raise NotImplementedError (`options.ai_task`)
+        raise NotImplementedError (repr(options.ai_task))
 
 def main ():
     parser = OptionParser()
