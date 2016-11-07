@@ -180,10 +180,10 @@ def _convert_header(header_name, header_module_name):
     print('Generating %r' % (fn), file=sys.stderr)
     with open(fn, 'w') as f:
         f.write("# This file is auto-generated. Do not edit!\n\n")
-        f.write("from collections import namedtuple\n\n")
+        f.write("from .customtuple import customtuple\n\n")
         f.write("_d = %s\n" % pprint.pformat(_d))
-        f.write("DAQmxConstants = namedtuple('DAQmxConstants', _d.keys())\n")
-        f.write("DAQmx = DAQmxConstants(**_d)\n\n")
+        f.write("s = customtuple(*_d.keys())\n")
+        f.write("DAQmx = s(*_d.values())\n")
         f.write("error_map = %s\n" % pprint.pformat(err_map))
 
     print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
