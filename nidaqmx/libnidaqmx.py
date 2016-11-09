@@ -2552,7 +2552,39 @@ class Task(TaskHandle):
         when_map = self._get_map_value('set_pause_trigger_when_map', type_when_map, self._pause_trigger_type)
         when_val = self._get_map_value('when', when_map, when)
         return CALL (routine, self, when_val)
+    
+    def get_sample_clock_digital_filter_enable(self):
+        """
+        Indicates whether there is a digital filter applied
+        on the sample clock
+        """
+        d = ctypes.c_bool()
+        CALL('GetSampClkDigFltrEnable', self, ctypes.byref(d))
+        return bool(d.value)
 
+    def set_sample_clock_digital_filter_enable(self, enable):
+        """
+        Enables digital filtering of the sample clock
+        """
+        d = ctypes.c_bool(enable)
+        return CALL('SetSampClkDigFltrEnable', self, d)
+       
+
+    def get_sample_clock_digital_filter_min_pulse_width(self):
+        """
+        Returns the minimum pulse width applicable on the sample clock filter
+        """
+        d = float64()
+        CALL('GetSampClkDigFltrMinPulseWidth', self, ctypes.byref(d))
+        return d.value
+
+    def set_sample_clock_digital_filter_min_pulse_width(self, pulselength):
+        """
+        Sets the minimum pulse width of the sample clock filter
+        """
+        d = float64(pulselength)
+        return CALL('SetSampClkDigFltrMinPulseWidth', self, d)
+        
     def get_info_str(self, global_info=False):
         """
         Return verbose information string about the task and its
