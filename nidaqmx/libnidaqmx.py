@@ -700,7 +700,7 @@ class System(object):
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysDevNames', ctypes.byref (buf), buf_size)
-        names = [Device(n.strip()) for n in buf.value.split(',') if n.strip()]
+        names = [Device(n.strip().decode()) for n in buf.value.split(','.encode()) if n.strip()]
         return names
 
     @property
