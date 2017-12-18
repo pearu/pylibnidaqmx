@@ -101,7 +101,7 @@ def _find_library_nt():
         else:
             libfile = None
 
-    return header_name, libname, libfile
+    return header_name, libname, str(libfile)
 
 def _find_library():
     if os.name == "nt":
