@@ -3334,7 +3334,7 @@ class AnalogInputTask(Task):
                              group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
-        if samples_per_channel is None or samples_per_channel==-1:
+        if samples_per_channel in [None, DAQmx.Val_Auto]:
             samples_per_channel = self.get_samples_per_channel_available()
 
         number_of_channels = self.get_number_of_channels()
@@ -3597,7 +3597,7 @@ class DigitalTask (Task):
                              group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
-        if samples_per_channel in [None,-1]:
+        if samples_per_channel in [None, DAQmx.Val_Auto]:
             samples_per_channel = self.get_samples_per_channel_available()
 
         if self.one_channel_for_all_lines:
@@ -4361,7 +4361,7 @@ class CounterInputTask(Task):
           The array to read samples into, organized according to `fill_mode`.
         """
 
-        if samples_per_channel is None or samples_per_channel==-1:
+        if samples_per_channel in [None, DAQmx.Val_Auto]:
             samples_per_channel = self.get_samples_per_channel_available()
 
         data = np.zeros((samples_per_channel,),dtype=np.int32) # pylint: disable=no-member
