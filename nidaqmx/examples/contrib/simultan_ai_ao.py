@@ -17,7 +17,7 @@ samplemode = 'finite' # or 'continuous'
 outputdata = np.arange(nsamples,dtype='float64') # assumine default to float64
 outputdata = np.sin(0.2*outputdata)
 
-print outputdata.shape
+print(outputdata.shape)
 
 
 
@@ -30,8 +30,8 @@ itask.configure_timing_sample_clock(rate=samplerate,
                                     samples_per_channel=nsamples)
 
 
-# print "input task buffer size", itask.get_buffer_size()
-# print itask.get_read_current_position()
+# print("input task buffer size", itask.get_buffer_size())
+# print(itask.get_read_current_position())
 # get_regeneration
 
 otask = nidaqmx.AnalogOutputTask()
@@ -51,4 +51,4 @@ otask.start()
 itask.start()
 
 itask.wait_until_done(10.0)
-print "done"
+print("done")

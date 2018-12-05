@@ -4,6 +4,9 @@
 
 # need to start the dio task first!
 
+from __future__ import print_function
+from six.moves import input
+
 import numpy as np
 import nidaqmx
 nsamples = 1000
@@ -22,8 +25,8 @@ ddata[0:nsamples:5]=1
 
 dotask = nidaqmx.DigitalOutputTask()
 dotask.create_channel('Dev1/port0/line0', name='line0')
-#print "dotask info:", dotask.get_info_str(True)
-print "atask info:", atask.get_info_str()
+#print("dotask info:", dotask.get_info_str(True))
+print("atask info:", atask.get_info_str())
 # note must use r'ao/SampleClock' (can't prefix with /Dev1/
 dotask.configure_timing_sample_clock(source=r'ao/SampleClock',rate=1000,sample_mode='finite',samples_per_channel=1000)
 dotask.write(ddata, auto_start=False)
@@ -31,7 +34,5 @@ dotask.start()
 
 atask.start()
 
-print "press return to end"
-c =raw_input()
-
-
+print("press return to end")
+c =input()

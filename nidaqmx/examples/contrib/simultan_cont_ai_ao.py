@@ -6,6 +6,7 @@ import numpy as np
 import nidaqmx
 import labdaq.daqmx as mx
 
+from __future__ import print_function
 
 def getCurWritePos(task):
     cur_wp = mx.uInt64(0)
@@ -43,7 +44,7 @@ samplemode = 'continuous' # or 'continuous'
 outputdata = np.arange(nsamples,dtype='float64') 
 outputdata = np.sin(0.2*outputdata)
 output2 = np.sin(0.5*np.arange(nsamples,dtype='float64') )
-print outputdata.shape
+print(outputdata.shape)
 
 
 
@@ -56,8 +57,8 @@ itask.configure_timing_sample_clock(rate=samplerate,
                                     samples_per_channel=nsamples)
 
 
-# print "input task buffer size", itask.get_buffer_size()
-# print itask.get_read_current_position()
+# print("input task buffer size", itask.get_buffer_size())
+# print(itask.get_read_current_position())
 # get_regeneration
 
 otask = nidaqmx.AnalogOutputTask()
@@ -78,15 +79,14 @@ otask.start()
 itask.start()
 d1=itask.read(samples_per_channel=500)
 time.sleep(1.0)
-print "current read position", itask.get_read_current_position()
+print("current read position", itask.get_read_current_position())
 mx.ni.DAQmxGetWriteCurrWritePos(otask, byref(cur_wp))
 otask.write(output2)
 after = getCurWritePos(otask)
 time.sleep(0.1)
 # d2 = itask.read(samples_per_channel=500)
 # itask.wait_until_done(10.0)
-# print "otask.get_bufsize()",otask.get_bufsize()
-print "before cur_wp:",cur_wp.value, "and after:", after
-print "relativeTo:", relativeTo(otask)
-print "done"
-
+# print("otask.get_bufsize()",otask.get_bufsize())
+print("before cur_wp:",cur_wp.value, "and after:", after)
+print("relativeTo:", relativeTo(otask))
+print("done")

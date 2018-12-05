@@ -63,7 +63,10 @@ def _find_library_linux():
     return header_name, libname, libfile
         
 def _find_library_nt():
-    import _winreg as winreg # pylint: disable=import-error
+    try:
+        import winreg # py3
+    except:
+        import _winreg as winreg # py2
     regpath = r'SOFTWARE\National Instruments\NI-DAQmx\CurrentVersion'
     reg6432path = r'SOFTWARE\Wow6432Node\National Instruments\NI-DAQmx\CurrentVersion'
     libname = 'nicaiu'
@@ -170,7 +173,7 @@ def _convert_header(header_name, header_module_name):
                 print(name, value, file=sys.stderr)
 
         # DAQmxSuccess is not renamed, because it's unused and I'm lazy.
-        _d = {k.replace("DAQmx_", ""): v for k,v in d.viewitems()}
+        _d = {k.replace("DAQmx_", ""): v for k,v in d.items()}
                  
     try:
         path = os.path.dirname(os.path.abspath (__file__))
@@ -180,10 +183,9 @@ def _convert_header(header_name, header_module_name):
     print('Generating %r' % (fn), file=sys.stderr)
     with open(fn, 'w') as f:
         f.write("# This file is auto-generated. Do not edit!\n\n")
-        f.write("from collections import namedtuple\n\n")
+        f.write("from .daqmxconstants import DAQmxConstants\n\n")
         f.write("_d = %s\n" % pprint.pformat(_d))
-        f.write("DAQmxConstants = namedtuple('DAQmxConstants', _d.keys())\n")
-        f.write("DAQmx = DAQmxConstants(**_d)\n\n")
+        f.write("DAQmx = DAQmxConstants(_d)\n\n")
         f.write("error_map = %s\n" % pprint.pformat(err_map))
 
     print('Please upload generated file %r to http://code.google.com/p/pylibnidaqmx/issues'
@@ -203,9 +205,10 @@ def _load_header(header_name):
         _convert_header(header_name, mod_name + ".py")
         mod = __import__(pkg_name + mod_name, fromlist=[mod_name])
 
-    return mod.DAQmx, mod.error_map
+    global DAQmx, error_map
+    DAQmx, error_map = mod.DAQmx, mod.error_map
 
-DAQmx, error_map = _load_header(_header_name)
+_load_header(_header_name)
 
 ########################################################################
 
@@ -237,12 +240,12 @@ def CHK(return_code, funcname, *args):
                 raise NIDAQmxRuntimeError(
                     '%s%s failed with error %s=%d: %s'
                     % (funcname, args, error_map[return_code],
-                       return_code, repr(buf.value)))
+                       return_code, buf.value.decode()))
             else:
                 warning = error_map.get(return_code, return_code)
                 sys.stderr.write('%s%s warning: %s\n' % (funcname, args, warning))
         else:
-            text = '\n  '.join(['']+textwrap.wrap(buf.value, 80)+['-'*10])
+            text = '\n  '.join(['']+textwrap.wrap(buf.value.decode(), 80)+['-'*10])
             if return_code < 0:
                 raise NIDAQmxRuntimeError('%s%s:%s' % (funcname,args, text))
             else:
@@ -259,9 +262,9 @@ def CALL(name, *args):
     func = getattr(libnidaqmx, funcname)
     new_args = []
     for a in args:
-        if isinstance(a, unicode):
-            #print(name, 'argument', a, 'is unicode', file=sys.stderr)
-            new_args.append (bytes(a))
+        if hasattr(a, 'encode'):
+            # strings/unicode need to encode to become bytes
+            new_args.append (a.encode())
         else:
             new_args.append (a)
     r = func(*new_args)
@@ -328,7 +331,7 @@ def make_pattern(paths, _main=True):
                 #assert slst == range(slst[0], slst[-1]+1), repr((slst, lst))
                 if len (slst)==1:
                     r.append(str (slst[0]))
-                elif slst == range (slst[0], slst[-1]+1):
+                elif slst == list(range(slst[0], slst[-1]+1)):
                     r.append('%s:%s' % (slst[0],slst[-1]))
                 else:
                     return None
@@ -377,7 +380,7 @@ class Device(str):
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevProductType', self, ctypes.byref (buf), buf_size)
-        return buf.value
+        return buf.value.decode()
 
     def get_product_number(self):
         """
@@ -417,7 +420,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevAIPhysicalChans', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_analog_output_channels(self, buf_size=None):
@@ -440,7 +443,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetDevAOPhysicalChans', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_digital_input_lines(self, buf_size=None):
@@ -463,7 +466,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDILines', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_digital_input_ports(self, buf_size=None):
@@ -486,7 +489,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDIPorts', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_digital_output_lines(self, buf_size=None):
@@ -509,7 +512,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDOLines', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_digital_output_ports(self, buf_size=None):
@@ -532,7 +535,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevDOPorts', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_counter_input_channels (self, buf_size=None):
@@ -555,7 +558,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevCIPhysicalChans', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_counter_output_channels (self, buf_size=None):
@@ -578,7 +581,7 @@ class Device(str):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetDevCOPhysicalChans', self, ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names        
 
     def get_analog_output_sample_clock_supported (self):
@@ -707,7 +710,7 @@ class System(object):
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysDevNames', ctypes.byref (buf), buf_size)
-        names = [Device(n.strip()) for n in buf.value.split(',') if n.strip()]
+        names = [Device(n.strip()) for n in buf.value.decode().split(',') if n.strip()]
         return names
 
     @property
@@ -719,7 +722,7 @@ class System(object):
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysTasks', ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names
 
     @property
@@ -731,7 +734,7 @@ class System(object):
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL ('GetSysGlobalChans', ctypes.byref (buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names
 
     def connect_terminals(self, source, destination, invert=False):
@@ -814,7 +817,7 @@ class Task(TaskHandle):
         buf_size = max(len(name)+1, default_buf_size)
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetTaskName', self, ctypes.byref(buf), buf_size)
-        self.name = buf.value
+        self.name = buf.value.decode()
         self.sample_mode = None
         self.samples_per_channel = None
 
@@ -964,7 +967,7 @@ class Task(TaskHandle):
         val = map_.get(key)
         if val is None:
             raise ValueError('Expected %s %s but got %r'
-                             % (label, '|'.join(map_.viewkeys()), key))
+                             % (label, '|'.join(map_.keys()), key))
         return val
 
     def _reshape_data(self, data, layout):
@@ -1024,7 +1027,7 @@ class Task(TaskHandle):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetTaskChannels', self, ctypes.byref(buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         n = self.get_number_of_channels()
         assert len(names)==n,repr((names, n))
         return names
@@ -1049,7 +1052,7 @@ class Task(TaskHandle):
             buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetTaskDevices', self, ctypes.byref(buf), buf_size)
-        names = [n.strip() for n in buf.value.split(',') if n.strip()]
+        names = [n.strip() for n in buf.value.decode().split(',') if n.strip()]
         return names
 
     def alter_state(self, state):
@@ -2067,7 +2070,7 @@ class Task(TaskHandle):
         buf_size = default_buf_size
         buf = ctypes.create_string_buffer(b'\000' * buf_size)
         CALL('GetPhysicalChanName', self, channel_name, ctypes.byref(buf), uInt32(buf_size))
-        return buf.value
+        return buf.value.decode()
 
     def get_channel_type(self, channel_name):
         """

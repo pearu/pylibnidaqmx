@@ -10,6 +10,7 @@ import os
 import sys
 import nidaqmx
 
+from __future__ import print_function
 
 class NidaqInfo(object):
     """
@@ -43,12 +44,12 @@ class NidaqInfo(object):
     def both(self, *args):
         a = [str(x) for x in args]
         s = " ".join(a)
-        print s,
-        print >>self.log, s,
+        print(s, end=' ')
+        print(s, end=' ', file=self.log)
 
     def bothnl(self):
-        print
-        print >>self.log,""
+        print()
+        print("", file=self.log)
         
 
     def print_dev_info(self, dvstr='Dev1'):
@@ -68,14 +69,14 @@ class NidaqInfo(object):
         self.both("analog inputs:", device.get_analog_input_channels(),"\n")
  
        # detailed stuff to file, not screen
-        print >>self.log, "get_digital_output_lines:", "counter output channels:", device.get_counter_output_channels()
-        print >>self.log, "counter input channels", device.get_counter_input_channels()
-        print >> self.log, "get_digital_output_lines:", pformat(device.get_digital_output_lines())
-        print >>self.log, "get_digital_output_ports:",
-        print >> self.log, pformat(device.get_digital_output_ports())
+        print("get_digital_output_lines:", "counter output channels:", device.get_counter_output_channels(), file=self.log)
+        print("counter input channels", device.get_counter_input_channels(), file=self.log)
+        print("get_digital_output_lines:", pformat(device.get_digital_output_lines()), file=self.log)
+        print("get_digital_output_ports:", end=' ', file=self.log)
+        print(pformat(device.get_digital_output_ports()), file=self.log)
 
 def main():
-    print "Getting NI-DAQmx info, printing to screen and logging details to hardware_info.log"
+    print("Getting NI-DAQmx info, printing to screen and logging details to hardware_info.log")
     info = NidaqInfo()
     
 
