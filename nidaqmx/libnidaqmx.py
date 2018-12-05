@@ -367,7 +367,7 @@ def _test_make_pattern():
 class Device(str):
 
     """
-    Exposes NI-DACmx device to Python.
+    Exposes NI-DAQmx device to Python.
     """
 
     def get_product_type (self):
@@ -581,6 +581,19 @@ class Device(str):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names        
 
+    def get_analog_output_sample_clock_supported (self):
+        """
+        Indicates that the updates of the analog channels provided by
+        this device can be hardware-timed.
+
+        Returns
+        -------
+        supported : bool
+        """
+        supported = bool32(0)
+        CALL ('GetDevAOSampClkSupported', self, ctypes.byref (supported))
+        return bool( supported )
+
     def get_bus_type(self):
         """
         Indicates the bus type of the device.
@@ -647,7 +660,7 @@ class Device(str):
 
 class System(object):
     """
-    Exposes NI-DACmx system properties to Python.
+    Exposes NI-DAQmx system properties to Python.
 
     Attributes
     ----------
@@ -721,6 +734,31 @@ class System(object):
         names = [n.strip() for n in buf.value.split(',') if n.strip()]
         return names
 
+    def connect_terminals(self, source, destination, invert=False):
+        """
+        Connect two terminals.  Implicit intermediate connections _may_
+        automatically be connected.
+        """
+        inversion = {
+          True  : DAQmx.Val_InvertPolarity,
+          False : DAQmx.Val_DoNotInvertPolarity,
+        }
+        CALL ('ConnectTerms', source, destination, inversion[invert])
+
+    def disconnect_terminals(self, source, destination):
+        """
+        Disconnect two terminals.  Implicit intermediate connections _may_
+        automatically be disconnected.
+        """
+        CALL ('DisconnectTerms', source, destination)
+
+    def tristate_terminal(self, terminal):
+        """
+        Tristate the specified output terminal.
+        """
+        CALL ('TristateOutputTerm', terminal)
+
+
 class Task(TaskHandle):
 
     """
@@ -734,12 +772,12 @@ class Task(TaskHandle):
 
     """
 
-    #: Exposes NI-DACmx system properties, see `System`.
+    #: Exposes NI-DAQmx system properties, see `System`.
     _system = System()
     @property
     def system(self):
         """
-        NI-DACmx system properties holder.
+        NI-DAQmx system properties holder.
 
         See also
         --------
@@ -780,6 +818,39 @@ class Task(TaskHandle):
         self.sample_mode = None
         self.samples_per_channel = None
 
+
+        # Following Initializes some class variables that are used in several
+        # functions.
+
+        # Initializing these class variables via a function allows for the
+        # nidaqmx_h file to be loaded later.  This eases the implementation of a
+        # simulated low-level library.
+        self.sample_mode_map = dict(finite = DAQmx.Val_FiniteSamps,
+                                    continuous = DAQmx.Val_ContSamps,
+                                    hwtimed = DAQmx.Val_HWTimedSinglePoint)
+        self.sample_mode_rmap = { v:k for k,v in self.sample_mode_map.items() }
+
+        self.edge_map = dict (rising = DAQmx.Val_Rising,
+                              falling = DAQmx.Val_Falling)
+        self.edge_rmap = { v:k for k,v in self.edge_map.items() }
+
+        self.sample_timing_type_map = {
+            'sample_clock'          : DAQmx.Val_SampClk,
+            'burst_handshake'       : DAQmx.Val_BurstHandshake,
+            'handshake'             : DAQmx.Val_Handshake,
+            'implicit'              : DAQmx.Val_Implicit,
+            'on_demand'             : DAQmx.Val_OnDemand,
+            'change_detection'      : DAQmx.Val_ChangeDetection,
+        }
+        if float(get_nidaqmx_version()) > 8.0:
+          # TODO:  find out for which version this became available
+          self.sample_timing_type_map['pipelined_sample_clock'] = DAQmx.Val_PipelinedSampClk
+        self.sample_timing_type_rmap = {
+          v:k for k,v in self.sample_timing_type_map.items()
+        }
+
+
+
     def _set_channel_type(self, t):
         """ Sets channel type for the task.
         """
@@ -802,8 +873,7 @@ class Task(TaskHandle):
             raise TypeError('%s: cannot determine channel I/O type when no channels have been created.' % (self.__class__.__name__))
         return 'input' if t[1]=='I' else 'output'
 
-    # FIXME: why do we need this argument?
-    def clear(self, libnidaqmx=libnidaqmx):
+    def clear(self):
         """
         Clears the task.
 
@@ -818,10 +888,8 @@ class Task(TaskHandle):
         allocating unnecessary memory.
         """
         if self.value:
-            r = libnidaqmx.DAQmxClearTask(self)
+            CALL('ClearTask', self)
             self.value = 0
-            if r:
-                warnings.warn("DAQmxClearTask failed with error code %s (%r)" % (r, error_map.get(r)))
 
     __del__ = clear
 
@@ -839,7 +907,7 @@ class Task(TaskHandle):
         """
         b = bool32(0)
         CALL('IsTaskDone', self, ctypes.byref(b))
-        return b.value != 0
+        return bool(b.value)
 
     # NotImplemented: DAQmxGetTaskComplete
 
@@ -1287,6 +1355,7 @@ class Task(TaskHandle):
     # DAQmxCreateDIChan, DAQmxCreateDOChan
     # DAQmxCreateCI*, DAQmxCreateCO*
 
+
     def configure_timing_change_detection(self,
                                           rising_edge_channel = '',
                                           falling_edge_channel = '',
@@ -1301,10 +1370,7 @@ class Task(TaskHandle):
 
           success_status : bool
         """
-        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
-                                continuous = DAQmx.Val_ContSamps,
-                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
-        sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
+        sample_mode_val = self._get_map_value('sample_mode', self.sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
         r = CALL('CfgChangeDetectionTiming', self, rising_edge_channel, falling_edge_channel,
@@ -1325,10 +1391,7 @@ class Task(TaskHandle):
 
           success_status : bool
         """
-        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
-                                continuous = DAQmx.Val_ContSamps,
-                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
-        sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
+        sample_mode_val = self._get_map_value('sample_mode', self.sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
         r = CALL('CfgHandshakingTiming', self, sample_mode_val, uInt64(samples_per_channel))
@@ -1349,10 +1412,7 @@ class Task(TaskHandle):
 
           success_status : bool
         """
-        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
-                                continuous = DAQmx.Val_ContSamps,
-                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
-        sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
+        sample_mode_val = self._get_map_value('sample_mode', self.sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
         r = CALL('CfgImplicitTiming', self, sample_mode_val, uInt64(samples_per_channel))
@@ -1422,18 +1482,161 @@ class Task(TaskHandle):
           success_status : bool
         """
         source = str(source)
-        active_edge_map = dict (rising = DAQmx.Val_Rising,
-                                falling = DAQmx.Val_Falling)
-        sample_mode_map = dict (finite = DAQmx.Val_FiniteSamps,
-                                continuous = DAQmx.Val_ContSamps,
-                                hwtimed = DAQmx.Val_HWTimedSinglePoint)
-        active_edge_val = self._get_map_value('active_edge', active_edge_map, active_edge)
-        sample_mode_val = self._get_map_value('sample_mode', sample_mode_map, sample_mode)
+        active_edge_val = self._get_map_value('active_edge', self.edge_map, active_edge)
+        sample_mode_val = self._get_map_value('sample_mode', self.sample_mode_map, sample_mode)
         self.samples_per_channel = samples_per_channel
         self.sample_mode = sample_mode
         r = CALL('CfgSampClkTiming', self, source, float64(rate), active_edge_val, sample_mode_val, 
                     uInt64(samples_per_channel))
         return r==0
+
+    def configure_timing_burst_handshaking_export_clock(self, *args, **kws):
+        """
+        Configures when the DAQ device transfers data to a peripheral
+        device, using the DAQ device's onboard sample clock to control
+        burst handshaking timing.
+        """
+        raise NotImplementedError
+
+    def configure_timing_burst_handshaking_import_clock(self, *args, **kws):
+        """
+        Configures when the DAQ device transfers data to a peripheral
+        device, using an imported sample clock to control burst
+        handshaking timing.
+        """
+        raise NotImplementedError
+
+
+
+    # Lower-level timing access/control
+    def get_sample_timing_type(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Indicates the timing type, which must be one of:
+          [ 'sample_clock',
+            'burst_handshake',
+            'handshake',
+            'implicit',
+            'on_demand',
+            'change_detection',
+            'pipelined_sample_clock' ]
+        """
+        timing_type = int32(0)
+        CALL ('GetSampTimingType', self, ctypes.byref (timing_type))
+        return self.sample_timing_type_rmap[ timing_type.value ]
+
+    def set_sample_timing_type(self, timing_type):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Sets the timing type, which must be one of:
+          [ 'sample_clock',
+            'burst_handshake',
+            'handshake',
+            'implicit',
+            'on_demand',
+            'change_detection',
+            'pipelined_sample_clock' ]
+        """
+        timing_type = int32( self.sample_timing_type_map[timing_type] )
+        return CALL ('SetSampTimingType', self, timing_type) == 0
+
+    def reset_sample_timing_type(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Resets the timing type.
+        """
+        return CALL ('ResetSampTimingType', self) == 0
+
+    def get_sample_mode(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Indicates the sample mode, which must be one of:
+          [ 'finite',
+            'continuous',
+            'hwtimed' ]
+        """
+        mode = int32(0)
+        CALL ('GetSampQuantSampMode', self, ctypes.byref (mode))
+        return self.sample_mode_rmap[ mode.value ]
+
+    def set_sample_mode(self, mode):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Sets the sample mode, which must be one of:
+          [ 'finite',
+            'continuous',
+            'hwtimed' ]
+        """
+        mode = int32( self.sample_mode_map[mode] )
+        return CALL ('SetSampQuantSampMode', self, mode) == 0
+
+    def reset_sample_mode(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Resets the sample mode.
+        """
+        return CALL ('ResetSampQuantSampMode', self) == 0
+
+    def get_samples_per_channel(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Indicates the number of samples per channel.
+        """
+        n = uInt64(0)
+        CALL ('GetSampQuantSampPerChan', self, ctypes.byref (n))
+        return n.value
+
+    def set_samples_per_channel(self, n):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Sets the number of samples per channel.
+        """
+        n = uInt64( n )
+        return CALL ('SetSampQuantSampPerChan', self, n) == 0
+
+    def reset_samples_per_channel(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Resets the number of samples per channel.
+        """
+        return CALL ('ResetSampQuantSampPerChan', self) == 0
+
+    def get_sample_timing(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Indicates:
+          1. Type of sample timing.
+          2. Mode of timing.
+          3. number of samples per channel.
+        """
+        return self.get_sample_timing_type(), \
+               self.get_sample_mode(), \
+               self.get_samples_per_channel()
+
+    def set_sample_timing(self, timing_type=None, mode=None, samples_per_channel=None):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Sets optionally the timing type, sample mode, and/or the number of
+        samples per channel.
+        """
+        success = False
+        if timing_type:
+          success = self.set_sample_timing_type( timing_type )
+        if success and mode:
+          success = self.set_sample_mode( mode )
+        if success and samples_per_channel:
+          success = self.set_samples_per_channel( samples_per_channel )
+        return success
+
+    def reset_sample_timing(self):
+        """
+        LOWER LEVEL ACCESS TO TIMING INFORMATION:
+        Resets the timing type, sample mode, and number of samples per channel.
+        """
+        return self.reset_sample_timing_type() and \
+               self.reset_sample_mode() and \
+               self.reset_samples_per_channel()
+
 
     def configure_trigger_analog_edge_start(self, source, slope='rising',level=1.0):
         """
@@ -1546,9 +1749,7 @@ class Task(TaskHandle):
           success_status : bool
         """
         source = str(source)
-        edge_map = dict (rising=DAQmx.Val_Rising,
-                         falling=DAQmx.Val_Falling)
-        edge_val = self._get_map_value ('edge', edge_map, edge)
+        edge_val = self._get_map_value ('edge', self.edge_map, edge)
         return CALL('CfgDigEdgeStartTrig', self, source, edge_val) == 0
 
     def configure_trigger_digital_pattern_start(self, source, pattern, when='matches'):
@@ -1847,8 +2048,6 @@ class Task(TaskHandle):
     # DAQmxCalculateReversePolyCoeff, DAQmxCreateLinScale
     # DAQmxWaitForNextSampleClock
     # DAQmxSwitch*
-    # DAQmxConnectTerms, DAQmxDisconnectTerms, DAQmxTristateOutputTerm
-    # DAQmxResetDevice
     # DAQmxControlWatchdog*
 
     # DAQmxAOSeriesCalAdjust, DAQmxESeriesCalAdjust, DAQmxGet*,
@@ -2464,9 +2663,7 @@ class Task(TaskHandle):
         --------
         get_arm_start_trigger_edge, reset_arm_start_trigger_edge
         """
-        edge_map = dict (rising=DAQmx.Val_Rising,
-                         falling=DAQmx.Val_Falling)
-        edge_val = self._get_map_value ('edge', edge_map, edge)
+        edge_val = self._get_map_value ('edge', self.edge_map, edge)
         return CALL ('SetDigEdgeArmStartTrigEdge', self, edge_val)==0
 
     _pause_trigger_type = None
@@ -2547,6 +2744,38 @@ class Task(TaskHandle):
         when_val = self._get_map_value('when', when_map, when)
         return CALL (routine, self, when_val)
 
+    def get_sample_clock_digital_filter_enable(self):
+        """
+        Indicates whether there is a digital filter applied
+        on the sample clock
+        """
+        d = ctypes.c_bool()
+        CALL('GetSampClkDigFltrEnable', self, ctypes.byref(d))
+        return bool(d.value)
+
+    def set_sample_clock_digital_filter_enable(self, enable):
+        """
+        Enables digital filtering of the sample clock
+        """
+        d = ctypes.c_bool(enable)
+        return CALL('SetSampClkDigFltrEnable', self, d)
+
+
+    def get_sample_clock_digital_filter_min_pulse_width(self):
+        """
+        Returns the minimum pulse width applicable on the sample clock filter
+        """
+        d = float64()
+        CALL('GetSampClkDigFltrMinPulseWidth', self, ctypes.byref(d))
+        return d.value
+
+    def set_sample_clock_digital_filter_min_pulse_width(self, pulselength):
+        """
+        Sets the minimum pulse width of the sample clock filter
+        """
+        d = float64(pulselength)
+        return CALL('SetSampClkDigFltrMinPulseWidth', self, d)
+
     def get_info_str(self, global_info=False):
         """
         Return verbose information string about the task and its
@@ -2561,7 +2790,7 @@ class Task(TaskHandle):
         lines = []
         tab = ''
         if global_info:
-            lines.append(tab+'NI-DAQwx version: %s' % (self.get_version()))
+            lines.append(tab+'NI-DAQmx version: %s' % (self.get_version()))
             lines.append(tab+'System devices: %s' % (', '.join(self.get_system_devices()) or None))
             lines.append(tab+'System global channels: %s' % (', '.join(self.get_system_global_channels()) or None))
             lines.append(tab+'System tasks: %s' % (', '.join(self.get_system_tasks()) or None))
@@ -2673,7 +2902,7 @@ class Task(TaskHandle):
           an error if the time elapses before the measurement or
           generation is complete.
         
-          A value of -1 (DAQmx_Val_WaitInfinitely) means to wait
+          A value of -1 (DAQmx.Val_WaitInfinitely) means to wait
           indefinitely.
 
           If you set timeout to 0, the function checks once and
@@ -3082,7 +3311,7 @@ class AnalogInputTask(Task):
 
         samples_per_channel : int
           The number of samples, per channel, to read. The default
-          value of -1 (DAQmx_Val_Auto) reads all available samples. If
+          value of -1 (DAQmx.Val_Auto) reads all available samples. If
           readArray does not contain enough space, this function
           returns as many samples as fit in readArray.
 
@@ -3106,7 +3335,7 @@ class AnalogInputTask(Task):
           The amount of time, in seconds, to wait for the function to
           read the sample(s). The default value is 10.0 seconds. To
           specify an infinite wait, pass -1
-          (DAQmx_Val_WaitInfinitely). This function returns an error
+          (DAQmx.Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
           A value of 0 indicates to try once to read the requested
@@ -3137,7 +3366,7 @@ class AnalogInputTask(Task):
                              group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
-        if samples_per_channel is None:
+        if samples_per_channel in [None, DAQmx.Val_Auto]:
             samples_per_channel = self.get_samples_per_channel_available()
 
         number_of_channels = self.get_number_of_channels()
@@ -3170,7 +3399,7 @@ class AnalogInputTask(Task):
         timeout : float
           The amount of time, in seconds, to wait for the function to
           read the sample(s). The default value is 10.0 seconds. To
-          specify an infinite wait, pass -1 (DAQmx_Val_WaitInfinitely).
+          specify an infinite wait, pass -1 (DAQmx.Val_WaitInfinitely).
           This function returns an error if the timeout elapses.
 
           A value of 0 indicates to try once to read the requested
@@ -3265,7 +3494,7 @@ class AnalogOutputTask (Task):
           The amount of time, in seconds, to wait for this
           function to write all the samples. The default value is 10.0
           seconds. To specify an infinite wait, pass -1
-          (DAQmx_Val_WaitInfinitely). This function returns an error
+          (DAQmx.Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
           A value of 0 indicates to try once to write the submitted
@@ -3336,7 +3565,7 @@ class DigitalTask (Task):
         samples_per_channel : int or None
 
           The number of samples, per channel, to
-          read. The default value of -1 (DAQmx_Val_Auto) reads all
+          read. The default value of -1 (DAQmx.Val_Auto) reads all
           available samples. If readArray does not contain enough
           space, this function returns as many samples as fit in
           readArray.
@@ -3362,7 +3591,7 @@ class DigitalTask (Task):
           The amount of time, in seconds, to wait for the function to
           read the sample(s). The default value is 10.0 seconds. To
           specify an infinite wait, pass -1
-          (DAQmx_Val_WaitInfinitely). This function returns an error
+          (DAQmx.Val_WaitInfinitely). This function returns an error
           if the timeout elapses.
 
           A value of 0 indicates to try once to read the requested
@@ -3400,7 +3629,7 @@ class DigitalTask (Task):
                              group_by_scan_number = DAQmx.Val_GroupByScanNumber)
         fill_mode_val = self._get_map_value('fill_mode', fill_mode_map, fill_mode)
 
-        if samples_per_channel in [None,-1]:
+        if samples_per_channel in [None, DAQmx.Val_Auto]:
             samples_per_channel = self.get_samples_per_channel_available()
 
         if self.one_channel_for_all_lines:
@@ -3566,7 +3795,7 @@ class DigitalOutputTask(DigitalTask):
         Writes multiple samples to each digital line in a task. When
         you create your write array, each sample per channel must
         contain the number of bytes returned by the
-        DAQmx_Read_DigitalLines_BytesPerChan property.
+        DAQmx.Read_DigitalLines_BytesPerChan property.
 
 	Note: If you configured timing for your task, your write is
 	considered a buffered write. Buffered writes require a minimum
@@ -3743,10 +3972,9 @@ class CounterInputTask(Task):
         """
         counter = str(counter)
         name = str(name)
-        edge_map = dict (rising=DAQmx.Val_Rising, falling=DAQmx.Val_Falling)
         direction_map = dict (up=DAQmx.Val_CountUp, down=DAQmx.Val_CountDown,
                               ext=DAQmx.Val_ExtControlled)
-        edge_val = self._get_map_value ('edge', edge_map, edge)
+        edge_val = self._get_map_value ('edge', self.edge_map, edge)
         direction_val = self._get_map_value ('direction', direction_map, direction)
         init = uInt32(init)
         return CALL ('CreateCICountEdgesChan', self, counter, name, edge_val, init, direction_val)==0
@@ -3989,8 +4217,7 @@ class CounterInputTask(Task):
                          ticks=DAQmx.Val_Ticks,
                          custom=DAQmx.Val_FromCustomScale)
         units_val = self._get_map_value('units', units_map, units)
-        edge_map = dict(rising=DAQmx.Val_Rising, falling=DAQmx.Val_Falling)
-        edge_val = self._get_map_value('edge', edge_map, edge)
+        edge_val = self._get_map_value('edge', self.edge_map, edge)
         meas_meth_map = dict(low_freq=DAQmx.Val_LowFreq1Ctr,
                              high_freq=DAQmx.Val_HighFreq2Ctr,
                              large_range=DAQmx.Val_LargeRng2Ctr)
@@ -4032,7 +4259,7 @@ class CounterInputTask(Task):
         b = bool32(0)
         r = CALL('GetCIDupCountPrevent', self, channel, ctypes.byref(b))
         assert r==0,repr((r, channel, b))
-        return b != 0
+        return bool(b.value)
 
     def set_duplicate_count_prevention(self, channel, enable=True):
         """
@@ -4166,7 +4393,7 @@ class CounterInputTask(Task):
           The array to read samples into, organized according to `fill_mode`.
         """
 
-        if samples_per_channel is None:
+        if samples_per_channel in [None, DAQmx.Val_Auto]:
             samples_per_channel = self.get_samples_per_channel_available()
 
         data = np.zeros((samples_per_channel,),dtype=np.int32) # pylint: disable=no-member
