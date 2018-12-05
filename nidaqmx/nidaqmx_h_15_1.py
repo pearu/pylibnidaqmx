@@ -1,6 +1,6 @@
 # This file is auto-generated. Do not edit!
 
-from collections import namedtuple
+from .daqmxconstants import DAQmxConstants
 
 _d = {u'AIConv_ActiveEdge': 6227,
  u'AIConv_DigFltr_Enable': 11996,
@@ -1510,8 +1510,7 @@ _d = {u'AIConv_ActiveEdge': 6227,
  u'Write_SpaceAvail': 5216,
  u'Write_TotalSampPerChanGenerated': 6443,
  u'Write_WaitMode': 8881}
-DAQmxConstants = namedtuple('DAQmxConstants', _d.keys())
-DAQmx = DAQmxConstants(**_d)
+DAQmx = DAQmxConstants(_d)
 
 error_map = {-209815: u'HWTSPMultiSampleWrite',
  -209814: u'OnboardRegenExceedsChannelLimit',

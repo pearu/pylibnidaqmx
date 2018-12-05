@@ -4,7 +4,7 @@ Routines for Getting/Setting physical channel attributes.
 
 
 from ctypes import byref, create_string_buffer
-from libnidaqmx import uInt8, int32, bool32, float64, uInt32, \
+from .libnidaqmx import uInt8, int32, bool32, float64, uInt32, \
                        CALL, default_buf_size
 
 

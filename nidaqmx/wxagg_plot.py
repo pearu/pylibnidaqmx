@@ -64,13 +64,13 @@ class PlotFigure(wx.Frame):
 
     def OnClose(self, event):
         self.is_stopped = True
-        print 'Closing PlotFigure, please wait.'
+        print('Closing PlotFigure, please wait.')
         self.timer.Stop()
         self.Destroy()
 
     def OnTimerWrap (self, evt):
         if self.is_stopped:
-            print 'Ignoring timer callback'
+            print('Ignoring timer callback')
             return
         t = time.time()
         try:
@@ -79,7 +79,7 @@ class PlotFigure(wx.Frame):
             self.OnClose(evt)
         duration = 1000*(time.time () - t)
         if duration > self.timer_period:
-            print 'Changing timer_period from %s to %s msec' % (self.timer_period, 1.2*duration)
+            print('Changing timer_period from %s to %s msec' % (self.timer_period, 1.2*duration))
             self.timer_period = 1.2*duration
             self.timer.Stop()
             self.timer.Start (self.timer_period)
@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
     try:
         animated_plot (func, 1)
-    except Exception, msg:
-        print 'Got exception: %s' % ( msg)
+    except Exception as msg:
+        print('Got exception: %s' % ( msg))
     else:
-        print 'Exited normally'
+        print('Exited normally')

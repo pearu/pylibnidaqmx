@@ -1,6 +1,9 @@
 # using correlated digital output based off the analog sample clock
 # 
 
+from __future__ import print_function
+from six.moves import input
+
 # need to start the dio task first!
 import time
 import numpy as np
@@ -53,22 +56,20 @@ ddata[-1] = 0
 
 dotask = nidaqmx.DigitalOutputTask()
 dotask.create_channel(digital_output_str, name='line67' )
-#print "dotask info:", dotask.get_info_str(True)
-print "itask info:", itask.get_info_str()
+#print("dotask info:", dotask.get_info_str(True))
+print("itask info:", itask.get_info_str())
 # note must use r'ao/SampleClock' (can't prefix with /Dev1/
 dotask.configure_timing_sample_clock(source=r'ai/SampleClock',rate=samplerate,sample_mode='finite',samples_per_channel=nsamples)
 dotask.write(ddata, auto_start=False, layout='group_by_channel')
              # layout='group_by_scan_number')
-print "digital task info:"
-print dotask.get_info_str()
+print("digital task info:")
+print(dotask.get_info_str())
 dotask.start()
 
-print "starting"
+print("starting")
 itask.start()
 time.sleep(nsamples/samplerate)
 data = itask.read() # get data
 
-print "press return to end"
-c =raw_input()
-
-
+print("press return to end")
+c =input()
