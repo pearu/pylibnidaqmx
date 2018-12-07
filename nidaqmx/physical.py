@@ -153,7 +153,7 @@ def get_teds_versionletter( channel, buf_size=None ):
   """
   if buf_size is None:
     buf_size = default_buf_size
-  buf = create_string_buffer('\000' * buf_size)
+  buf = create_string_buffer(b'\000' * buf_size)
   CALL('GetPhysicalChanTEDSVersionLetter', channel, byref(buf), buf_size)
   return buf.value
 
